@@ -1,65 +1,91 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Sparkles, MessageCircle } from 'lucide-react'
+import { HeroSection } from '@/components/home/HeroSection'
+import { BentoGrid } from '@/components/home/BentoGrid'
+import { BrandMarquee } from '@/components/home/BrandMarquee'
+import { WhyChooseUs } from '@/components/home/WhyChooseUs'
+import { Testimonials } from '@/components/home/Testimonials'
+import { ProductCard } from '@/components/products/ProductCard'
+import { CATALOG_PRODUCTS } from '@/data/products'
 
-export default function Home() {
+// Hand-picked from the real catalog — a visual mix that all carry photos.
+const FEATURED_SLUGS = [
+  'dell-optiplex-aio-7420-24-non-touch',
+  'philips-evnia-34m2c5500-crystalclear-images-with-ultrawide-q',
+  'lenovo-legion-5-83nx0000us-storm-grey',
+  'hp-victus-15-fa2082wm-mica-silver',
+  'philips-346b1c',
+  'apple-mhff4hn-a',
+  'hp-hp-290-g9-ct6y4at',
+  'philips-24m2n3200fq',
+]
+
+const FEATURED_PRODUCTS = FEATURED_SLUGS
+  .map((slug) => CATALOG_PRODUCTS.find((p) => p.slug === slug))
+  .filter((p): p is (typeof CATALOG_PRODUCTS)[number] => Boolean(p))
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <HeroSection />
+      <BrandMarquee />
+      <BentoGrid />
+      <WhyChooseUs />
+
+      {/* Featured Products */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <p className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-1">Hand-picked</p>
+            <h2 className="text-3xl font-bold text-slate-900">Featured Products</h2>
+          </div>
+          <Link href="/products" className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors">
+            View all →
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {FEATURED_PRODUCTS.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      <Testimonials />
+
+      {/* Final CTA band */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 p-10 md:p-14 shadow-2xl shadow-blue-600/20">
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff14_1px,transparent_1px),linear-gradient(to_bottom,#ffffff14_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]" />
+          <div className="absolute -top-16 -right-10 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
+          <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 bg-white/15 text-white text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+                <Sparkles size={12} /> Here to help
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">Need help choosing the right tech?</h2>
+              <p className="text-blue-100 mt-3 text-lg">
+                Use our smart recommendation wizard, or chat with our team on WhatsApp — we reply within minutes.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+              <Link
+                href="/recommend"
+                className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 font-bold px-6 py-3.5 rounded-2xl hover:bg-blue-50 transition-colors"
+              >
+                <Sparkles size={18} /> Find My Setup
+              </Link>
+              <a
+                href="https://wa.me/9616000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-2xl border border-white/20 transition-colors"
+              >
+                <MessageCircle size={18} /> WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }

@@ -1,0 +1,120 @@
+'use client'
+import { X, ShoppingCart, Plus, Minus, Trash2, MessageCircle } from 'lucide-react'
+import Image from 'next/image'
+import { useCartStore } from '@/store/cart'
+import { Button } from '@/components/ui/button'
+
+const WHATSAPP = '9616000000'
+
+export function CartDrawer() {
+  const { items, isOpen, closeCart, removeItem, updateQuantity, totalItems, totalPrice } =
+    useCartStore()
+
+  if (!isOpen) return null
+
+  const pricedTotal = totalPrice()
+  const callCount = items.filter((i) => i.product.priceOnRequest || i.product.price === 0).length
+
+  function buildQuote() {
+    const lines = items.map(({ product, quantity }) => {
+      const onRequest = product.priceOnRequest || product.price === 0
+      const price = onRequest ? 'price on request' : `$${(product.price * quantity).toFixed(2)}`
+      return `• ${quantity}× ${product.name} — ${price}`
+    })
+    const total = pricedTotal > 0 ? `\n\nPriced subtotal: $${pricedTotal.toFixed(2)}` : ''
+    const msg = `Hi Trust Technology! I'd like a quote for:\n\n${lines.join('\n')}${total}\n\nPlease confirm availability and final pricing.`
+    window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener')
+  }
+
+  return (
+    <>
+      <div className="fixed inset-0 bg-slate-900/40 z-50 backdrop-blur-sm" onClick={closeCart} />
+
+      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white border-l border-slate-200 z-50 flex flex-col shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <div className="flex items-center gap-2">
+            <ShoppingCart size={20} className="text-blue-600" />
+            <span className="font-semibold text-slate-900">Your Quote</span>
+            {totalItems() > 0 && (
+              <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {totalItems()}
+              </span>
+            )}
+          </div>
+          <button onClick={closeCart} className="p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Items */}
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+          {items.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center gap-4">
+              <ShoppingCart size={40} className="text-slate-300" />
+              <p className="text-slate-500">Your quote list is empty</p>
+              <Button variant="outline" size="sm" onClick={closeCart}>Continue Shopping</Button>
+            </div>
+          ) : (
+            items.map(({ product, quantity }) => {
+              const onRequest = product.priceOnRequest || product.price === 0
+              return (
+                <div key={product.id} className="flex gap-4 bg-slate-50 rounded-xl p-3 border border-slate-200">
+                  <div className="w-16 h-16 rounded-lg bg-white border border-slate-100 shrink-0 overflow-hidden">
+                    {product.images[0] ? (
+                      <Image src={product.images[0]} alt={product.name} width={64} height={64} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300 text-xs">No img</div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-slate-900 font-medium truncate">{product.name}</p>
+                    <p className={`text-sm font-semibold mt-0.5 ${onRequest ? 'text-blue-600' : 'text-slate-900'}`}>
+                      {onRequest ? 'Call for price' : `$${(product.price * quantity).toFixed(2)}`}
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <button onClick={() => updateQuantity(product.id, quantity - 1)} className="w-6 h-6 rounded flex items-center justify-center bg-white border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors">
+                        <Minus size={12} />
+                      </button>
+                      <span className="text-sm text-slate-900 w-6 text-center">{quantity}</span>
+                      <button onClick={() => updateQuantity(product.id, quantity + 1)} className="w-6 h-6 rounded flex items-center justify-center bg-white border border-slate-200 hover:bg-slate-100 text-slate-500 transition-colors">
+                        <Plus size={12} />
+                      </button>
+                    </div>
+                  </div>
+                  <button onClick={() => removeItem(product.id)} className="text-slate-300 hover:text-red-500 transition-colors self-start mt-0.5">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              )
+            })
+          )}
+        </div>
+
+        {/* Footer */}
+        {items.length > 0 && (
+          <div className="border-t border-slate-200 px-6 py-4 space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 text-sm">Priced subtotal</span>
+              <span className="text-slate-900 font-bold text-lg">${pricedTotal.toFixed(2)}</span>
+            </div>
+            {callCount > 0 && (
+              <p className="text-xs text-slate-400 -mt-1">
+                {callCount} item{callCount > 1 ? 's' : ''} priced on request — included in your WhatsApp quote.
+              </p>
+            )}
+            <button
+              onClick={buildQuote}
+              className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition-colors"
+            >
+              <MessageCircle size={18} /> Send quote on WhatsApp
+            </button>
+            <button onClick={closeCart} className="w-full text-center text-sm text-slate-500 hover:text-slate-900 transition-colors">
+              Continue Shopping
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  )
+}
