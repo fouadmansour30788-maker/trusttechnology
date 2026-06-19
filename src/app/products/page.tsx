@@ -1,21 +1,13 @@
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
-import { CATALOG_PRODUCTS } from '@/data/products'
+import { getProducts } from '@/lib/db'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
   searchParams: Promise<{ tags?: string; sort?: string; q?: string }>
 }
 
-// Real catalog parsed from the price list. Filter tags are derived from the
-// catalog so options always match the products actually shown.
-const ALL_PRODUCTS: Product[] = CATALOG_PRODUCTS
-
-const ALL_TAGS: Tag[] = Array.from(
-  new Map(
-    ALL_PRODUCTS.flatMap((p) => p.tags ?? []).map((t) => [t.slug, t])
-  ).values()
-).sort((a, b) => a.name.localeCompare(b.name))
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'All Products – Trust Technology',
@@ -25,10 +17,16 @@ export const metadata = {
 export default async function ProductsPage({ searchParams }: Props) {
   const { tags: tagFilter, sort, q } = await searchParams
 
+  // Live from Supabase when configured; static catalog otherwise.
+  const allProducts = await getProducts()
+  const ALL_TAGS: Tag[] = Array.from(
+    new Map(allProducts.flatMap((p) => p.tags ?? []).map((t) => [t.slug, t])).values()
+  ).sort((a, b) => a.name.localeCompare(b.name))
+
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
   const query = q?.trim().toLowerCase() ?? ''
 
-  let products = ALL_PRODUCTS.filter((p) => p.is_active)
+  let products = allProducts.filter((p) => p.is_active)
 
   if (query) {
     products = products.filter(
