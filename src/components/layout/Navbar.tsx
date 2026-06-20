@@ -34,7 +34,7 @@ export function Navbar() {
   }, [])
 
   return (
-    <header ref={navRef} className="sticky top-0 z-50 glass border-b border-slate-200/80 shadow-sm shadow-slate-900/5">
+    <header ref={navRef} className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm shadow-slate-900/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center h-16 gap-6">
 
