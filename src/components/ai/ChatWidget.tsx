@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -15,7 +15,6 @@ export function ChatWidget() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([])
-  const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -31,7 +30,6 @@ export function ChatWidget() {
     if (!q || loading) return
     const history = [...messages, { role: 'user' as const, content: q }]
     setMessages(history)
-    setInput('')
     setLoading(true)
     try {
       const res = await fetch('/api/recommend', {
@@ -131,16 +129,33 @@ export function ChatWidget() {
               {loading && <div className="flex items-center gap-2 text-slate-400 text-sm"><Loader2 size={15} className="animate-spin" /> Thinking…</div>}
             </div>
 
-            {/* Composer */}
-            <form onSubmit={(e) => { e.preventDefault(); send(input) }} className="p-3 border-t border-slate-100 flex items-center gap-2">
-              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask anything…" className="flex-1 bg-slate-100 rounded-xl px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:bg-white focus:ring-1 focus:ring-blue-300" />
-              <button type="submit" disabled={loading || !input.trim()} className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-40">
-                <Send size={15} />
-              </button>
-            </form>
+            {/* Composer (isolated state → typing doesn't re-render the message list) */}
+            <Composer onSend={send} loading={loading} />
           </motion.div>
         )}
       </AnimatePresence>
     </>
   )
 }
+
+// Local input state so each keystroke only re-renders the composer, not the
+// whole widget (message list, product images, framer-motion).
+const Composer = memo(function Composer({ onSend, loading }: { onSend: (t: string) => void; loading: boolean }) {
+  const [text, setText] = useState('')
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); onSend(text); setText('') }}
+      className="p-3 border-t border-slate-100 flex items-center gap-2"
+    >
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Ask anything…"
+        className="flex-1 bg-slate-100 rounded-xl px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:bg-white focus:ring-1 focus:ring-blue-300"
+      />
+      <button type="submit" disabled={loading || !text.trim()} className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-40">
+        <Send size={15} />
+      </button>
+    </form>
+  )
+})
