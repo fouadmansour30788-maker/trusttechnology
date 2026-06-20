@@ -107,3 +107,108 @@ export async function getErpStats() {
     stockValue: Math.round(rows.reduce((sum, r) => sum + r.stock * Number(r.price), 0)),
   }
 }
+
+// ── Customers ────────────────────────────────────────────────────────────
+export type Customer = {
+  id: string; name: string; email: string | null; phone: string | null
+  address: string | null; notes: string | null
+}
+export type SOItem = {
+  id?: string; product_id: string | null; quantity: number; unit_price: number
+  product?: { name: string; sku: string | null }
+}
+export type SalesOrder = {
+  id: string; reference: string; customer_id: string | null; status: string
+  order_date: string; subtotal: number; discount: number; total: number; notes: string | null
+  customer?: { name: string; phone: string | null } | null
+  sales_order_items?: SOItem[]
+}
+
+export async function getCustomers(): Promise<Customer[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s.from('customers').select('*').order('name')
+  return (data as Customer[]) ?? []
+}
+export async function getCustomer(id: string): Promise<Customer | null> {
+  if (!isSupabaseConfigured()) return null
+  const s = await createClient()
+  const { data } = await s.from('customers').select('*').eq('id', id).maybeSingle()
+  return (data as Customer) ?? null
+}
+
+export async function getSalesOrders(): Promise<SalesOrder[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s
+    .from('sales_orders')
+    .select('*, customer:customers(name, phone)')
+    .order('created_at', { ascending: false })
+  return (data as SalesOrder[]) ?? []
+}
+export async function getSalesOrder(id: string): Promise<SalesOrder | null> {
+  if (!isSupabaseConfigured()) return null
+  const s = await createClient()
+  const { data } = await s
+    .from('sales_orders')
+    .select('*, customer:customers(name, phone), sales_order_items(*, product:products(name, sku))')
+    .eq('id', id)
+    .maybeSingle()
+  return (data as SalesOrder) ?? null
+}
+
+export type SalesReport = {
+  totals: { orders: number; revenue: number; avg: number; customers: number }
+  revenueByMonth: { month: string; revenue: number }[]
+  topProducts: { name: string; qty: number; revenue: number }[]
+}
+
+export async function getSalesReport(): Promise<SalesReport> {
+  const empty: SalesReport = { totals: { orders: 0, revenue: 0, avg: 0, customers: 0 }, revenueByMonth: [], topProducts: [] }
+  if (!isSupabaseConfigured()) return empty
+  try {
+    const s = await createClient()
+    const [ordersRes, itemsRes, custRes] = await Promise.all([
+      s.from('sales_orders').select('total, order_date').neq('status', 'cancelled'),
+      s.from('sales_order_items').select('quantity, unit_price, product:products(name)'),
+      s.from('customers').select('id', { count: 'exact', head: true }),
+    ])
+    const orders = (ordersRes.data as { total: number; order_date: string }[]) ?? []
+    const revenue = orders.reduce((sum, o) => sum + Number(o.total), 0)
+
+    // revenue by month (last 6 months)
+    const byMonth = new Map<string, number>()
+    const now = new Date()
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      byMonth.set(d.toLocaleString('en', { month: 'short' }), 0)
+    }
+    for (const o of orders) {
+      const key = new Date(o.order_date).toLocaleString('en', { month: 'short' })
+      if (byMonth.has(key)) byMonth.set(key, (byMonth.get(key) ?? 0) + Number(o.total))
+    }
+
+    // top products
+    const items = (itemsRes.data as unknown as { quantity: number; unit_price: number; product: { name: string } | null }[]) ?? []
+    const prodMap = new Map<string, { qty: number; revenue: number }>()
+    for (const it of items) {
+      const name = it.product?.name ?? 'Unknown'
+      const cur = prodMap.get(name) ?? { qty: 0, revenue: 0 }
+      cur.qty += it.quantity
+      cur.revenue += it.quantity * Number(it.unit_price)
+      prodMap.set(name, cur)
+    }
+    const topProducts = [...prodMap.entries()]
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 6)
+
+    return {
+      totals: { orders: orders.length, revenue: Math.round(revenue), avg: orders.length ? Math.round(revenue / orders.length) : 0, customers: custRes.count ?? 0 },
+      revenueByMonth: [...byMonth.entries()].map(([month, revenue]) => ({ month, revenue: Math.round(revenue) })),
+      topProducts,
+    }
+  } catch {
+    return empty
+  }
+}

@@ -125,6 +125,103 @@ export async function receivePurchaseOrder(poId: string): Promise<Res> {
   }
 }
 
+// ── Customers ──────────────────────────────────────────────────────────
+export type CustomerInput = {
+  id?: string; name: string; email: string | null; phone: string | null
+  address: string | null; notes: string | null
+}
+
+export async function saveCustomer(input: CustomerInput): Promise<Res> {
+  try {
+    const { supabase } = await authed()
+    const { id, ...fields } = input
+    if (id) {
+      const { error } = await supabase.from('customers').update(fields).eq('id', id)
+      if (error) return { error: error.message }
+      revalidatePath('/admin/customers')
+      return { ok: true, id }
+    }
+    const { data, error } = await supabase.from('customers').insert(fields).select('id').single()
+    if (error) return { error: error.message }
+    revalidatePath('/admin/customers')
+    return { ok: true, id: data.id as string }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Save failed' }
+  }
+}
+
+export async function deleteCustomer(id: string): Promise<Res> {
+  try {
+    const { supabase } = await authed()
+    const { error } = await supabase.from('customers').delete().eq('id', id)
+    if (error) return { error: error.message }
+    revalidatePath('/admin/customers')
+    return { ok: true }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Delete failed' }
+  }
+}
+
+// ── Sales (POS) ────────────────────────────────────────────────────────
+export type SaleInputItem = { product_id: string; quantity: number; unit_price: number }
+export type SaleInput = {
+  customer_id: string | null
+  discount: number
+  markPaid: boolean
+  payment_method: string | null
+  items: SaleInputItem[]
+}
+
+export async function createSale(input: SaleInput): Promise<Res> {
+  try {
+    const { supabase, user } = await authed()
+    const items = input.items.filter((i) => i.product_id && i.quantity > 0)
+    if (items.length === 0) return { error: 'Add at least one product.' }
+    const subtotal = items.reduce((s, i) => s + i.quantity * i.unit_price, 0)
+    const total = Math.max(0, subtotal - (input.discount || 0))
+
+    const { data: so, error } = await supabase
+      .from('sales_orders')
+      .insert({
+        customer_id: input.customer_id,
+        status: input.markPaid ? 'fulfilled' : 'confirmed',
+        subtotal, discount: input.discount || 0, total,
+      })
+      .select('id, reference')
+      .single()
+    if (error) return { error: error.message }
+
+    const { error: itemsErr } = await supabase
+      .from('sales_order_items')
+      .insert(items.map((i) => ({ so_id: so.id, product_id: i.product_id, quantity: i.quantity, unit_price: i.unit_price })))
+    if (itemsErr) return { error: itemsErr.message }
+
+    // Stock-out movements (decrements products.stock via trigger)
+    for (const i of items) {
+      await supabase.from('stock_movements').insert({
+        product_id: i.product_id, delta: -i.quantity, reason: 'sale',
+        reference: so.reference, note: `Sale ${so.reference}`, created_by: user.id,
+      })
+    }
+
+    // Optional payment
+    if (input.markPaid) {
+      await supabase.from('payments').insert({
+        direction: 'incoming', amount: total, method: input.payment_method || 'cash',
+        reference: so.reference, sales_order_id: so.id,
+      })
+    }
+
+    revalidatePath('/admin/sales')
+    revalidatePath('/admin/inventory')
+    revalidatePath('/admin/reports')
+    revalidatePath('/admin/products')
+    return { ok: true, id: so.id as string }
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : 'Sale failed' }
+  }
+}
+
 // ── Inventory ──────────────────────────────────────────────────────────
 export async function adjustStock(product_id: string, delta: number, note: string): Promise<Res> {
   try {
