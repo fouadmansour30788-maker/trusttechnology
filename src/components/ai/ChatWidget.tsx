@@ -59,13 +59,7 @@ export function ChatWidget() {
         aria-label="Open AI assistant"
         className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-glow flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
       >
-        <AnimatePresence mode="wait">
-          {open ? (
-            <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X size={22} /></motion.span>
-          ) : (
-            <motion.span key="s" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}><Sparkles size={22} /></motion.span>
-          )}
-        </AnimatePresence>
+        {open ? <X size={22} /> : <Sparkles size={22} />}
         {!open && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-blue-400 ring-2 ring-white animate-pulse" />}
       </button>
 
