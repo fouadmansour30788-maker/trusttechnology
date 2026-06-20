@@ -1,0 +1,109 @@
+import 'server-only'
+import { createClient } from '@/lib/supabase/server'
+import { isSupabaseConfigured } from '@/lib/db'
+
+export type Supplier = {
+  id: string; name: string; contact_name: string | null; email: string | null
+  phone: string | null; address: string | null; notes: string | null; is_active: boolean
+}
+export type POItem = {
+  id?: string; product_id: string | null; quantity: number; unit_cost: number; received_qty?: number
+  product?: { name: string; sku: string | null }
+}
+export type PurchaseOrder = {
+  id: string; reference: string; supplier_id: string | null; status: string
+  order_date: string; expected_date: string | null; notes: string | null; total: number
+  supplier?: { name: string } | null
+  purchase_order_items?: POItem[]
+}
+export type StockMovement = {
+  id: string; product_id: string; delta: number; reason: string
+  reference: string | null; note: string | null; created_at: string
+  product?: { name: string; sku: string | null }
+}
+export type ProductLite = { id: string; name: string; sku: string | null; stock: number; price: number }
+
+const empty = <T,>(v: T): T => v
+
+export async function getSuppliers(): Promise<Supplier[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s.from('suppliers').select('*').order('name')
+  return (data as Supplier[]) ?? empty([])
+}
+
+export async function getSupplier(id: string): Promise<Supplier | null> {
+  if (!isSupabaseConfigured()) return null
+  const s = await createClient()
+  const { data } = await s.from('suppliers').select('*').eq('id', id).maybeSingle()
+  return (data as Supplier) ?? null
+}
+
+export async function getProductsLite(): Promise<ProductLite[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s.from('products').select('id, name, sku, stock, price').order('name')
+  return (data as ProductLite[]) ?? []
+}
+
+export async function getPurchaseOrders(): Promise<PurchaseOrder[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s
+    .from('purchase_orders')
+    .select('*, supplier:suppliers(name)')
+    .order('created_at', { ascending: false })
+  return (data as PurchaseOrder[]) ?? []
+}
+
+export async function getPurchaseOrder(id: string): Promise<PurchaseOrder | null> {
+  if (!isSupabaseConfigured()) return null
+  const s = await createClient()
+  const { data } = await s
+    .from('purchase_orders')
+    .select('*, supplier:suppliers(name), purchase_order_items(*, product:products(name, sku))')
+    .eq('id', id)
+    .maybeSingle()
+  return (data as PurchaseOrder) ?? null
+}
+
+export async function getStockMovements(limit = 100): Promise<StockMovement[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s
+    .from('stock_movements')
+    .select('*, product:products(name, sku)')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  return (data as StockMovement[]) ?? []
+}
+
+export async function getLowStock(threshold = 5): Promise<ProductLite[]> {
+  if (!isSupabaseConfigured()) return []
+  const s = await createClient()
+  const { data } = await s
+    .from('products')
+    .select('id, name, sku, stock, price')
+    .lte('stock', threshold)
+    .order('stock')
+  return (data as ProductLite[]) ?? []
+}
+
+export async function getErpStats() {
+  if (!isSupabaseConfigured()) {
+    return { suppliers: 0, openPOs: 0, lowStock: 0, stockValue: 0 }
+  }
+  const s = await createClient()
+  const [sup, po, prods] = await Promise.all([
+    s.from('suppliers').select('id', { count: 'exact', head: true }),
+    s.from('purchase_orders').select('id', { count: 'exact', head: true }).in('status', ['draft', 'ordered']),
+    s.from('products').select('stock, price'),
+  ])
+  const rows = (prods.data as { stock: number; price: number }[]) ?? []
+  return {
+    suppliers: sup.count ?? 0,
+    openPOs: po.count ?? 0,
+    lowStock: rows.filter((r) => r.stock <= 5).length,
+    stockValue: Math.round(rows.reduce((sum, r) => sum + r.stock * Number(r.price), 0)),
+  }
+}
