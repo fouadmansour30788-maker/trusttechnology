@@ -151,7 +151,7 @@ export default function BundlesPage() {
             Tell us your requirements and budget — we&apos;ll put together the perfect setup for you.
           </p>
           <a
-            href="https://wa.me/9616000000?text=I%20need%20a%20custom%20bundle"
+            href="https://wa.me/96171998983?text=I%20need%20a%20custom%20bundle"
             target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-white text-slate-900 font-semibold px-6 py-3 rounded-xl hover:bg-slate-100 transition-colors"
           >

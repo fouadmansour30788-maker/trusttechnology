@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 
-const WHATSAPP = '9616000000'
+const WHATSAPP = '96171998983'
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, totalItems, totalPrice } =

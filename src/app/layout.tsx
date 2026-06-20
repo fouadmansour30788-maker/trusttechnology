@@ -32,7 +32,7 @@ const localBusinessLd = {
   name: SITE_NAME,
   description: SITE_DESCRIPTION,
   url: SITE_URL,
-  telephone: '+961 6 000 000',
+  telephone: '+961 71 998 983',
   address: { '@type': 'PostalAddress', addressLocality: 'Tripoli', addressCountry: 'LB' },
   areaServed: 'Lebanon',
   priceRange: '$$',

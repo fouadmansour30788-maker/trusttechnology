@@ -155,7 +155,7 @@ export function AiAdvisor() {
         </button>
       </form>
       <p className="mt-2 text-center text-xs text-slate-400 inline-flex items-center justify-center gap-1">
-        <MessageCircle size={11} /> Prefer a human? <a href="https://wa.me/9616000000" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Chat on WhatsApp</a>
+        <MessageCircle size={11} /> Prefer a human? <a href="https://wa.me/96171998983" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Chat on WhatsApp</a>
       </p>
     </div>
   )

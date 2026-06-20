@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 
 type Props = { product: Product }
 
-const WHATSAPP = '9616000000'
+const WHATSAPP = '96171998983'
 
 export function ProductCard({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem)

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
 import type { Product } from '@/lib/types'
 
-const WHATSAPP = '9616000000'
+const WHATSAPP = '96171998983'
 
 export function ProductDetail({ product: p }: { product: Product }) {
   const addItem = useCartStore((s) => s.addItem)
