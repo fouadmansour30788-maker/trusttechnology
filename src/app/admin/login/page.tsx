@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-b from-slate-50 to-white">
       <div className="w-full max-w-sm">
         <div className="flex items-center gap-2 justify-center mb-8">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-600/30">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-md shadow-blue-600/30">
             <span className="text-white font-bold">T</span>
           </div>
           <span className="font-bold text-slate-900 text-lg">Trust Technology</span>
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
             {error && <p className="text-sm text-red-600">{error}</p>}
             <button
               type="submit" disabled={loading}
-              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-blue-600/20 disabled:opacity-50"
+              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-blue-600/20 disabled:opacity-50"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : null}
               Sign in

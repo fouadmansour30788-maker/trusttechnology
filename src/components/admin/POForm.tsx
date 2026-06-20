@@ -88,7 +88,7 @@ export function POForm({ suppliers, products }: { suppliers: Supplier[]; product
       {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
 
       <div className="flex gap-3 mt-6">
-        <button onClick={() => submit('ordered')} disabled={saving} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 disabled:opacity-50">
+        <button onClick={() => submit('ordered')} disabled={saving} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 disabled:opacity-50">
           {saving && <Loader2 size={16} className="animate-spin" />} Create &amp; mark ordered
         </button>
         <button onClick={() => submit('draft')} disabled={saving} className="px-5 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50">Save as draft</button>

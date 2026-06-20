@@ -7,7 +7,7 @@ const BENTO_ITEMS = [
   {
     id: 1, label: 'Computing', sublabel: 'Laptops & Desktops', href: '/categories/computing',
     icon: Laptop, span: 'md:col-span-2 md:row-span-2',
-    gradient: 'from-blue-50 to-indigo-50', iconBg: 'bg-blue-600', size: 'large',
+    gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'large',
   },
   {
     id: 2, label: 'Apple Collection', sublabel: 'Mac · iPhone · iPad', href: '/categories/apple',
@@ -15,19 +15,19 @@ const BENTO_ITEMS = [
   },
   {
     id: 3, label: 'Displays', sublabel: 'Monitors & POS Screens', href: '/categories/displays',
-    icon: Monitor, span: 'md:col-span-1', gradient: 'from-violet-50 to-purple-50', iconBg: 'bg-violet-600', size: 'medium',
+    icon: Monitor, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'medium',
   },
   {
     id: 4, label: 'Printing', sublabel: 'Inkjet · Laser · Toner', href: '/categories/printing',
-    icon: Printer, span: 'md:col-span-1', gradient: 'from-emerald-50 to-teal-50', iconBg: 'bg-emerald-600', size: 'medium',
+    icon: Printer, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'medium',
   },
   {
     id: 5, label: 'Professional', sublabel: 'POS · Storage · Networking', href: '/categories/professional',
-    icon: Package, span: 'md:col-span-1', gradient: 'from-amber-50 to-orange-50', iconBg: 'bg-amber-500', size: 'medium',
+    icon: Package, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-500', size: 'medium',
   },
   {
     id: 6, label: 'Bundle & Save', sublabel: 'Curated setup deals — save up to 20%', href: '/bundles',
-    icon: Zap, span: 'md:col-span-2', gradient: 'from-orange-50 to-rose-50', iconBg: 'bg-orange-500', size: 'wide',
+    icon: Zap, span: 'md:col-span-2', gradient: 'from-blue-50 to-slate-100', iconBg: 'bg-blue-500', size: 'wide',
   },
 ]
 

@@ -21,7 +21,7 @@ export function ReceiveButton({ poId }: { poId: string }) {
 
   return (
     <div>
-      <button onClick={receive} disabled={pending} className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 disabled:opacity-50">
+      <button onClick={receive} disabled={pending} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-600/20 disabled:opacity-50">
         {pending ? <Loader2 size={16} className="animate-spin" /> : <PackageCheck size={16} />}
         Receive &amp; add to stock
       </button>

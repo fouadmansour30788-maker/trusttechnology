@@ -82,7 +82,7 @@ export function CartDrawer() {
                       </button>
                     </div>
                   </div>
-                  <button onClick={() => removeItem(product.id)} className="text-slate-300 hover:text-red-500 transition-colors self-start mt-0.5">
+                  <button onClick={() => removeItem(product.id)} className="text-slate-300 hover:text-slate-600 transition-colors self-start mt-0.5">
                     <Trash2 size={16} />
                   </button>
                 </div>
@@ -105,7 +105,7 @@ export function CartDrawer() {
             )}
             <button
               onClick={buildQuote}
-              className="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/20 transition-colors"
             >
               <MessageCircle size={18} /> Send quote on WhatsApp
             </button>

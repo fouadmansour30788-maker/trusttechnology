@@ -12,7 +12,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 }
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg shadow-blue-600/20',
+  primary: 'bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white shadow-lg shadow-blue-600/20',
   secondary: 'bg-slate-900 hover:bg-slate-800 text-white shadow-sm',
   outline: 'border border-slate-300 hover:border-slate-400 text-slate-700 hover:bg-slate-50 bg-white/60',
   ghost: 'text-slate-500 hover:text-slate-900 hover:bg-slate-100',

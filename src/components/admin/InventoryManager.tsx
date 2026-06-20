@@ -6,8 +6,8 @@ import type { ProductLite, StockMovement } from '@/lib/erp'
 import { adjustStock } from '@/app/admin/erp-actions'
 
 const REASON: Record<string, string> = {
-  purchase: 'text-emerald-600', sale: 'text-red-500', adjustment: 'text-blue-600',
-  return: 'text-amber-600', initial: 'text-slate-500',
+  purchase: 'text-blue-600', sale: 'text-red-500', adjustment: 'text-blue-600',
+  return: 'text-blue-600', initial: 'text-slate-500',
 }
 
 export function InventoryManager({ lowStock, movements, products }: { lowStock: ProductLite[]; movements: StockMovement[]; products: ProductLite[] }) {
@@ -41,12 +41,12 @@ export function InventoryManager({ lowStock, movements, products }: { lowStock: 
             {products.map((p) => <option key={p.id} value={p.id}>{p.name} (stock {p.stock})</option>)}
           </select>
           <div className="flex rounded-lg border border-slate-200 overflow-hidden">
-            <button type="button" onClick={() => setDir(1)} className={`px-3 py-2 ${dir === 1 ? 'bg-emerald-600 text-white' : 'text-slate-500'}`}><Plus size={14} /></button>
+            <button type="button" onClick={() => setDir(1)} className={`px-3 py-2 ${dir === 1 ? 'bg-blue-600 text-white' : 'text-slate-500'}`}><Plus size={14} /></button>
             <button type="button" onClick={() => setDir(-1)} className={`px-3 py-2 ${dir === -1 ? 'bg-red-500 text-white' : 'text-slate-500'}`}><Minus size={14} /></button>
           </div>
           <input type="number" min={1} className={inputCls + ' w-20'} value={qty} onChange={(e) => setQty(Number(e.target.value))} />
           <input className={inputCls + ' flex-1 min-w-[160px]'} placeholder="Reason (optional)" value={note} onChange={(e) => setNote(e.target.value)} />
-          <button type="submit" disabled={pending} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold px-4 py-2 rounded-lg disabled:opacity-50">
+          <button type="submit" disabled={pending} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm font-semibold px-4 py-2 rounded-lg disabled:opacity-50">
             {pending && <Loader2 size={15} className="animate-spin" />} Apply
           </button>
         </div>
@@ -57,7 +57,7 @@ export function InventoryManager({ lowStock, movements, products }: { lowStock: 
         {/* Low stock */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
           <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2">
-            <AlertTriangle size={15} className="text-amber-500" />
+            <AlertTriangle size={15} className="text-blue-500" />
             <span className="font-semibold text-slate-900 text-sm">Low stock (≤ 5)</span>
             <span className="ml-auto text-xs text-slate-400">{lowStock.length}</span>
           </div>
@@ -67,7 +67,7 @@ export function InventoryManager({ lowStock, movements, products }: { lowStock: 
                 <tr key={p.id}>
                   <td className="px-5 py-2.5 text-slate-700 truncate max-w-[240px]">{p.name}</td>
                   <td className="px-5 py-2.5 text-right">
-                    <span className={p.stock === 0 ? 'text-red-500 font-medium' : 'text-amber-600'}>{p.stock === 0 ? 'Out' : p.stock}</span>
+                    <span className={p.stock === 0 ? 'text-red-500 font-medium' : 'text-blue-600'}>{p.stock === 0 ? 'Out' : p.stock}</span>
                   </td>
                 </tr>
               ))}
@@ -88,7 +88,7 @@ export function InventoryManager({ lowStock, movements, products }: { lowStock: 
                       <p className="text-slate-700 truncate max-w-[200px]">{m.product?.name ?? '—'}</p>
                       <p className="text-xs text-slate-400">{m.reason}{m.reference ? ` · ${m.reference}` : ''}</p>
                     </td>
-                    <td className={`px-5 py-2.5 text-right font-medium ${m.delta >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                    <td className={`px-5 py-2.5 text-right font-medium ${m.delta >= 0 ? 'text-blue-600' : 'text-red-500'}`}>
                       {m.delta >= 0 ? '+' : ''}{m.delta}
                     </td>
                   </tr>

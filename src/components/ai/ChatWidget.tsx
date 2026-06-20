@@ -52,7 +52,7 @@ export function ChatWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open AI assistant"
-        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-glow flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-glow flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
       >
         <AnimatePresence mode="wait">
           {open ? (
@@ -61,7 +61,7 @@ export function ChatWidget() {
             <motion.span key="s" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}><Sparkles size={22} /></motion.span>
           )}
         </AnimatePresence>
-        {!open && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-white animate-pulse" />}
+        {!open && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-blue-400 ring-2 ring-white animate-pulse" />}
       </button>
 
       <AnimatePresence>
@@ -74,7 +74,7 @@ export function ChatWidget() {
             className="fixed bottom-24 right-5 z-[90] w-[min(92vw,380px)] h-[min(70vh,560px)] flex flex-col bg-white rounded-3xl shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200 overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+            <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
               <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center"><Sparkles size={18} /></div>
               <div>
                 <p className="font-semibold text-sm leading-none">Tech Advisor</p>
@@ -100,7 +100,7 @@ export function ChatWidget() {
               {messages.map((m, i) => (
                 <div key={i} className={m.role === 'user' ? 'flex justify-end' : ''}>
                   <div className={m.role === 'user'
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-br-md px-3 py-2 text-sm max-w-[85%]'
+                    ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-2xl rounded-br-md px-3 py-2 text-sm max-w-[85%]'
                     : 'bg-white border border-slate-200 text-slate-700 rounded-2xl rounded-bl-md px-3 py-2 text-sm shadow-sm'}>
                     {m.content}
                   </div>
@@ -153,7 +153,7 @@ const Composer = memo(function Composer({ onSend, loading }: { onSend: (t: strin
         placeholder="Ask anything…"
         className="flex-1 bg-slate-100 rounded-xl px-3 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:bg-white focus:ring-1 focus:ring-blue-300"
       />
-      <button type="submit" disabled={loading || !text.trim()} className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-40">
+      <button type="submit" disabled={loading || !text.trim()} className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 text-white flex items-center justify-center disabled:opacity-40">
         <Send size={15} />
       </button>
     </form>

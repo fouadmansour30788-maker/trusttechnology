@@ -156,7 +156,7 @@ export function CommandPalette() {
                   active === results.length ? 'bg-blue-50' : 'hover:bg-slate-50'
                 }`}
               >
-                <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shrink-0">
+                <div className="w-11 h-11 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shrink-0">
                   <Sparkles size={16} className="text-white" />
                 </div>
                 <div className="flex-1">

@@ -29,7 +29,7 @@ export function WhyChooseUs() {
           className="relative h-[380px] flex items-center justify-center"
         >
           {/* Gradient orb */}
-          <div className="relative w-64 h-64 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 shadow-2xl shadow-blue-500/30 flex items-center justify-center">
+          <div className="relative w-64 h-64 rounded-full bg-gradient-to-br from-blue-500 via-blue-500 to-blue-400 shadow-2xl shadow-blue-500/30 flex items-center justify-center">
             <div className="absolute inset-3 rounded-full border border-white/20" />
             <Cpu size={88} className="text-white/90" strokeWidth={1.2} />
             <div className="absolute -inset-6 rounded-full border border-blue-200/60" />
@@ -89,7 +89,7 @@ export function WhyChooseUs() {
 
           <Link
             href="/recommend"
-            className="group mt-9 inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold pl-6 pr-2 py-2 rounded-full shadow-lg shadow-blue-600/25 transition-all"
+            className="group mt-9 inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold pl-6 pr-2 py-2 rounded-full shadow-lg shadow-blue-600/25 transition-all"
           >
             Find My Setup
             <span className="w-9 h-9 rounded-full bg-white flex items-center justify-center text-blue-600 group-hover:translate-x-0.5 transition-transform">

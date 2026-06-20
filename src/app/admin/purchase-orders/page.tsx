@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 const STATUS: Record<string, string> = {
   draft: 'bg-slate-100 text-slate-600',
   ordered: 'bg-blue-50 text-blue-700',
-  received: 'bg-emerald-50 text-emerald-700',
+  received: 'bg-blue-50 text-blue-700',
   cancelled: 'bg-red-50 text-red-600',
 }
 
@@ -20,7 +20,7 @@ export default async function PurchaseOrdersPage() {
           <h1 className="text-2xl font-bold text-slate-900">Purchase Orders</h1>
           <p className="text-slate-500 text-sm mt-0.5">{pos.length} orders</p>
         </div>
-        <Link href="/admin/purchase-orders/new" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
+        <Link href="/admin/purchase-orders/new" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
           <Plus size={16} /> New PO
         </Link>
       </div>

@@ -53,9 +53,9 @@ const BUNDLES: Bundle[] = [
 ]
 
 const TYPE = {
-  gaming: { icon: Gamepad2, accent: 'text-violet-600 bg-violet-50', bar: 'from-violet-500 to-fuchsia-500' },
-  business: { icon: Briefcase, accent: 'text-blue-600 bg-blue-50', bar: 'from-blue-600 to-indigo-500' },
-  pos: { icon: Store, accent: 'text-amber-600 bg-amber-50', bar: 'from-amber-500 to-orange-500' },
+  gaming: { icon: Gamepad2, accent: 'text-blue-600 bg-blue-50', bar: 'from-blue-500 to-blue-500' },
+  business: { icon: Briefcase, accent: 'text-blue-600 bg-blue-50', bar: 'from-blue-600 to-blue-700' },
+  pos: { icon: Store, accent: 'text-blue-600 bg-blue-50', bar: 'from-blue-500 to-blue-500' },
 } as const
 
 export const metadata = { title: 'Bundle & Save' }
@@ -65,7 +65,7 @@ export default function BundlesPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
       {/* Header */}
       <div className="mb-12 text-center max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 bg-white border border-amber-100 rounded-full px-4 py-1.5 text-sm text-amber-600 mb-5 shadow-sm">
+        <div className="inline-flex items-center gap-2 bg-white border border-blue-100 rounded-full px-4 py-1.5 text-sm text-blue-600 mb-5 shadow-sm">
           <Zap size={14} /> Save up to 20%
         </div>
         <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
@@ -93,7 +93,7 @@ export default function BundlesPage() {
               <div className={`absolute inset-x-6 top-0 h-1 rounded-b-full bg-gradient-to-r ${t.bar}`} />
 
               {bundle.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md shadow-blue-600/25">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md shadow-blue-600/25">
                   <Sparkles size={11} /> Most popular
                 </span>
               )}
@@ -105,7 +105,7 @@ export default function BundlesPage() {
                   </span>
                   <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">{bundle.tag}</span>
                 </div>
-                <span className="text-xs font-bold text-white bg-red-500 px-2 py-1 rounded-md">-{bundle.discount}%</span>
+                <span className="text-xs font-bold text-white bg-blue-900 px-2 py-1 rounded-md">-{bundle.discount}%</span>
               </div>
 
               <h2 className="text-xl font-bold text-slate-900">{bundle.name}</h2>
@@ -115,7 +115,7 @@ export default function BundlesPage() {
                 {bundle.items.map((item) => (
                   <li key={item.name} className="flex items-center justify-between text-sm">
                     <span className="flex items-center gap-2 text-slate-600 min-w-0">
-                      <Check size={14} className="text-emerald-500 shrink-0" />
+                      <Check size={14} className="text-blue-500 shrink-0" />
                       <span className="truncate">{item.name}</span>
                     </span>
                     <span className="text-slate-400 shrink-0 ml-2">${item.price}</span>
@@ -127,13 +127,13 @@ export default function BundlesPage() {
                 <div className="flex items-baseline gap-2.5">
                   <span className="text-3xl font-bold text-slate-900">${bundle.totalPrice.toLocaleString()}</span>
                   <span className="text-slate-400 line-through text-sm">${bundle.originalPrice.toLocaleString()}</span>
-                  <span className="ml-auto text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-md">
+                  <span className="ml-auto text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-1 rounded-md">
                     Save ${saved.toLocaleString()}
                   </span>
                 </div>
               </div>
 
-              <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/20 transition-all">
+              <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/20 transition-all">
                 <ShoppingCart size={16} /> Add bundle to cart
               </button>
             </div>
@@ -142,9 +142,9 @@ export default function BundlesPage() {
       </div>
 
       {/* Custom bundle CTA */}
-      <div className="mt-14 relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950 p-10 text-center">
+      <div className="mt-14 relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 to-blue-950 p-10 text-center">
         <div className="absolute -top-16 -right-10 w-72 h-72 rounded-full bg-blue-500/20 blur-3xl" />
-        <div className="absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-violet-500/20 blur-3xl" />
+        <div className="absolute -bottom-20 -left-10 w-72 h-72 rounded-full bg-blue-500/20 blur-3xl" />
         <div className="relative">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Need a custom bundle?</h2>
           <p className="text-slate-300 mb-6 max-w-xl mx-auto">

@@ -89,7 +89,7 @@ export function ProductCard({ product }: Props) {
 
         <div className="flex items-center gap-1 mt-1 mb-3">
           {[...Array(5)].map((_, i) => (
-            <Star key={i} size={10} className="fill-amber-400 text-amber-400" />
+            <Star key={i} size={10} className="fill-blue-400 text-blue-400" />
           ))}
           <span className="text-zinc-500 text-xs ml-1">(4.8)</span>
         </div>
@@ -114,7 +114,7 @@ export function ProductCard({ product }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center text-white transition-colors"
+              className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-700 flex items-center justify-center text-white transition-colors"
               title="Ask for price on WhatsApp"
             >
               <MessageCircle size={14} />

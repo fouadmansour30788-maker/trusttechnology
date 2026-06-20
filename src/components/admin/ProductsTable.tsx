@@ -87,7 +87,7 @@ export function ProductsTable({ initial }: { initial: Product[] }) {
                   <td className="px-5 py-3">
                     <button onClick={() => toggle(p)} className="flex items-center gap-1.5 text-sm">
                       {p.is_active
-                        ? <><ToggleRight size={18} className="text-emerald-500" /><span className="text-emerald-600">Active</span></>
+                        ? <><ToggleRight size={18} className="text-blue-500" /><span className="text-blue-600">Active</span></>
                         : <><ToggleLeft size={18} className="text-slate-300" /><span className="text-slate-400">Hidden</span></>}
                     </button>
                   </td>

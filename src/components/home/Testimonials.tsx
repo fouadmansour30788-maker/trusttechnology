@@ -8,32 +8,32 @@ const REVIEWS: Review[] = [
   {
     title: 'Fast and Truly Hassle-Free',
     body: 'They repaired my laptop screen in under two hours, and the process was smooth and stress-free. Communication and honest pricing stood out.',
-    name: 'Michael R.', role: 'Small business owner', gradient: 'from-blue-400 to-indigo-500',
+    name: 'Michael R.', role: 'Small business owner', gradient: 'from-blue-400 to-blue-700',
   },
   {
     title: 'Better Than Expected',
     body: 'My laptop had been slow for months, but they diagnosed it quickly and got it running like new the same day. Truly impressive service.',
-    name: 'Samantha T.', role: 'Graphic designer', gradient: 'from-cyan-400 to-blue-500',
+    name: 'Samantha T.', role: 'Graphic designer', gradient: 'from-blue-400 to-blue-500',
   },
   {
     title: 'Highly Recommend',
     body: 'Bought a full POS setup for my café. The team helped me pick exactly what I needed and set it all up. Everything just works.',
-    name: 'Karim H.', role: 'Café owner', gradient: 'from-indigo-400 to-violet-500',
+    name: 'Karim H.', role: 'Café owner', gradient: 'from-blue-400 to-blue-500',
   },
   {
     title: 'Super Quick Turnaround',
     body: 'Ordered two monitors and a dock on Tuesday — delivered to my office in Tripoli the next morning. Genuine products, great price.',
-    name: 'Lara A.', role: 'Architect', gradient: 'from-sky-400 to-cyan-500',
+    name: 'Lara A.', role: 'Architect', gradient: 'from-blue-400 to-blue-500',
   },
   {
     title: 'The Wizard Nailed It',
     body: 'I had no idea what laptop to get for engineering. Answered three questions and it recommended the perfect machine within my budget.',
-    name: 'Omar D.', role: 'Engineering student', gradient: 'from-blue-500 to-indigo-600',
+    name: 'Omar D.', role: 'Engineering student', gradient: 'from-blue-500 to-blue-800',
   },
   {
     title: 'Genuine Experts',
     body: 'What I appreciated most was the honest advice — they steered me to a cheaper model that fit my needs instead of upselling. Rare these days.',
-    name: 'Nadia S.', role: 'Photographer', gradient: 'from-violet-400 to-purple-500',
+    name: 'Nadia S.', role: 'Photographer', gradient: 'from-blue-400 to-blue-500',
   },
 ]
 

@@ -45,7 +45,7 @@ export function SuppliersManager({ initial }: { initial: Supplier[] }) {
           <h1 className="text-2xl font-bold text-slate-900">Suppliers</h1>
           <p className="text-slate-500 text-sm mt-0.5">{rows.length} suppliers</p>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
+        <button onClick={openNew} className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
           <Plus size={16} /> Add supplier
         </button>
       </div>
@@ -93,7 +93,7 @@ export function SuppliersManager({ initial }: { initial: Supplier[] }) {
             <input className={inputCls} placeholder="Address" value={form.address ?? ''} onChange={(e) => setForm({ ...form, address: e.target.value })} />
             <textarea className={inputCls + ' resize-y'} rows={2} placeholder="Notes" value={form.notes ?? ''} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
             {error && <p className="text-sm text-red-600">{error}</p>}
-            <button type="submit" disabled={saving} className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50">
+            <button type="submit" disabled={saving} className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold py-2.5 rounded-lg disabled:opacity-50">
               {saving && <Loader2 size={16} className="animate-spin" />} {form.id ? 'Save' : 'Create'}
             </button>
           </form>

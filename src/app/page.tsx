@@ -62,7 +62,7 @@ export default async function HomePage() {
 
       {/* Final CTA band */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 p-10 md:p-14 shadow-2xl shadow-blue-600/20">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 to-blue-900 p-10 md:p-14 shadow-2xl shadow-blue-600/20">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff14_1px,transparent_1px),linear-gradient(to_bottom,#ffffff14_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]" />
           <div className="absolute -top-16 -right-10 w-72 h-72 rounded-full bg-white/10 blur-3xl" />
           <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

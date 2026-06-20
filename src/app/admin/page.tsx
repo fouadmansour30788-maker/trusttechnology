@@ -9,15 +9,15 @@ export default async function AdminDashboard() {
   const [s, erp] = await Promise.all([getAdminStats(), getErpStats()])
   const cards = [
     { label: 'Total products', value: s.products, icon: Package, color: 'text-blue-600 bg-blue-50' },
-    { label: 'Active', value: s.active, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-50' },
-    { label: 'Out of stock', value: s.outOfStock, icon: AlertTriangle, color: 'text-amber-600 bg-amber-50' },
-    { label: 'Call for price', value: s.callForPrice, icon: Phone, color: 'text-indigo-600 bg-indigo-50' },
+    { label: 'Active', value: s.active, icon: CheckCircle, color: 'text-blue-600 bg-blue-50' },
+    { label: 'Out of stock', value: s.outOfStock, icon: AlertTriangle, color: 'text-blue-600 bg-blue-50' },
+    { label: 'Call for price', value: s.callForPrice, icon: Phone, color: 'text-blue-600 bg-blue-50' },
   ]
   const erpCards = [
     { label: 'Suppliers', value: erp.suppliers, icon: Truck, href: '/admin/suppliers', color: 'text-blue-600 bg-blue-50' },
-    { label: 'Open POs', value: erp.openPOs, icon: ClipboardList, href: '/admin/purchase-orders', color: 'text-violet-600 bg-violet-50' },
-    { label: 'Low stock', value: erp.lowStock, icon: Boxes, href: '/admin/inventory', color: 'text-amber-600 bg-amber-50' },
-    { label: 'Stock value', value: `$${erp.stockValue.toLocaleString()}`, icon: DollarSign, href: '/admin/inventory', color: 'text-emerald-600 bg-emerald-50' },
+    { label: 'Open POs', value: erp.openPOs, icon: ClipboardList, href: '/admin/purchase-orders', color: 'text-blue-600 bg-blue-50' },
+    { label: 'Low stock', value: erp.lowStock, icon: Boxes, href: '/admin/inventory', color: 'text-blue-600 bg-blue-50' },
+    { label: 'Stock value', value: `$${erp.stockValue.toLocaleString()}`, icon: DollarSign, href: '/admin/inventory', color: 'text-blue-600 bg-blue-50' },
   ]
   return (
     <div className="p-8">
@@ -26,7 +26,7 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
           <p className="text-slate-500 text-sm mt-0.5">Overview of your catalog.</p>
         </div>
-        <Link href="/admin/products/new" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
+        <Link href="/admin/products/new" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/20">
           <Plus size={16} /> Add product
         </Link>
       </div>

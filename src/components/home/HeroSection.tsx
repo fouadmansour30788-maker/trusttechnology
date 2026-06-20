@@ -59,11 +59,11 @@ export function HeroSection() {
     <section ref={sectionRef} className="relative overflow-hidden">
       {/* Animated aurora + gradient orbs */}
       <motion.div style={{ y: blobY }} className="pointer-events-none absolute inset-0">
-        <div className="animate-aurora absolute -top-32 right-[6%] w-[520px] h-[520px] rounded-full bg-gradient-to-br from-indigo-300/50 to-blue-400/40 blur-3xl" />
-        <div className="animate-blob absolute top-40 -left-24 w-[440px] h-[440px] rounded-full bg-gradient-to-br from-violet-300/45 to-fuchsia-300/30 blur-3xl [animation-delay:-4s]" />
+        <div className="animate-aurora absolute -top-32 right-[6%] w-[520px] h-[520px] rounded-full bg-gradient-to-br from-blue-300/50 to-blue-400/40 blur-3xl" />
+        <div className="animate-blob absolute top-40 -left-24 w-[440px] h-[440px] rounded-full bg-gradient-to-br from-blue-300/45 to-blue-300/30 blur-3xl [animation-delay:-4s]" />
       </motion.div>
       <motion.div style={{ y: blobY2 }} className="pointer-events-none absolute inset-0">
-        <div className="animate-aurora absolute bottom-[-10%] left-1/2 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-cyan-200/50 to-sky-300/35 blur-3xl [animation-delay:-9s]" />
+        <div className="animate-aurora absolute bottom-[-10%] left-1/2 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-blue-200/50 to-blue-300/35 blur-3xl [animation-delay:-9s]" />
       </motion.div>
       {/* Grid + dots overlay */}
       <div className="pointer-events-none absolute inset-0 bg-grid-light [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
@@ -150,7 +150,7 @@ export function HeroSection() {
                     <p className="text-slate-400 text-xs">Best Seller</p>
                     <p className="text-slate-900 font-bold text-lg">MacBook Air M3</p>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
                     <TrendingUp size={12} /> In stock
                   </span>
                 </div>
@@ -189,8 +189,8 @@ export function HeroSection() {
                 style={{ transform: 'translateZ(90px)' }}
                 className="animate-float-y flex items-center gap-2 bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-100 px-4 py-3"
               >
-                <span className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center">
-                  <Check size={16} className="text-emerald-600" />
+                <span className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                  <Check size={16} className="text-blue-600" />
                 </span>
                 <div>
                   <p className="text-slate-900 text-sm font-semibold leading-none">Genuine</p>
@@ -208,7 +208,7 @@ export function HeroSection() {
                 className="animate-float-y [animation-delay:-2.5s] bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-100 px-4 py-3"
               >
                 <div className="flex -space-x-2 mb-1.5">
-                  {['from-blue-400 to-blue-600', 'from-indigo-400 to-indigo-600', 'from-cyan-400 to-cyan-600'].map((g) => (
+                  {['from-blue-400 to-blue-600', 'from-blue-400 to-blue-800', 'from-blue-400 to-blue-600'].map((g) => (
                     <span key={g} className={`w-6 h-6 rounded-full bg-gradient-to-br ${g} ring-2 ring-white`} />
                   ))}
                 </div>

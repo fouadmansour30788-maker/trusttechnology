@@ -40,7 +40,7 @@ export function MegaMenu({ category, onClose }: Props) {
           {/* Featured */}
           {category.featured && (
             <div className="w-56 shrink-0">
-              <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl p-5 h-full flex flex-col justify-between shadow-lg shadow-blue-600/20">
+              <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-5 h-full flex flex-col justify-between shadow-lg shadow-blue-600/20">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-widest text-blue-100 mb-2">
                     Featured

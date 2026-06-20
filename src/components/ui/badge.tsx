@@ -9,9 +9,9 @@ type BadgeProps = {
 const variants = {
   default: 'bg-slate-100 text-slate-600',
   blue: 'bg-blue-50 text-blue-700 ring-1 ring-blue-100',
-  green: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100',
-  red: 'bg-red-500 text-white shadow-sm',
-  amber: 'bg-amber-50 text-amber-700 ring-1 ring-amber-100',
+  green: 'bg-blue-50 text-blue-700 ring-1 ring-blue-100',
+  red: 'bg-blue-900 text-white shadow-sm',
+  amber: 'bg-blue-50 text-blue-700 ring-1 ring-blue-100',
 }
 
 export function Badge({ children, variant = 'default', className }: BadgeProps) {

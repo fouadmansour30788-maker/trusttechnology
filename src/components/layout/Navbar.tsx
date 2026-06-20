@@ -40,7 +40,7 @@ export function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0" onClick={() => setActiveMenu(null)}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-600/30">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-md shadow-blue-600/30">
               <span className="text-white font-bold text-sm">T</span>
             </div>
             <span className="font-bold text-slate-900 text-lg hidden sm:block">Trust Technology</span>
@@ -68,7 +68,7 @@ export function Navbar() {
             ))}
             <Link
               href="/bundles"
-              className="px-3 py-2 text-sm text-amber-600 hover:text-amber-700 rounded-lg hover:bg-amber-50 transition-colors font-medium"
+              className="px-3 py-2 text-sm text-blue-600 hover:text-blue-700 rounded-lg hover:bg-blue-50 transition-colors font-medium"
               onClick={() => setActiveMenu(null)}
             >
               Bundle & Save
@@ -180,7 +180,7 @@ export function Navbar() {
             <Link
               href="/bundles"
               onClick={() => setMobileOpen(false)}
-              className="block px-3 py-2 text-sm text-amber-600 font-medium rounded-lg hover:bg-amber-50"
+              className="block px-3 py-2 text-sm text-blue-600 font-medium rounded-lg hover:bg-blue-50"
             >
               Bundle & Save
             </Link>

@@ -53,7 +53,7 @@ export function AiAdvisor() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-1 py-2 space-y-4">
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-600/25">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-600/25">
               <Sparkles size={26} className="text-white" />
             </div>
             <div>
@@ -86,7 +86,7 @@ export function AiAdvisor() {
                 <div
                   className={
                     m.role === 'user'
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm'
                       : 'bg-white border border-slate-200 text-slate-700 rounded-2xl rounded-bl-md px-4 py-3 text-sm leading-relaxed shadow-sm'
                   }
                 >
@@ -149,7 +149,7 @@ export function AiAdvisor() {
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 disabled:opacity-40 flex items-center justify-center text-white transition-opacity"
+          className="w-9 h-9 rounded-xl bg-gradient-to-r from-blue-600 to-blue-800 disabled:opacity-40 flex items-center justify-center text-white transition-opacity"
         >
           <Send size={16} />
         </button>

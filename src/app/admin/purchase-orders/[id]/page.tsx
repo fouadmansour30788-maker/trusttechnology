@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic'
 const STATUS: Record<string, string> = {
   draft: 'bg-slate-100 text-slate-600',
   ordered: 'bg-blue-50 text-blue-700',
-  received: 'bg-emerald-50 text-emerald-700',
+  received: 'bg-blue-50 text-blue-700',
   cancelled: 'bg-red-50 text-red-600',
 }
 
@@ -66,7 +66,7 @@ export default async function PurchaseOrderPage({ params }: { params: Promise<{ 
       {po.status !== 'received' && po.status !== 'cancelled' ? (
         <ReceiveButton poId={po.id} />
       ) : po.status === 'received' ? (
-        <p className="text-sm text-emerald-600 font-medium">✓ Received — stock has been updated.</p>
+        <p className="text-sm text-blue-600 font-medium">✓ Received — stock has been updated.</p>
       ) : null}
     </div>
   )

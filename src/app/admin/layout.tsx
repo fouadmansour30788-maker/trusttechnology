@@ -45,7 +45,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <aside className="w-56 bg-white border-r border-slate-200 flex flex-col shrink-0">
         <div className="px-4 py-5 border-b border-slate-200">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
               <span className="text-white font-bold text-xs">T</span>
             </div>
             <span className="font-semibold text-slate-900 text-sm">Back Office</span>
