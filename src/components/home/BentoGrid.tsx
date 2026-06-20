@@ -1,33 +1,39 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Monitor, Laptop, Printer, Package, Apple, Zap, ArrowRight } from 'lucide-react'
 
-const BENTO_ITEMS = [
+const CATEGORIES = [
   {
     id: 1, label: 'Computing', sublabel: 'Laptops & Desktops', href: '/categories/computing',
-    icon: Laptop, span: 'md:col-span-2 md:row-span-2',
-    gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'large',
+    icon: Laptop, image: '/products/lenovo-legion-5-83nx0000us-storm-grey.webp',
+    blurb: 'High-performance laptops and desktops for work, study and play.',
   },
   {
     id: 2, label: 'Apple Collection', sublabel: 'Mac · iPhone · iPad', href: '/categories/apple',
-    icon: Apple, span: 'md:col-span-1', gradient: 'from-slate-50 to-slate-100', iconBg: 'bg-slate-900', size: 'medium',
+    icon: Apple, image: '/products/apple-mhff4hn-a.jpg',
+    blurb: 'Genuine Apple devices with full warranty and expert setup.',
   },
   {
     id: 3, label: 'Displays', sublabel: 'Monitors & POS Screens', href: '/categories/displays',
-    icon: Monitor, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'medium',
+    icon: Monitor, image: '/products/philips-346b1c.png',
+    blurb: 'From FHD office monitors to ultrawide and 4K creator displays.',
   },
   {
     id: 4, label: 'Printing', sublabel: 'Inkjet · Laser · Toner', href: '/categories/printing',
-    icon: Printer, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-600', size: 'medium',
+    icon: Printer, image: '/products/cedar-cedar-ce285a-35.jpg',
+    blurb: 'Printers and genuine-quality toner & ink for home and office.',
   },
   {
     id: 5, label: 'Professional', sublabel: 'POS · Storage · Networking', href: '/categories/professional',
-    icon: Package, span: 'md:col-span-1', gradient: 'from-blue-50 to-blue-50', iconBg: 'bg-blue-500', size: 'medium',
+    icon: Package, image: '/products/receipt-printer-t80-usb-lan.jpg',
+    blurb: 'Complete POS systems, scanners and networking for your business.',
   },
   {
-    id: 6, label: 'Bundle & Save', sublabel: 'Curated setup deals — save up to 20%', href: '/bundles',
-    icon: Zap, span: 'md:col-span-2', gradient: 'from-blue-50 to-slate-100', iconBg: 'bg-blue-500', size: 'wide',
+    id: 6, label: 'Bundle & Save', sublabel: 'Curated deals — up to 20% off', href: '/bundles',
+    icon: Zap, image: '/products/hp-victus-15-fa2082wm-mica-silver.webp',
+    blurb: 'Pre-matched setups for gaming, business and retail at a discount.',
   },
 ]
 
@@ -41,52 +47,50 @@ export function BentoGrid() {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <p className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">
-          Browse by Category
-        </p>
+        <p className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-2">Browse by Category</p>
         <h2 className="text-3xl font-bold text-slate-900">Shop Everything</h2>
       </motion.div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[160px]">
-        {BENTO_ITEMS.map((item, i) => {
-          const Icon = item.icon
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+        {CATEGORIES.map((c, i) => {
+          const Icon = c.icon
           return (
             <motion.div
-              key={item.id}
+              key={c.id}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.5, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-              className={item.span}
             >
-              <Link
-                href={item.href}
-                className={`group relative bg-gradient-to-br ${item.gradient} border border-slate-200/80 rounded-2xl p-6 flex flex-col justify-between overflow-hidden hover:shadow-xl hover:shadow-slate-900/5 hover:-translate-y-1 transition-all duration-300 h-full`}
-              >
-                <div
-                  className={`${item.iconBg} rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/10 ${
-                    item.size === 'large' ? 'w-14 h-14' : 'w-10 h-10'
-                  }`}
-                >
-                  <Icon className="text-white" size={item.size === 'large' ? 28 : 20} />
-                </div>
+              <Link href={c.href} className="group block h-52 sm:h-60 [perspective:1400px]">
+                <div className="relative w-full h-full transition-transform duration-[600ms] [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                  {/* Front — real photo */}
+                  <div className="absolute inset-0 rounded-3xl overflow-hidden border border-slate-200 shadow-soft [backface-visibility:hidden]">
+                    <Image src={c.image} alt={c.label} fill sizes="(max-width:768px) 50vw, 33vw" className="object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-900/20 to-transparent" />
+                    <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/25">
+                      <Icon size={18} className="text-white" />
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <h3 className="text-white font-bold text-lg leading-tight">{c.label}</h3>
+                      <p className="text-white/70 text-sm mt-0.5">{c.sublabel}</p>
+                    </div>
+                  </div>
 
-                <div>
-                  <h3
-                    className={`font-bold text-slate-900 ${
-                      item.size === 'large' ? 'text-2xl' : item.size === 'wide' ? 'text-xl' : 'text-base'
-                    }`}
-                  >
-                    {item.label}
-                  </h3>
-                  <p className="text-slate-500 text-sm mt-1">{item.sublabel}</p>
-                  <div className="flex items-center gap-1 mt-3 text-xs font-medium text-blue-600 group-hover:gap-2 transition-all">
-                    Shop now <ArrowRight size={12} />
+                  {/* Back — blue/navy detail */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-900 p-5 flex flex-col justify-between text-white [backface-visibility:hidden] [transform:rotateY(180deg)] shadow-glow">
+                    <div className="w-11 h-11 rounded-xl bg-white/15 flex items-center justify-center ring-1 ring-white/20">
+                      <Icon size={20} className="text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg leading-tight">{c.label}</h3>
+                      <p className="text-blue-100/90 text-sm mt-1 leading-relaxed">{c.blurb}</p>
+                      <span className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold">
+                        Shop now <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Decorative blur */}
-                <div className="absolute -bottom-10 -right-10 w-36 h-36 rounded-full bg-white/40 blur-2xl" />
               </Link>
             </motion.div>
           )
