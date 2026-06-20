@@ -6,9 +6,10 @@ import { BrandMarquee } from '@/components/home/BrandMarquee'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
 import { ProductCard } from '@/components/products/ProductCard'
-import { CATALOG_PRODUCTS } from '@/data/products'
+import { getProducts } from '@/lib/db'
+import type { Product } from '@/lib/types'
 
-// Hand-picked from the real catalog — a visual mix that all carry photos.
+// Preferred showcase (all carry photos); falls back to is_featured / first with images.
 const FEATURED_SLUGS = [
   'dell-optiplex-aio-7420-24-non-touch',
   'philips-evnia-34m2c5500-crystalclear-images-with-ultrawide-q',
@@ -20,11 +21,18 @@ const FEATURED_SLUGS = [
   'philips-24m2n3200fq',
 ]
 
-const FEATURED_PRODUCTS = FEATURED_SLUGS
-  .map((slug) => CATALOG_PRODUCTS.find((p) => p.slug === slug))
-  .filter((p): p is (typeof CATALOG_PRODUCTS)[number] => Boolean(p))
+function pickFeatured(all: Product[]): Product[] {
+  const bySlug = FEATURED_SLUGS.map((s) => all.find((p) => p.slug === s)).filter(Boolean) as Product[]
+  if (bySlug.length >= 4) return bySlug.slice(0, 8)
+  const flagged = all.filter((p) => p.is_featured && p.images.length)
+  const withImg = all.filter((p) => p.images.length)
+  return [...new Set([...bySlug, ...flagged, ...withImg])].slice(0, 8)
+}
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  const FEATURED_PRODUCTS = pickFeatured(await getProducts())
   return (
     <>
       <HeroSection />

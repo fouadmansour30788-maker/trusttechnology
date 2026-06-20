@@ -1,18 +1,51 @@
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import { getProductBySlug } from '@/lib/db'
 import { ProductDetail } from '@/components/products/ProductDetail'
+import { SITE_URL } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const p = await getProductBySlug(slug)
-  return { title: p ? `${p.name} – Trust Technology` : 'Product – Trust Technology' }
+  if (!p) return { title: 'Product' }
+  const desc = p.description || `${p.name} — available at Trust Technology, Tripoli.`
+  return {
+    title: p.name,
+    description: desc,
+    openGraph: { title: p.name, description: desc, images: p.images?.length ? [p.images[0]] : [], url: `${SITE_URL}/products/${p.slug}` },
+    alternates: { canonical: `${SITE_URL}/products/${p.slug}` },
+  }
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const product = await getProductBySlug(slug)
   if (!product) notFound()
-  return <ProductDetail product={product} />
+
+  const onRequest = product.priceOnRequest || product.price === 0
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    sku: product.sku ?? undefined,
+    image: product.images?.map((i) => (i.startsWith('http') ? i : `${SITE_URL}${i}`)),
+    description: product.description ?? product.name,
+    brand: { '@type': 'Brand', name: product.tags?.find((t) => t.type === 'brand')?.name ?? 'Trust Technology' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: onRequest ? undefined : product.price,
+      availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: `${SITE_URL}/products/${product.slug}`,
+    },
+  }
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <ProductDetail product={product} />
+    </>
+  )
 }
