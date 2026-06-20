@@ -10,7 +10,7 @@ type Props = {
 
 export function MegaMenu({ category, onClose }: Props) {
   return (
-    <div className="absolute top-full left-0 w-full glass border-b border-slate-200 shadow-xl shadow-slate-900/5 z-50">
+    <div className="absolute top-full left-0 w-full bg-white border-b border-slate-200 shadow-xl shadow-slate-900/5 z-50">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex gap-12">
           {/* Columns */}

@@ -155,17 +155,17 @@ export function HeroSection() {
                   </span>
                 </div>
 
-                {/* Mini bar chart */}
-                <div className="flex items-end gap-2 h-32 bg-gradient-to-b from-slate-50 to-white rounded-2xl border border-slate-100 p-4">
-                  {[45, 70, 38, 92, 60, 78, 100].map((h, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${h}%` }}
-                      transition={{ duration: 0.7, delay: 0.5 + i * 0.07, ease: 'easeOut' }}
-                      className="flex-1 rounded-t-md bg-gradient-to-t from-blue-600 to-indigo-400"
-                    />
-                  ))}
+                {/* Showcase video */}
+                <div className="h-44 rounded-2xl overflow-hidden border border-slate-100 bg-slate-900">
+                  <video
+                    src="/hero/hero.mp4"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
                 <div className="flex items-center justify-between mt-5">
