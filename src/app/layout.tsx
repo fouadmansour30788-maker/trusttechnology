@@ -6,8 +6,7 @@ import './globals.css'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { CartDrawer } from '@/components/cart/CartDrawer'
-import { CommandPalette } from '@/components/search/CommandPalette'
-import { ChatWidget } from '@/components/ai/ChatWidget'
+import { ClientWidgets } from '@/components/util/ClientWidgets'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/lib/site'
 
 const display = Sora({ subsets: ['latin'], weight: ['500', '600', '700', '800'], variable: '--font-display' })
@@ -49,8 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="flex-1">{children}</main>
         <Footer />
         <CartDrawer />
-        <CommandPalette />
-        <ChatWidget />
+        <ClientWidgets />
         <Analytics />
         <SpeedInsights />
       </body>
