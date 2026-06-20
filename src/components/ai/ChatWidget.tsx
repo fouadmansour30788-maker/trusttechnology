@@ -3,16 +3,21 @@ import { useEffect, useRef, useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Sparkles, X, Send, Loader2, Package } from 'lucide-react'
+import { Sparkles, X, Send, Loader2, Package, ShoppingCart, MessageCircle, Check } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useCartStore } from '@/store/cart'
+import type { Product } from '@/lib/types'
 
-type Rec = { slug: string; name: string; price: number; priceOnRequest?: boolean; images: string[]; reason: string }
+const WHATSAPP = '96171998983'
+type Rec = Product & { reason: string }
 type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[] }
 
 const STARTERS = ['Laptop for video editing under $1500', 'POS system for a café', '4K monitor for design']
 
 export function ChatWidget() {
   const pathname = usePathname()
+  const addItem = useCartStore((s) => s.addItem)
+  const [added, setAdded] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Msg[]>([])
   const [loading, setLoading] = useState(false)
@@ -109,16 +114,34 @@ export function ChatWidget() {
                       {m.products.map((p) => {
                         const onReq = p.priceOnRequest || p.price === 0
                         return (
-                          <Link key={p.slug} href={`/products/${p.slug}`} onClick={() => setOpen(false)} className="flex gap-2 items-center bg-white border border-slate-200 hover:border-blue-300 rounded-xl p-2 transition-colors">
-                            <div className="w-11 h-11 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 flex items-center justify-center">
-                              {p.images[0] ? <Image src={p.images[0]} alt={p.name} fill className="object-cover" sizes="44px" /> : <Package size={15} className="text-slate-300" />}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-medium text-slate-900 line-clamp-1">{p.name}</p>
-                              <p className="text-[11px] text-slate-400 line-clamp-1">{p.reason}</p>
-                            </div>
-                            <span className={`text-xs font-semibold shrink-0 ${onReq ? 'text-blue-600' : 'text-slate-900'}`}>{onReq ? 'Call' : `$${p.price.toFixed(0)}`}</span>
-                          </Link>
+                          <div key={p.slug} className="bg-white border border-slate-200 rounded-xl p-2">
+                            <Link href={`/products/${p.slug}`} onClick={() => setOpen(false)} className="flex gap-2 items-center group">
+                              <div className="w-11 h-11 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 flex items-center justify-center">
+                                {p.images[0] ? <Image src={p.images[0]} alt={p.name} fill className="object-cover" sizes="44px" /> : <Package size={15} className="text-slate-300" />}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-medium text-slate-900 line-clamp-1 group-hover:text-blue-600">{p.name}</p>
+                                <p className="text-[11px] text-slate-400 line-clamp-1">{p.reason}</p>
+                              </div>
+                              <span className={`text-xs font-semibold shrink-0 ${onReq ? 'text-blue-600' : 'text-slate-900'}`}>{onReq ? 'Call' : `$${p.price.toFixed(0)}`}</span>
+                            </Link>
+                            {onReq ? (
+                              <a
+                                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + p.name)}`}
+                                target="_blank" rel="noopener noreferrer"
+                                className="mt-2 flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+                              >
+                                <MessageCircle size={13} /> Ask price on WhatsApp
+                              </a>
+                            ) : (
+                              <button
+                                onClick={() => { addItem(p); setAdded(p.slug); setTimeout(() => setAdded(null), 1500) }}
+                                className="mt-2 flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+                              >
+                                {added === p.slug ? <><Check size={13} /> Added</> : <><ShoppingCart size={13} /> Add to cart</>}
+                              </button>
+                            )}
+                          </div>
                         )
                       })}
                     </div>

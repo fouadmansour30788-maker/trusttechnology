@@ -9,7 +9,7 @@ import {
   useSpring,
   type Variants,
 } from 'framer-motion'
-import { ArrowRight, Shield, Truck, Headphones, Check, TrendingUp, Sparkles } from 'lucide-react'
+import { ArrowRight, Shield, Truck, Headphones, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const TRUST_ITEMS = [
@@ -130,7 +130,7 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* ── Right: 3D tilt showcase ────────────────────────────── */}
+          {/* ── Right: 3D tilt video ───────────────────────────────── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -141,80 +141,18 @@ export function HeroSection() {
           >
             <motion.div
               style={{ rotateX, rotateY }}
-              className="glow-ring preserve-3d relative rounded-3xl glass-card border border-white/70 shadow-glow p-6"
+              className="glow-ring preserve-3d relative rounded-3xl overflow-hidden border border-white/70 shadow-glow bg-slate-950"
             >
-              {/* Dashboard mockup */}
-              <div style={{ transform: 'translateZ(55px)' }} className="preserve-3d">
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <p className="text-slate-400 text-xs">Best Seller</p>
-                    <p className="text-slate-900 font-bold text-lg">MacBook Air M3</p>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full">
-                    <TrendingUp size={12} /> In stock
-                  </span>
-                </div>
-
-                {/* Showcase video */}
-                <div className="h-44 rounded-2xl overflow-hidden border border-slate-100 bg-slate-900">
-                  <video
-                    src="/hero/hero.mp4"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between mt-5">
-                  <div>
-                    <p className="text-slate-400 text-xs">Starting at</p>
-                    <p className="text-slate-900 font-bold text-2xl">$1,299</p>
-                  </div>
-                  <Link href="/products" className="text-sm font-semibold text-blue-600 hover:text-blue-700 inline-flex items-center gap-1">
-                    Browse all <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Floating sub-cards (deeper Z) */}
-            <motion.div
-              style={{ rotateX, rotateY }}
-              className="preserve-3d pointer-events-none absolute -left-8 top-10"
-            >
-              <div
-                style={{ transform: 'translateZ(90px)' }}
-                className="animate-float-y flex items-center gap-2 bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-100 px-4 py-3"
-              >
-                <span className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                  <Check size={16} className="text-blue-600" />
-                </span>
-                <div>
-                  <p className="text-slate-900 text-sm font-semibold leading-none">Genuine</p>
-                  <p className="text-slate-400 text-xs mt-0.5">Authorized dealer</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              style={{ rotateX, rotateY }}
-              className="preserve-3d pointer-events-none absolute -right-6 bottom-6"
-            >
-              <div
-                style={{ transform: 'translateZ(110px)' }}
-                className="animate-float-y [animation-delay:-2.5s] bg-white rounded-2xl shadow-xl shadow-slate-900/10 border border-slate-100 px-4 py-3"
-              >
-                <div className="flex -space-x-2 mb-1.5">
-                  {['from-blue-400 to-blue-600', 'from-blue-400 to-blue-800', 'from-blue-400 to-blue-600'].map((g) => (
-                    <span key={g} className={`w-6 h-6 rounded-full bg-gradient-to-br ${g} ring-2 ring-white`} />
-                  ))}
-                </div>
-                <p className="text-slate-900 text-sm font-bold leading-none">10K+ customers</p>
-                <p className="text-slate-400 text-xs mt-0.5">across Lebanon</p>
-              </div>
+              <video
+                src="/hero/hero.mp4"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                className="w-full aspect-[4/3] object-cover"
+                style={{ transform: 'translateZ(40px)' }}
+              />
             </motion.div>
           </motion.div>
         </div>
