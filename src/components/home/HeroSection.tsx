@@ -57,16 +57,17 @@ export function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden">
-      {/* Animated gradient blobs */}
+      {/* Animated aurora + gradient orbs */}
       <motion.div style={{ y: blobY }} className="pointer-events-none absolute inset-0">
-        <div className="animate-blob absolute -top-24 right-[8%] w-[460px] h-[460px] rounded-full bg-blue-300/40 blur-3xl" />
-        <div className="animate-blob absolute top-40 -left-20 w-[420px] h-[420px] rounded-full bg-indigo-300/40 blur-3xl [animation-delay:-4s]" />
+        <div className="animate-aurora absolute -top-32 right-[6%] w-[520px] h-[520px] rounded-full bg-gradient-to-br from-indigo-300/50 to-blue-400/40 blur-3xl" />
+        <div className="animate-blob absolute top-40 -left-24 w-[440px] h-[440px] rounded-full bg-gradient-to-br from-violet-300/45 to-fuchsia-300/30 blur-3xl [animation-delay:-4s]" />
       </motion.div>
       <motion.div style={{ y: blobY2 }} className="pointer-events-none absolute inset-0">
-        <div className="animate-blob absolute bottom-0 left-1/2 w-[380px] h-[380px] rounded-full bg-cyan-200/40 blur-3xl [animation-delay:-8s]" />
+        <div className="animate-aurora absolute bottom-[-10%] left-1/2 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-cyan-200/50 to-sky-300/35 blur-3xl [animation-delay:-9s]" />
       </motion.div>
-      {/* Grid overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-grid-light [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
+      {/* Grid + dots overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-grid-light [mask-image:radial-gradient(ellipse_at_center,black,transparent_72%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-dots opacity-60 [mask-image:radial-gradient(ellipse_at_70%_40%,black,transparent_60%)]" />
 
       <motion.div style={{ y: contentY }} className="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-28">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
@@ -140,10 +141,10 @@ export function HeroSection() {
           >
             <motion.div
               style={{ rotateX, rotateY }}
-              className="preserve-3d relative rounded-3xl glass-card border border-white/70 shadow-2xl shadow-blue-900/10 p-6"
+              className="glow-ring preserve-3d relative rounded-3xl glass-card border border-white/70 shadow-glow p-6"
             >
               {/* Dashboard mockup */}
-              <div style={{ transform: 'translateZ(40px)' }} className="preserve-3d">
+              <div style={{ transform: 'translateZ(55px)' }} className="preserve-3d">
                 <div className="flex items-center justify-between mb-5">
                   <div>
                     <p className="text-slate-400 text-xs">Best Seller</p>
