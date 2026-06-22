@@ -1,6 +1,7 @@
 import { DollarSign, ShoppingBag, Users, TrendingUp } from 'lucide-react'
 import { getSalesReport } from '@/lib/erp'
 import { ReportsCharts } from '@/components/admin/ReportsCharts'
+import { AiInsights } from '@/components/admin/AiInsights'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,6 +30,8 @@ export default async function ReportsPage() {
           </div>
         ))}
       </div>
+
+      <div className="mb-6"><AiInsights /></div>
 
       <ReportsCharts report={report} />
     </div>

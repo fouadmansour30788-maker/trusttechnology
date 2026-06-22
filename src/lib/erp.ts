@@ -161,20 +161,28 @@ export type SalesReport = {
   totals: { orders: number; revenue: number; avg: number; customers: number }
   revenueByMonth: { month: string; revenue: number }[]
   topProducts: { name: string; qty: number; revenue: number }[]
+  funnel: { stage: string; count: number; fill: string }[]
 }
 
 export async function getSalesReport(): Promise<SalesReport> {
-  const empty: SalesReport = { totals: { orders: 0, revenue: 0, avg: 0, customers: 0 }, revenueByMonth: [], topProducts: [] }
+  const empty: SalesReport = { totals: { orders: 0, revenue: 0, avg: 0, customers: 0 }, revenueByMonth: [], topProducts: [], funnel: [] }
   if (!isSupabaseConfigured()) return empty
   try {
     const s = await createClient()
     const [ordersRes, itemsRes, custRes] = await Promise.all([
-      s.from('sales_orders').select('total, order_date').neq('status', 'cancelled'),
+      s.from('sales_orders').select('total, order_date, status').neq('status', 'cancelled'),
       s.from('sales_order_items').select('quantity, unit_price, product:products(name)'),
       s.from('customers').select('id', { count: 'exact', head: true }),
     ])
-    const orders = (ordersRes.data as { total: number; order_date: string }[]) ?? []
+    const orders = (ordersRes.data as { total: number; order_date: string; status: string }[]) ?? []
     const revenue = orders.reduce((sum, o) => sum + Number(o.total), 0)
+
+    // Order funnel: created → confirmed → fulfilled
+    const funnel = [
+      { stage: 'Created', count: orders.length, fill: '#1e3a8a' },
+      { stage: 'Confirmed', count: orders.filter((o) => o.status === 'confirmed' || o.status === 'fulfilled').length, fill: '#2563eb' },
+      { stage: 'Fulfilled', count: orders.filter((o) => o.status === 'fulfilled').length, fill: '#60a5fa' },
+    ]
 
     // revenue by month (last 6 months)
     const byMonth = new Map<string, number>()
@@ -207,6 +215,7 @@ export async function getSalesReport(): Promise<SalesReport> {
       totals: { orders: orders.length, revenue: Math.round(revenue), avg: orders.length ? Math.round(revenue / orders.length) : 0, customers: custRes.count ?? 0 },
       revenueByMonth: [...byMonth.entries()].map(([month, revenue]) => ({ month, revenue: Math.round(revenue) })),
       topProducts,
+      funnel,
     }
   } catch {
     return empty
