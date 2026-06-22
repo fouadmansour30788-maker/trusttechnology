@@ -14,8 +14,18 @@ const WHATSAPP = '96171998983'
 export function ProductCard({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem)
   const onRequest = product.priceOnRequest || product.price === 0
-  const SPEC_KEYS = ['RAM', 'Storage', 'VGA', 'Graphics', 'CPU', 'Screen', 'Capacity']
-  const keySpecs = SPEC_KEYS.map((k) => [k, product.specs?.[k]] as const).filter(([, v]) => v).slice(0, 3)
+  // Show the 3 most useful specs of ANY product (laptops/desktops → RAM/Storage/VGA,
+  // monitors → Resolution/Connectivity, toner → Capacity, etc.), falling back to
+  // whatever specs the product actually has.
+  const SPEC_PRIORITY = ['RAM', 'Storage', 'Hard Disk', 'VGA', 'Graphics', 'CPU', 'Screen', 'Resolution', 'Connectivity', 'Capacity']
+  const keySpecs = Object.entries(product.specs ?? {})
+    .filter(([k, v]) => v && k.toLowerCase() !== 'warranty')
+    .sort((a, b) => {
+      const ia = SPEC_PRIORITY.indexOf(a[0])
+      const ib = SPEC_PRIORITY.indexOf(b[0])
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
+    })
+    .slice(0, 3)
   const discount = product.compare_at_price
     ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
     : null
