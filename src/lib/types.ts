@@ -38,6 +38,12 @@ export type Product = {
   tags?: Tag[]
   /** True when the price is "Call" in the price list (shown as "Call for price"). */
   priceOnRequest?: boolean
+  /** Internal purchase cost (admin only — never shown to customers). */
+  cost?: number | null
+  /** VAT rate % (Lebanon standard 11%). */
+  vat_rate?: number | null
+  /** Available colour options, e.g. ['Black','White','Red']. */
+  colors?: string[] | null
 }
 
 export type Bundle = {

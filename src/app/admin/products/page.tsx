@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
-import { getProducts } from '@/lib/db'
+import { getProducts, getCategories } from '@/lib/db'
 import { ProductsTable } from '@/components/admin/ProductsTable'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminProductsPage() {
-  const products = await getProducts({ adminView: true })
+  const [products, categories] = await Promise.all([getProducts({ adminView: true }), getCategories()])
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
@@ -18,7 +18,7 @@ export default async function AdminProductsPage() {
           <Plus size={16} /> Add product
         </Link>
       </div>
-      <ProductsTable initial={products} />
+      <ProductsTable initial={products} categories={categories} />
     </div>
   )
 }

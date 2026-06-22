@@ -34,6 +34,16 @@ export function ProductForm({ product, categories, tags }: Props) {
     Object.entries(product?.specs ?? {}).map(([k, v]) => ({ k, v: String(v) }))
   )
   const [tagIds, setTagIds] = useState<string[]>(product?.tags?.map((t) => t.id) ?? [])
+  const [cost, setCost] = useState(product?.cost ? String(product.cost) : '')
+  const [vat, setVat] = useState(product?.vat_rate != null ? String(product.vat_rate) : '11')
+  const [colorInput, setColorInput] = useState('')
+  const [colors, setColors] = useState<string[]>(product?.colors ?? [])
+
+  function addColor() {
+    const c = colorInput.trim()
+    if (c && !colors.some((x) => x.toLowerCase() === c.toLowerCase())) setColors((p) => [...p, c])
+    setColorInput('')
+  }
 
   function onName(v: string) {
     setName(v)
@@ -79,6 +89,9 @@ export function ProductForm({ product, categories, tags }: Props) {
       is_featured: isFeatured,
       specs: Object.fromEntries(specs.filter((s) => s.k.trim()).map((s) => [s.k.trim(), s.v.trim()])),
       images,
+      cost: Number(cost) || 0,
+      vat_rate: vat === '' ? 11 : Number(vat),
+      colors,
       tagIds,
     }
     if (!input.name) { setError('Name is required.'); return }
@@ -120,7 +133,29 @@ export function ProductForm({ product, categories, tags }: Props) {
           </div>
           <div>
             <label className={label}>Description</label>
-            <textarea className={inputCls + ' resize-y'} rows={2} value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea
+              className={inputCls + ' resize-y'} rows={5}
+              placeholder="Describe capacity, key features, what's in the box, warranty, ideal use…"
+              value={description} onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className={label}>Colours / variants</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {colors.map((c) => (
+                <span key={c} className="inline-flex items-center gap-1 bg-slate-100 text-slate-700 text-sm rounded-full pl-3 pr-1.5 py-1">
+                  {c}
+                  <button type="button" onClick={() => setColors((p) => p.filter((x) => x !== c))} className="w-4 h-4 rounded-full hover:bg-slate-300 flex items-center justify-center"><X size={11} /></button>
+                </span>
+              ))}
+            </div>
+            <input
+              className={inputCls}
+              placeholder="Type a colour and press Enter (e.g. Black, White, Red)…"
+              value={colorInput}
+              onChange={(e) => setColorInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addColor() } }}
+            />
           </div>
         </section>
 
@@ -146,6 +181,16 @@ export function ProductForm({ product, categories, tags }: Props) {
               </div>
             </div>
           )}
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className={label}>Cost ($) <span className="text-slate-300">· internal</span></label>
+              <input type="number" step="0.01" className={inputCls} value={cost} onChange={(e) => setCost(e.target.value)} placeholder="Purchase cost" />
+            </div>
+            <div>
+              <label className={label}>VAT rate (%)</label>
+              <input type="number" step="0.01" className={inputCls} value={vat} onChange={(e) => setVat(e.target.value)} />
+            </div>
+          </div>
           <div>
             <label className={label}>Category</label>
             <select className={inputCls} value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>

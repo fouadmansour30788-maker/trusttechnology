@@ -15,6 +15,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
   const onRequest = p.priceOnRequest || p.price === 0
   const [qty, setQty] = useState(1)
   const [active, setActive] = useState(0)
+  const [color, setColor] = useState(p.colors?.[0] ?? '')
+  const cartProduct = color ? { ...p, name: `${p.name} — ${color}` } : p
   const discount = p.compare_at_price
     ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100)
     : null
@@ -82,12 +84,32 @@ export function ProductDetail({ product: p }: { product: Product }) {
             </div>
           )}
 
-          {p.description && <p className="text-slate-500 leading-relaxed">{p.description}</p>}
+          {p.description && <p className="text-slate-500 leading-relaxed whitespace-pre-line">{p.description}</p>}
+
+          {/* Colour options */}
+          {p.colors && p.colors.length > 0 && (
+            <div>
+              <p className="text-sm font-medium text-slate-700 mb-2">Colour: <span className="text-slate-500">{color}</span></p>
+              <div className="flex flex-wrap gap-2">
+                {p.colors.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setColor(c)}
+                    className={`px-3.5 py-1.5 rounded-full text-sm border transition-colors ${
+                      color === c ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium' : 'border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           {onRequest ? (
             <a
-              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + p.name)}`}
+              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + cartProduct.name)}`}
               target="_blank" rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
             >
@@ -103,11 +125,11 @@ export function ProductDetail({ product: p }: { product: Product }) {
                 </div>
                 <span className="text-slate-400 text-sm">{p.stock > 0 ? `${p.stock} in stock` : 'Out of stock'}</span>
               </div>
-              <Button fullWidth size="lg" onClick={() => addItem(p, qty)} disabled={p.stock === 0}>
+              <Button fullWidth size="lg" onClick={() => addItem(cartProduct, qty)} disabled={p.stock === 0}>
                 <ShoppingCart size={18} /> Add to cart — ${(p.price * qty).toFixed(2)}
               </Button>
               <a
-                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi, I'm interested in: " + p.name)}`}
+                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi, I'm interested in: " + cartProduct.name)}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors text-sm font-medium"
               >

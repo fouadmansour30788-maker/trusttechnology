@@ -17,6 +17,9 @@ export type ProductInput = {
   is_featured: boolean
   specs: Record<string, string>
   images: string[]
+  cost: number
+  vat_rate: number
+  colors: string[]
   tagIds: string[]
 }
 
