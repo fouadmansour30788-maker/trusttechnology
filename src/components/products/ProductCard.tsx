@@ -14,6 +14,8 @@ const WHATSAPP = '96171998983'
 export function ProductCard({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem)
   const onRequest = product.priceOnRequest || product.price === 0
+  const SPEC_KEYS = ['RAM', 'Storage', 'VGA', 'Graphics', 'CPU', 'Screen', 'Capacity']
+  const keySpecs = SPEC_KEYS.map((k) => [k, product.specs?.[k]] as const).filter(([, v]) => v).slice(0, 3)
   const discount = product.compare_at_price
     ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
     : null
@@ -87,7 +89,17 @@ export function ProductCard({ product }: Props) {
           </h3>
         </Link>
 
-        <div className="flex items-center gap-1 mt-1 mb-3">
+        {keySpecs.length > 0 && (
+          <div className="mt-1.5 space-y-0.5">
+            {keySpecs.map(([k, v]) => (
+              <p key={k} className="text-[11px] text-slate-500 truncate">
+                <span className="text-slate-400">{k}:</span> <span className="font-medium text-slate-600">{v}</span>
+              </p>
+            ))}
+          </div>
+        )}
+
+        <div className="flex items-center gap-1 mt-2 mb-3">
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={10} className="fill-blue-400 text-blue-400" />
           ))}
