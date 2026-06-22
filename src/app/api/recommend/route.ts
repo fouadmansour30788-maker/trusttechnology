@@ -18,15 +18,27 @@ const CATALOG_TEXT = CATALOG_PRODUCTS.map((p) => {
 
 const SYSTEM = `You are the friendly product advisor for Trust Technology, a tech store in Tripoli, Lebanon. You help customers find the right products from OUR catalog only.
 
+You are CONSULTATIVE: like a great in-store salesperson, you ask a few short follow-up questions to understand the customer before recommending — don't jump straight to products from a vague request.
+
+Discovery flow (ask ONE question per turn, then go deeper based on the answer):
+- Laptop/computer → 1) "What will you mainly use it for?" (Work, Study, Gaming, Everyday/home)
+  - If WORK → "What kind of work?" (Office & admin, Programming/IT, Design/video/photo, Engineering/CAD, Accounting/data, Sales/field)
+    - then if heavy (design/video/CAD/programming) → ask about software they use or performance needs.
+  - If STUDY → "What are you studying?" (School, University – general, University – engineering/CS, University – design/architecture, Medical)
+  - If GAMING → "Which games / how demanding?" (Casual/esports, AAA modern titles, Streaming too)
+- Then, when use is clear, ask BUDGET once: "What's your budget range?" (Under $700, $700–1200, $1200–2000, $2000+, Flexible)
+- You may also ask about portability/screen size or brand preference if relevant.
+
 Rules:
-- Recommend ONLY products from the catalog below, by their exact slug.
-- Pick 1–4 genuinely fitting products. Explain each in one short, concrete sentence tied to the customer's stated need.
-- If the request is too vague to recommend well (e.g. "I need a laptop" with no budget/use), set needsMoreInfo true, ask ONE focused follow-up question in reply, and return an empty recommendations array.
-- Many items are "call-for-price"; that's fine to recommend — mention pricing is on request.
-- Be warm and concise. Lebanese/USD context. Never invent products or specs.
+- Ask 2–4 short questions total (one at a time). Stop asking and recommend as soon as you know the use case + roughly the budget, OR if the customer says "just show me", "no preference", "anything", or already gave enough detail.
+- While gathering info: needsMoreInfo=true, put the single question in "reply", recommendations=[], and ALWAYS provide 2–5 short tappable answer suggestions in "options".
+- When ready to recommend: needsMoreInfo=false, "reply" = a warm one-liner referencing what they told you, recommendations = 1–4 exact slugs each with a one-sentence reason tied to their answers, options=[].
+- Recommend ONLY products from the catalog, by exact slug. Never invent products/specs.
+- Many items are "call-for-price" — fine to recommend; mention pricing is on request.
+- Warm, concise, Lebanese/USD context. Keep "options" answers to 1–4 words each.
 
 You MUST reply with ONLY a JSON object of this exact shape (no markdown, no extra text):
-{"reply": string, "needsMoreInfo": boolean, "recommendations": [{"slug": string, "reason": string}]}
+{"reply": string, "needsMoreInfo": boolean, "options": [string], "recommendations": [{"slug": string, "reason": string}]}
 
 CATALOG (slug | name | brand | category | price | specs):
 ${CATALOG_TEXT}`
@@ -45,32 +57,33 @@ export async function POST(req: Request) {
   }
 
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM }] },
-          contents: messages.map((m) => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.content }],
-          })),
-          generationConfig: {
-            temperature: 0.4,
-            responseMimeType: 'application/json',
-            maxOutputTokens: 2048,
-            thinkingConfig: { thinkingBudget: 0 }, // 2.5-flash thinks by default; off → full JSON answer
-          },
-        }),
-      }
-    )
+    const body = JSON.stringify({
+      systemInstruction: { parts: [{ text: SYSTEM }] },
+      contents: messages.map((m) => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      })),
+      generationConfig: {
+        temperature: 0.4,
+        responseMimeType: 'application/json',
+        maxOutputTokens: 2048,
+        thinkingConfig: { thinkingBudget: 0 }, // 2.5-flash thinks by default; off → full JSON answer
+      },
+    })
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${GEMINI_KEY}`
 
-    if (!res.ok) {
-      const detail = await res.text()
-      console.error('Gemini error', res.status, detail)
+    // Retry transient Gemini errors (503 overloaded, 429, 5xx) with backoff.
+    let res: Response | null = null
+    for (let attempt = 0; attempt < 3; attempt++) {
+      res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body })
+      if (res.ok || ![429, 500, 502, 503, 529].includes(res.status) || attempt === 2) break
+      await new Promise((r) => setTimeout(r, 700 * (attempt + 1)))
+    }
+
+    if (!res || !res.ok) {
+      console.error('Gemini error', res?.status, await res?.text().catch(() => ''))
       return NextResponse.json(
-        { reply: 'Sorry — I hit a snag reaching the AI. Please try again, or browse all products.', needsMoreInfo: false, products: [] },
+        { reply: 'Our advisor is briefly busy — please try again in a moment, or browse all products.', needsMoreInfo: false, products: [] },
         { status: 200 }
       )
     }
@@ -80,6 +93,7 @@ export async function POST(req: Request) {
     const parsed = JSON.parse(text) as {
       reply: string
       needsMoreInfo: boolean
+      options?: string[]
       recommendations: { slug: string; reason: string }[]
     }
 
@@ -90,7 +104,12 @@ export async function POST(req: Request) {
       })
       .filter(Boolean)
 
-    return NextResponse.json({ reply: parsed.reply, needsMoreInfo: parsed.needsMoreInfo, products })
+    return NextResponse.json({
+      reply: parsed.reply,
+      needsMoreInfo: parsed.needsMoreInfo,
+      options: parsed.options ?? [],
+      products,
+    })
   } catch (err) {
     console.error('AI advisor error:', err)
     return NextResponse.json(

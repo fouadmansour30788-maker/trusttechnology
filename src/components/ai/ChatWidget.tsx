@@ -10,7 +10,7 @@ import type { Product } from '@/lib/types'
 
 const WHATSAPP = '96171998983'
 type Rec = Product & { reason: string }
-type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[] }
+type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[]; options?: string[] }
 
 const STARTERS = ['Laptop for video editing under $1500', 'POS system for a café', '4K monitor for design']
 
@@ -43,7 +43,7 @@ export function ChatWidget() {
         body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
       })
       const data = await res.json()
-      setMessages((m) => [...m, { role: 'assistant', content: data.reply, products: data.products ?? [] }])
+      setMessages((m) => [...m, { role: 'assistant', content: data.reply, products: data.products ?? [], options: data.options ?? [] }])
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: 'Sorry — something went wrong. Try again.' }])
     } finally {
@@ -138,6 +138,20 @@ export function ChatWidget() {
                           </div>
                         )
                       })}
+                    </div>
+                  )}
+                  {m.role === 'assistant' && m.options && m.options.length > 0 && i === messages.length - 1 && (
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {m.options.map((opt) => (
+                        <button
+                          key={opt}
+                          onClick={() => send(opt)}
+                          disabled={loading}
+                          className="text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-full px-3 py-1.5 transition-colors disabled:opacity-50"
+                        >
+                          {opt}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
