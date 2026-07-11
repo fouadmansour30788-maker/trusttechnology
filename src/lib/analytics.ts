@@ -61,13 +61,14 @@ export async function getAnalytics(): Promise<Analytics> {
   if (!isSupabaseConfigured()) return EMPTY
   try {
     const s = await createClient()
-    const [ordersRes, itemsRes, prodRes, catRes, custRes, poRes, adminStats] = await Promise.all([
+    const [ordersRes, itemsRes, prodRes, catRes, custRes, poRes, compRes, adminStats] = await Promise.all([
       s.from('sales_orders').select('total, order_date, status, customer:customers(name)'),
       s.from('sales_order_items').select('product_id, quantity, unit_price'),
       s.from('products').select('id, name, stock, price, is_active, primary_category_id'),
       s.from('categories').select('id, name'),
       s.from('customers').select('id', { count: 'exact', head: true }),
       s.from('purchase_orders').select('status, total, expected_date'),
+      s.from('competitor_prices').select('price, matched_product_id').not('matched_product_id', 'is', null),
       getAdminStats(),
     ])
 
@@ -261,6 +262,26 @@ export async function getAnalytics(): Promise<Analytics> {
       analysis.push({ tone: 'warning', text: `${overduePOs.length} purchase order${overduePOs.length === 1 ? ' is' : 's are'} past the expected delivery date.` })
       recommendations.push({ text: 'Chase suppliers on overdue purchase orders and update expected dates.', href: '/admin/purchase-orders' })
     }
+    // Competitor pricing (table may not exist yet — compRes.data is null then)
+    const compRows = (compRes.data as { price: number; matched_product_id: string }[] | null) ?? []
+    if (compRows.length > 0) {
+      const overpriced = new Set<string>()
+      const underpriced = new Set<string>()
+      for (const r of compRows) {
+        const p = productById.get(r.matched_product_id)
+        if (!p || Number(p.price) <= 0) continue
+        if (Number(p.price) > Number(r.price) * 1.03) overpriced.add(r.matched_product_id)
+        else if (Number(p.price) < Number(r.price) * 0.97) underpriced.add(r.matched_product_id)
+      }
+      analysis.push({
+        tone: overpriced.size > underpriced.size ? 'warning' : 'good',
+        text: `Competitor watch: ${compRows.length} matched listings — you're pricier on ${overpriced.size} product${overpriced.size === 1 ? '' : 's'}, cheaper on ${underpriced.size}.`,
+      })
+      if (overpriced.size > 0) {
+        recommendations.push({ text: `Review pricing on the ${overpriced.size} product${overpriced.size === 1 ? '' : 's'} where Mojitech / PC and Parts / Ayoub are cheaper.`, href: '/admin/competitors' })
+      }
+    }
+
     if (adminStats.callForPrice > 0) {
       recommendations.push({ text: `${adminStats.callForPrice} products are “Call for price” — pricing even a few enables direct cart checkout for them.`, href: '/admin/products' })
     }
