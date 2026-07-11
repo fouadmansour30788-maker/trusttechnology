@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getAdminStats, isSupabaseConfigured } from '@/lib/db'
-import { getSalesReport, getErpStats } from '@/lib/erp'
+import { getErpStats } from '@/lib/erp'
+import { getAnalytics } from '@/lib/analytics'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -22,19 +23,19 @@ export async function GET() {
     return NextResponse.json({ insights: null, notConfigured: 'gemini' })
   }
 
-  const [report, erp, products] = await Promise.all([getSalesReport(), getErpStats(), getAdminStats()])
+  const [a, erp, products] = await Promise.all([getAnalytics(), getErpStats(), getAdminStats()])
   const data = {
-    revenue: report.totals.revenue,
-    orders: report.totals.orders,
-    avgOrder: report.totals.avg,
-    customers: report.totals.customers,
-    revenueByMonth: report.revenueByMonth,
-    topProducts: report.topProducts,
-    orderFunnel: report.funnel,
+    kpis: a.kpis,
+    monthly: a.monthly,
+    revenueByCategory: a.categoryRevenue,
+    orderStatusMix: a.statusMix,
+    ordersByWeekday: a.weekday,
+    orderFunnel: a.funnel,
+    topProducts: a.topProducts.slice(0, 5),
+    topCustomers: a.topCustomers.slice(0, 5),
+    storeHealthScores: a.radar,
     suppliers: erp.suppliers,
     openPurchaseOrders: erp.openPOs,
-    lowStockItems: erp.lowStock,
-    inventoryValue: erp.stockValue,
     totalProducts: products.products,
     activeProducts: products.active,
     outOfStock: products.outOfStock,
