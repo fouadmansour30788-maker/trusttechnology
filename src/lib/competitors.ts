@@ -41,18 +41,21 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const CATEGORY_PATTERN = /laptop|notebook|desktop|all-?in-?one|monitor|printer|toner|ink|pos/i
 const MAX_PAGES_PER_SOURCE = 20
 
-async function getJson(url: string): Promise<unknown> {
-  const res = await fetch(url, {
+async function getJson(url: string, viaProxy = false): Promise<unknown> {
+  // Some competitors 403 requests from datacenter IPs (Vercel) while allowing
+  // residential ones — route those through a fetch proxy.
+  const target = viaProxy ? `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` : url
+  const res = await fetch(target, {
     headers: {
       'User-Agent': UA,
       Accept: 'application/json',
       'Accept-Language': 'en-US,en;q=0.9',
-      Referer: url.split('/wp-json')[0] + '/',
+      ...(viaProxy ? {} : { Referer: url.split('/wp-json')[0] + '/' }),
     },
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(20000),
     cache: 'no-store',
   })
-  if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}`)
+  if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}${viaProxy ? ' (via proxy)' : ''}`)
   return res.json()
 }
 
@@ -85,10 +88,10 @@ function decodeEntities(s: string): string {
     .replace(/\s+/g, ' ').trim()
 }
 
-async function fetchWooCompetitor(competitor: string, base: string): Promise<CompetitorItem[]> {
+async function fetchWooCompetitor(competitor: string, base: string, viaProxy = false): Promise<CompetitorItem[]> {
   const cats: WooCategory[] = []
   for (let page = 1; page <= 4; page++) {
-    const batch = (await getJson(`${base}/wp-json/wc/store/v1/products/categories?per_page=100&page=${page}`)) as WooCategory[]
+    const batch = (await getJson(`${base}/wp-json/wc/store/v1/products/categories?per_page=100&page=${page}`, viaProxy)) as WooCategory[]
     cats.push(...batch)
     if (batch.length < 100) break
   }
@@ -99,7 +102,8 @@ async function fetchWooCompetitor(competitor: string, base: string): Promise<Com
     for (let page = 1; page <= 6 && pageBudget > 0; page++) {
       pageBudget--
       const batch = (await getJson(
-        `${base}/wp-json/wc/store/v1/products?category=${cat.id}&per_page=100&page=${page}`
+        `${base}/wp-json/wc/store/v1/products?category=${cat.id}&per_page=100&page=${page}`,
+        viaProxy
       )) as WooProduct[]
       for (const p of batch) {
         const minor = p.prices?.currency_minor_unit ?? 2
@@ -222,7 +226,7 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
     fetchWooCompetitor('mojitech', 'https://mojitech.net'),
     fetchWooCompetitor('pcandparts', 'https://pcandparts.com'),
     fetchAyoub(),
-    fetchWooCompetitor('multitech', 'https://multitech-lb.com'),
+    fetchWooCompetitor('multitech', 'https://multitech-lb.com', true), // 403s datacenter IPs → proxy
     fetchWooCompetitor('mediatech', 'https://mediatechlb.com'),
   ])
   const names = ['mojitech', 'pcandparts', 'ayoubcomputers', 'multitech', 'mediatech']
