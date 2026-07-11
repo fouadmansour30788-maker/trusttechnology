@@ -41,22 +41,38 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
 const CATEGORY_PATTERN = /laptop|notebook|desktop|all-?in-?one|monitor|printer|toner|ink|pos/i
 const MAX_PAGES_PER_SOURCE = 20
 
+// Some competitors 403 requests from datacenter IPs (Vercel) while allowing
+// residential ones — route those through free fetch proxies. The proxies are
+// flaky, so alternate between two and retry; callers must tolerate partial data.
+const PROXIES = [
+  (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+]
+
 async function getJson(url: string, viaProxy = false): Promise<unknown> {
-  // Some competitors 403 requests from datacenter IPs (Vercel) while allowing
-  // residential ones — route those through a fetch proxy.
-  const target = viaProxy ? `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}` : url
-  const res = await fetch(target, {
-    headers: {
-      'User-Agent': UA,
-      Accept: 'application/json',
-      'Accept-Language': 'en-US,en;q=0.9',
-      ...(viaProxy ? {} : { Referer: url.split('/wp-json')[0] + '/' }),
-    },
-    signal: AbortSignal.timeout(20000),
-    cache: 'no-store',
-  })
-  if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}${viaProxy ? ' (via proxy)' : ''}`)
-  return res.json()
+  const attempts = viaProxy
+    ? [PROXIES[0](url), PROXIES[1](url), PROXIES[0](url)]
+    : [url]
+  let lastErr: unknown = null
+  for (const target of attempts) {
+    try {
+      const res = await fetch(target, {
+        headers: {
+          'User-Agent': UA,
+          Accept: 'application/json',
+          'Accept-Language': 'en-US,en;q=0.9',
+          ...(viaProxy ? {} : { Referer: url.split('/wp-json')[0] + '/' }),
+        },
+        signal: AbortSignal.timeout(viaProxy ? 12000 : 15000),
+        cache: 'no-store',
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}${viaProxy ? ' (via proxy)' : ''}`)
+      return await res.json()
+    } catch (e) {
+      lastErr = e
+    }
+  }
+  throw lastErr
 }
 
 async function getHtml(url: string): Promise<string | null> {
@@ -88,10 +104,17 @@ function decodeEntities(s: string): string {
     .replace(/\s+/g, ' ').trim()
 }
 
-async function fetchWooCompetitor(competitor: string, base: string, viaProxy = false): Promise<CompetitorItem[]> {
+async function fetchWooCompetitor(competitor: string, base: string, viaProxy = false, deadline = Infinity): Promise<CompetitorItem[]> {
   const cats: WooCategory[] = []
   for (let page = 1; page <= 4; page++) {
-    const batch = (await getJson(`${base}/wp-json/wc/store/v1/products/categories?per_page=100&page=${page}`, viaProxy)) as WooCategory[]
+    // First page failing fails the source; later pages return what we have.
+    let batch: WooCategory[]
+    try {
+      batch = (await getJson(`${base}/wp-json/wc/store/v1/products/categories?per_page=100&page=${page}`, viaProxy)) as WooCategory[]
+    } catch (e) {
+      if (page === 1) throw e
+      break
+    }
     cats.push(...batch)
     if (batch.length < 100) break
   }
@@ -100,11 +123,18 @@ async function fetchWooCompetitor(competitor: string, base: string, viaProxy = f
   let pageBudget = MAX_PAGES_PER_SOURCE
   for (const cat of wanted) {
     for (let page = 1; page <= 6 && pageBudget > 0; page++) {
+      if (Date.now() > deadline) return [...byId.values()]
       pageBudget--
-      const batch = (await getJson(
-        `${base}/wp-json/wc/store/v1/products?category=${cat.id}&per_page=100&page=${page}`,
-        viaProxy
-      )) as WooProduct[]
+      let batch: WooProduct[]
+      try {
+        batch = (await getJson(
+          `${base}/wp-json/wc/store/v1/products?category=${cat.id}&per_page=100&page=${page}`,
+          viaProxy
+        )) as WooProduct[]
+      } catch {
+        // Partial data beats no data — keep what we've collected so far.
+        return [...byId.values()]
+      }
       for (const p of batch) {
         const minor = p.prices?.currency_minor_unit ?? 2
         const price = Number(p.prices?.price ?? 0) / 10 ** minor
@@ -149,11 +179,12 @@ function parseAyoubPage(html: string): CompetitorItem[] {
   return items
 }
 
-async function fetchAyoub(): Promise<CompetitorItem[]> {
+async function fetchAyoub(deadline = Infinity): Promise<CompetitorItem[]> {
   const byId = new Map<string, CompetitorItem>()
   let pageBudget = MAX_PAGES_PER_SOURCE
   for (const cat of AYOUB_CATEGORIES) {
     for (let page = 1; page <= 8 && pageBudget > 0; page++) {
+      if (Date.now() > deadline) return [...byId.values()]
       pageBudget--
       const html = await getHtml(`https://ayoubcomputers.com/${cat}/?page=${page}`)
       if (!html) break
@@ -222,12 +253,14 @@ export function matchItems(items: CompetitorItem[], products: OurProduct[]): Map
 type AnyClient = SupabaseClient<any, any, any>
 
 export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSummary> {
+  // Stay inside the route's 60s budget — sources past the deadline return partial data.
+  const deadline = Date.now() + 45_000
   const sourceResults = await Promise.allSettled([
-    fetchWooCompetitor('mojitech', 'https://mojitech.net'),
-    fetchWooCompetitor('pcandparts', 'https://pcandparts.com'),
-    fetchAyoub(),
-    fetchWooCompetitor('multitech', 'https://multitech-lb.com', true), // 403s datacenter IPs → proxy
-    fetchWooCompetitor('mediatech', 'https://mediatechlb.com'),
+    fetchWooCompetitor('mojitech', 'https://mojitech.net', false, deadline),
+    fetchWooCompetitor('pcandparts', 'https://pcandparts.com', false, deadline),
+    fetchAyoub(deadline),
+    fetchWooCompetitor('multitech', 'https://multitech-lb.com', true, deadline), // 403s datacenter IPs → proxy
+    fetchWooCompetitor('mediatech', 'https://mediatechlb.com', false, deadline),
   ])
   const names = ['mojitech', 'pcandparts', 'ayoubcomputers', 'multitech', 'mediatech']
   const sources: SyncSummary['sources'] = []
