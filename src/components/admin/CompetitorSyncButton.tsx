@@ -7,15 +7,21 @@ export function CompetitorSyncButton() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
+  const [sourceLines, setSourceLines] = useState<string[]>([])
 
   async function sync() {
     setLoading(true)
     setMsg(null)
+    setSourceLines([])
     try {
       const res = await fetch('/api/competitors/sync', { method: 'POST' })
       const data = await res.json()
       if (data.ok) {
         setMsg(`Fetched ${data.total} items · ${data.matched} matched · ${data.updatedPrices} price changes`)
+        type Source = { competitor: string; items: number; error?: string }
+        setSourceLines(((data.sources ?? []) as Source[]).map((s) =>
+          s.error ? `${s.competitor}: FAILED — ${s.error}` : `${s.competitor}: ${s.items} items`
+        ))
         router.refresh()
       } else {
         setMsg(data.error ?? 'Sync failed')
@@ -29,7 +35,14 @@ export function CompetitorSyncButton() {
 
   return (
     <div className="flex items-center gap-3">
-      {msg && <span className="text-xs text-slate-500">{msg}</span>}
+      {(msg || sourceLines.length > 0) && (
+        <div className="text-right">
+          {msg && <p className="text-xs text-slate-500">{msg}</p>}
+          {sourceLines.map((line) => (
+            <p key={line} className={`text-[11px] ${line.includes('FAILED') ? 'text-red-500' : 'text-slate-400'}`}>{line}</p>
+          ))}
+        </div>
+      )}
       <button
         onClick={sync}
         disabled={loading}

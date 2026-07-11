@@ -28,17 +28,22 @@ export type SyncSummary = {
   updatedPrices: number
 }
 
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) TrustTechPriceWatch/1.0'
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
 const CATEGORY_PATTERN = /laptop|notebook|desktop|all-?in-?one|monitor|printer|toner|ink|pos/i
 const MAX_PAGES_PER_SOURCE = 20
 
 async function getJson(url: string): Promise<unknown> {
   const res = await fetch(url, {
-    headers: { 'User-Agent': UA, Accept: 'application/json' },
+    headers: {
+      'User-Agent': UA,
+      Accept: 'application/json',
+      'Accept-Language': 'en-US,en;q=0.9',
+      Referer: url.split('/wp-json')[0] + '/',
+    },
     signal: AbortSignal.timeout(15000),
     cache: 'no-store',
   })
-  if (!res.ok) throw new Error(`${res.status} ${url}`)
+  if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}`)
   return res.json()
 }
 
@@ -214,7 +219,9 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
       sources.push({ competitor: names[i], items: r.value.length })
       items.push(...r.value)
     } else {
-      sources.push({ competitor: names[i], items: 0, error: String(r.reason).slice(0, 120) })
+      const error = (r.reason instanceof Error ? r.reason.message : String(r.reason)).slice(0, 160)
+      console.error(`[competitor-sync] ${names[i]} failed: ${error}`)
+      sources.push({ competitor: names[i], items: 0, error })
     }
   })
 
