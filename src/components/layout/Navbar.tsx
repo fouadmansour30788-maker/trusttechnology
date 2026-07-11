@@ -73,6 +73,13 @@ export function Navbar() {
             >
               Bundle & Save
             </Link>
+            <Link
+              href="/about"
+              className="px-3 py-2 text-sm text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+              onClick={() => setActiveMenu(null)}
+            >
+              About
+            </Link>
           </nav>
 
           {/* Right Actions */}
@@ -183,6 +190,13 @@ export function Navbar() {
               className="block px-3 py-2 text-sm text-blue-600 font-medium rounded-lg hover:bg-blue-50"
             >
               Bundle & Save
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => setMobileOpen(false)}
+              className="block px-3 py-2 text-sm text-slate-700 rounded-lg hover:bg-slate-100"
+            >
+              About
             </Link>
           </div>
         </div>

@@ -66,9 +66,14 @@ export function Footer() {
           <div>
             <p className="text-sm font-semibold text-slate-900 mb-4">Support</p>
             <ul className="space-y-2 text-sm text-slate-500">
-              {['About Us', 'Contact', 'Warranty Policy', 'Returns'].map((item) => (
-                <li key={item}>
-                  <span className="hover:text-blue-600 transition-colors cursor-pointer">{item}</span>
+              {[
+                { label: 'About Us', href: '/about' },
+                { label: 'Contact', href: '/about#contact' },
+              ].map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="hover:text-blue-600 transition-colors">
+                    {item.label}
+                  </Link>
                 </li>
               ))}
             </ul>
