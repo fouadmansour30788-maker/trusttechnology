@@ -19,6 +19,15 @@ export type CompetitorItem = {
   sku: string | null
   url: string | null
   price: number
+  in_stock: boolean
+}
+
+export const COMPETITOR_LABELS: Record<string, string> = {
+  mojitech: 'Mojitech',
+  pcandparts: 'PC and Parts',
+  ayoubcomputers: 'Ayoub Computers',
+  multitech: 'Multitech',
+  mediatech: 'Mediatech',
 }
 
 export type SyncSummary = {
@@ -65,6 +74,7 @@ async function getHtml(url: string): Promise<string | null> {
 type WooCategory = { id: number; slug: string; name: string; count: number }
 type WooProduct = {
   id: number; name: string; sku: string; permalink: string
+  is_in_stock?: boolean
   prices: { price: string; currency_minor_unit: number }
 }
 
@@ -102,6 +112,7 @@ async function fetchWooCompetitor(competitor: string, base: string): Promise<Com
           sku: p.sku || null,
           url: p.permalink || null,
           price,
+          in_stock: p.is_in_stock !== false,
         })
       }
       if (batch.length < 100) break
@@ -128,6 +139,7 @@ function parseAyoubPage(html: string): CompetitorItem[] {
       sku: null,
       url: link[1],
       price: Number(price[1].replace(/,/g, '')),
+      in_stock: true, // listing pages only show purchasable items
     })
   }
   return items
@@ -210,8 +222,10 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
     fetchWooCompetitor('mojitech', 'https://mojitech.net'),
     fetchWooCompetitor('pcandparts', 'https://pcandparts.com'),
     fetchAyoub(),
+    fetchWooCompetitor('multitech', 'https://multitech-lb.com'),
+    fetchWooCompetitor('mediatech', 'https://mediatechlb.com'),
   ])
-  const names = ['mojitech', 'pcandparts', 'ayoubcomputers']
+  const names = ['mojitech', 'pcandparts', 'ayoubcomputers', 'multitech', 'mediatech']
   const sources: SyncSummary['sources'] = []
   const items: CompetitorItem[] = []
   sourceResults.forEach((r, i) => {
@@ -229,25 +243,49 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
   const products = (prodData as OurProduct[]) ?? []
   const matches = matchItems(items, products)
 
-  // Existing prices, for change tracking (paginate past PostgREST's 1000-row cap)
-  const existing = new Map<string, number>()
+  // Existing rows, for change tracking + manual-match preservation
+  // (paginate past PostgREST's 1000-row cap)
+  type ExistingRow = { competitor: string; external_id: string; price: number; matched_product_id: string | null; match_source?: string }
+  const existing = new Map<string, ExistingRow>()
+  let hasMatchSource = true
   for (let from = 0; ; from += 1000) {
-    const { data } = await supabase
+    const res = await supabase
       .from('competitor_prices')
-      .select('competitor, external_id, price')
+      .select('competitor, external_id, price, matched_product_id, match_source')
       .range(from, from + 999)
-    const rows = (data as { competitor: string; external_id: string; price: number }[]) ?? []
-    for (const r of rows) existing.set(`${r.competitor}:${r.external_id}`, Number(r.price))
+    let rows: ExistingRow[]
+    if (res.error) {
+      // match_source column arrives with migration 008 — fall back gracefully
+      hasMatchSource = false
+      const res2 = await supabase
+        .from('competitor_prices')
+        .select('competitor, external_id, price, matched_product_id')
+        .range(from, from + 999)
+      rows = (res2.data as ExistingRow[]) ?? []
+    } else {
+      rows = (res.data as unknown as ExistingRow[]) ?? []
+    }
+    for (const r of rows) existing.set(`${r.competitor}:${r.external_id}`, r)
     if (rows.length < 1000) break
   }
 
   const nowIso = new Date().toISOString()
   let updatedPrices = 0
+  const historyRows: { competitor: string; external_id: string; price: number; recorded_at: string }[] = []
   const rows = items.map((it) => {
     const key = `${it.competitor}:${it.external_id}`
     const prev = existing.get(key)
-    const changed = prev !== undefined && Math.abs(prev - it.price) >= 0.01
+    const changed = prev !== undefined && Math.abs(Number(prev.price) - it.price) >= 0.01
     if (changed) updatedPrices++
+    if (prev === undefined || changed) {
+      historyRows.push({ competitor: it.competitor, external_id: it.external_id, price: it.price, recorded_at: nowIso })
+    }
+    // Staff decisions win: 'manual' keeps its product, 'rejected' stays unlinked.
+    const source = prev?.match_source
+    const matched_product_id =
+      source === 'manual' ? prev!.matched_product_id
+      : source === 'rejected' ? null
+      : matches.get(key) ?? null
     return {
       competitor: it.competitor,
       external_id: it.external_id,
@@ -255,8 +293,9 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
       sku: it.sku,
       url: it.url,
       price: it.price,
-      ...(changed ? { previous_price: prev, price_changed_at: nowIso } : {}),
-      matched_product_id: matches.get(key) ?? null,
+      ...(hasMatchSource ? { in_stock: it.in_stock } : {}),
+      ...(changed ? { previous_price: Number(prev!.price), price_changed_at: nowIso } : {}),
+      matched_product_id,
       fetched_at: nowIso,
     }
   })
@@ -266,6 +305,15 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
       .from('competitor_prices')
       .upsert(rows.slice(i, i + 500), { onConflict: 'competitor,external_id' })
     if (error) throw new Error(`upsert failed: ${error.message}`)
+  }
+
+  // History is best-effort until migration 008 has been run.
+  for (let i = 0; i < historyRows.length; i += 500) {
+    const { error } = await supabase.from('competitor_price_history').insert(historyRows.slice(i, i + 500))
+    if (error) {
+      console.error(`[competitor-sync] history insert skipped: ${error.message}`)
+      break
+    }
   }
 
   return { sources, total: items.length, matched: matches.size, updatedPrices }
@@ -279,6 +327,7 @@ export type PriceComparison = {
   competitor: string
   theirName: string
   theirPrice: number
+  theirInStock: boolean
   url: string | null
   diff: number      // ourPrice - theirPrice (positive = we're more expensive)
   diffPct: number
@@ -322,16 +371,181 @@ export async function getCompetitorPriceMap(supabase: AnyClient): Promise<Record
   return map
 }
 
+export type PriceChange = {
+  competitor: string; name: string; url: string | null
+  price: number; previous_price: number; changed_at: string
+  matched: boolean
+}
+
+/** Latest observed price changes (for the "what changed" feed). */
+export async function getRecentChanges(supabase: AnyClient, limit = 15): Promise<PriceChange[]> {
+  const { data, error } = await supabase
+    .from('competitor_prices')
+    .select('competitor, name, url, price, previous_price, price_changed_at, matched_product_id')
+    .not('price_changed_at', 'is', null)
+    .order('price_changed_at', { ascending: false })
+    .limit(limit)
+  if (error) return []
+  type Row = { competitor: string; name: string; url: string | null; price: number; previous_price: number; price_changed_at: string; matched_product_id: string | null }
+  return ((data as Row[]) ?? []).map((r) => ({
+    competitor: r.competitor, name: r.name, url: r.url,
+    price: Number(r.price), previous_price: Number(r.previous_price),
+    changed_at: r.price_changed_at, matched: r.matched_product_id !== null,
+  }))
+}
+
+export type AssortmentGap = {
+  brand: string
+  count: number
+  carried: boolean
+  minPrice: number
+  samples: { name: string; price: number; competitor: string; url: string | null }[]
+}
+
+/** Unmatched competitor items grouped by brand — what they sell that we may not. */
+export async function getAssortmentGaps(supabase: AnyClient, ourBrands: Set<string>): Promise<AssortmentGap[]> {
+  type Row = { competitor: string; name: string; url: string | null; price: number }
+  const rows: Row[] = []
+  for (let from = 0; from < 4000; from += 1000) {
+    const { data, error } = await supabase
+      .from('competitor_prices')
+      .select('competitor, name, url, price')
+      .is('matched_product_id', null)
+      .range(from, from + 999)
+    if (error) return []
+    const batch = (data as Row[]) ?? []
+    rows.push(...batch)
+    if (batch.length < 1000) break
+  }
+  const groups = new Map<string, AssortmentGap>()
+  for (const r of rows) {
+    const brand = (r.name.trim().split(/\s+/)[0] ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '')
+    if (brand.length < 2 || /^\d+$/.test(brand)) continue
+    const g = groups.get(brand) ?? { brand, count: 0, carried: ourBrands.has(brand), minPrice: Infinity, samples: [] }
+    g.count++
+    g.minPrice = Math.min(g.minPrice, Number(r.price))
+    if (g.samples.length < 3) g.samples.push({ name: r.name, price: Number(r.price), competitor: r.competitor, url: r.url })
+    groups.set(brand, g)
+  }
+  return [...groups.values()]
+    .filter((g) => g.count >= 3)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 15)
+}
+
+export type PricingOpportunity = {
+  productId: string
+  productName: string
+  cost: number | null
+  minCompetitorPrice: number
+  competitor: string
+  suggested: number
+  belowCostFloor: boolean
+}
+
+/** "Call for price" products with matched competitor prices → suggested price. */
+export async function getPricingOpportunities(supabase: AnyClient): Promise<PricingOpportunity[]> {
+  const [{ data: prodData }, { data: cpData }] = await Promise.all([
+    supabase.from('products').select('id, name, price, cost').eq('price', 0),
+    supabase.from('competitor_prices').select('competitor, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
+  ])
+  const products = ((prodData as { id: string; name: string; price: number; cost: number | null }[]) ?? [])
+  const byProduct = new Map<string, { price: number; competitor: string }>()
+  for (const r of ((cpData as { competitor: string; price: number; matched_product_id: string }[]) ?? [])) {
+    const cur = byProduct.get(r.matched_product_id)
+    if (!cur || Number(r.price) < cur.price) byProduct.set(r.matched_product_id, { price: Number(r.price), competitor: r.competitor })
+  }
+  const out: PricingOpportunity[] = []
+  for (const p of products) {
+    const best = byProduct.get(p.id)
+    if (!best) continue
+    const suggested = Math.max(1, Math.round(best.price * 0.98))
+    const cost = p.cost === null ? null : Number(p.cost)
+    out.push({
+      productId: p.id,
+      productName: p.name,
+      cost,
+      minCompetitorPrice: best.price,
+      competitor: best.competitor,
+      suggested,
+      belowCostFloor: cost !== null && cost > 0 && suggested < cost * 1.05,
+    })
+  }
+  return out.sort((a, b) => b.minCompetitorPrice - a.minCompetitorPrice)
+}
+
+export type HistoryPoint = { date: string; competitor: string; price: number }
+
+/** Price history for all listings matched to one product (for the edit-page chart). */
+export async function getHistoryForProduct(supabase: AnyClient, productId: string): Promise<HistoryPoint[]> {
+  const { data: listings, error } = await supabase
+    .from('competitor_prices')
+    .select('competitor, external_id')
+    .eq('matched_product_id', productId)
+  if (error || !listings || listings.length === 0) return []
+  const pairs = new Set((listings as { competitor: string; external_id: string }[]).map((l) => `${l.competitor}:${l.external_id}`))
+  const { data: hist, error: histErr } = await supabase
+    .from('competitor_price_history')
+    .select('competitor, external_id, price, recorded_at')
+    .in('external_id', (listings as { external_id: string }[]).map((l) => l.external_id))
+    .order('recorded_at')
+    .limit(500)
+  if (histErr) return []
+  type Row = { competitor: string; external_id: string; price: number; recorded_at: string }
+  return ((hist as Row[]) ?? [])
+    .filter((h) => pairs.has(`${h.competitor}:${h.external_id}`))
+    .map((h) => ({ date: h.recorded_at, competitor: h.competitor, price: Number(h.price) }))
+}
+
+/** Unmatched items (not rejected) — input for AI match suggestions. */
+export async function getUnmatchedItems(supabase: AnyClient, cap = 400): Promise<CompetitorItem[]> {
+  type Row = { competitor: string; external_id: string; name: string; sku: string | null; url: string | null; price: number; match_source?: string }
+  const res = await supabase
+    .from('competitor_prices')
+    .select('competitor, external_id, name, sku, url, price, match_source')
+    .is('matched_product_id', null)
+    .neq('match_source', 'rejected')
+    .limit(cap)
+  let data: Row[]
+  if (res.error) {
+    const res2 = await supabase
+      .from('competitor_prices')
+      .select('competitor, external_id, name, sku, url, price')
+      .is('matched_product_id', null)
+      .limit(cap)
+    if (res2.error) return []
+    data = (res2.data as Row[]) ?? []
+  } else {
+    data = (res.data as unknown as Row[]) ?? []
+  }
+  return (data ?? []).map((r) => ({
+    competitor: r.competitor, external_id: r.external_id, name: r.name,
+    sku: r.sku, url: r.url, price: Number(r.price), in_stock: true,
+  }))
+}
+
 export async function getPriceComparisons(supabase: AnyClient): Promise<{
   comparisons: PriceComparison[]
   trackedTotal: number
   lastSync: string | null
 }> {
-  const { data: cp, error } = await supabase
+  type CpRow = { competitor: string; name: string; url: string | null; price: number; in_stock?: boolean; matched_product_id: string; fetched_at: string }
+  const cpRes = await supabase
     .from('competitor_prices')
-    .select('competitor, name, sku, url, price, matched_product_id, fetched_at')
+    .select('competitor, name, sku, url, price, in_stock, matched_product_id, fetched_at')
     .not('matched_product_id', 'is', null)
-  if (error) return { comparisons: [], trackedTotal: 0, lastSync: null }
+  let cp: CpRow[]
+  if (cpRes.error) {
+    // in_stock arrives with migration 008 — retry without it
+    const res2 = await supabase
+      .from('competitor_prices')
+      .select('competitor, name, sku, url, price, matched_product_id, fetched_at')
+      .not('matched_product_id', 'is', null)
+    if (res2.error) return { comparisons: [], trackedTotal: 0, lastSync: null }
+    cp = (res2.data as CpRow[]) ?? []
+  } else {
+    cp = (cpRes.data as unknown as CpRow[]) ?? []
+  }
 
   const { count } = await supabase
     .from('competitor_prices')
@@ -345,9 +559,8 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
   const { data: prodData } = await supabase.from('products').select('id, name, price')
   const products = new Map(((prodData as { id: string; name: string; price: number }[]) ?? []).map((p) => [p.id, p]))
 
-  type Row = { competitor: string; name: string; url: string | null; price: number; matched_product_id: string; fetched_at: string }
   const comparisons: PriceComparison[] = []
-  for (const r of ((cp as Row[]) ?? [])) {
+  for (const r of cp) {
     const p = products.get(r.matched_product_id)
     if (!p) continue
     const ourPrice = Number(p.price)
@@ -360,6 +573,7 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
       competitor: r.competitor,
       theirName: r.name,
       theirPrice,
+      theirInStock: r.in_stock !== false,
       url: r.url,
       diff: Math.round((ourPrice - theirPrice) * 100) / 100,
       diffPct: ourPrice > 0 ? Math.round(((ourPrice - theirPrice) / theirPrice) * 100) : 0,

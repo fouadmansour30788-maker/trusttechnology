@@ -28,6 +28,20 @@ In Supabase: **SQL Editor → New query**. Paste and **Run** each file, in this 
 
 > If step 3 errors on a `storage.objects` policy that already exists, it's safe to ignore — the bucket/policies are already in place.
 
+### Later migrations
+Run any newer files in `supabase/migrations/` the same way, in numeric order:
+- `007_competitors.sql` — competitor price monitoring table
+- `008_competitor_monitoring.sql` — price history, manual matching, competitor stock status
+
+### Competitor price monitoring (optional, for the daily auto-sync)
+The **Competitors** admin page works immediately via its "Sync now" button (uses your
+staff session). For the automatic daily sync (Vercel Cron, 5:00 UTC), add two more
+env vars in **Vercel → Settings → Environment Variables**:
+- `CRON_SECRET` — any long random string (Vercel sends it with cron requests).
+- `SUPABASE_SERVICE_ROLE_KEY` — Supabase **Settings → API → service_role** key
+  (server-only; never expose it in the browser).
+Redeploy after adding.
+
 ## 4. Create your admin user
 **Authentication → Users → Add user** → enter your email + a password → **Create**.
 - The **first** user created automatically becomes `admin` (later users are `staff`).

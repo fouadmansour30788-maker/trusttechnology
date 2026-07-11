@@ -1,6 +1,7 @@
 import { ExternalLink, Radar, ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import Link from 'next/link'
-import type { CompetitorListing } from '@/lib/competitors'
+import type { CompetitorListing, HistoryPoint } from '@/lib/competitors'
+import { PriceHistoryChart } from './PriceHistoryChart'
 
 const LABELS: Record<string, string> = {
   mojitech: 'Mojitech',
@@ -13,7 +14,11 @@ function money(n: number) {
 }
 
 /** Competitor listings matched to this product — shown beside the edit form. */
-export function CompetitorPanel({ listings, ourPrice }: { listings: CompetitorListing[]; ourPrice: number }) {
+export function CompetitorPanel({ listings, ourPrice, history = [] }: {
+  listings: CompetitorListing[]
+  ourPrice: number
+  history?: HistoryPoint[]
+}) {
   if (listings.length === 0) return null
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5">
@@ -52,6 +57,7 @@ export function CompetitorPanel({ listings, ourPrice }: { listings: CompetitorLi
           )
         })}
       </ul>
+      <PriceHistoryChart points={history} ourPrice={ourPrice} />
     </div>
   )
 }
