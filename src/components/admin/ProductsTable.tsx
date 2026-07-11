@@ -7,7 +7,13 @@ import type { Product, Category } from '@/lib/types'
 import { Badge } from '@/components/ui/badge'
 import { setProductActive, deleteProduct } from '@/app/admin/actions'
 
-export function ProductsTable({ initial, categories = [] }: { initial: Product[]; categories?: Category[] }) {
+export type MarketPrice = { price: number; competitor: string }
+
+export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
+  initial: Product[]
+  categories?: Category[]
+  marketPrices?: Record<string, MarketPrice>
+}) {
   const [products, setProducts] = useState(initial)
   const [search, setSearch] = useState('')
   const [cat, setCat] = useState('')
@@ -90,6 +96,16 @@ export function ProductsTable({ initial, categories = [] }: { initial: Product[]
                   <td className="px-5 py-3 text-right text-slate-500 hidden lg:table-cell">{p.cost ? `$${Number(p.cost).toFixed(2)}` : '—'}</td>
                   <td className="px-5 py-3 text-right">
                     {onRequest ? <span className="text-blue-600 font-medium">Call</span> : <span className="text-slate-900 font-semibold">${p.price}</span>}
+                    {marketPrices[p.id] && (
+                      <p
+                        className={`text-[11px] whitespace-nowrap ${
+                          onRequest ? 'text-slate-400' : Number(p.price) > marketPrices[p.id].price * 1.03 ? 'text-red-500' : 'text-emerald-600'
+                        }`}
+                        title={`Cheapest competitor: ${marketPrices[p.id].competitor}`}
+                      >
+                        mkt ${marketPrices[p.id].price.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                      </p>
+                    )}
                   </td>
                   <td className="px-5 py-3 text-right text-slate-500 hidden lg:table-cell">{p.vat_rate != null ? `${Number(p.vat_rate)}%` : '—'}</td>
                   <td className="px-5 py-3 text-right hidden xl:table-cell">

@@ -1,12 +1,19 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
-import { getProducts, getCategories } from '@/lib/db'
-import { ProductsTable } from '@/components/admin/ProductsTable'
+import { getProducts, getCategories, isSupabaseConfigured } from '@/lib/db'
+import { createClient } from '@/lib/supabase/server'
+import { getCompetitorPriceMap } from '@/lib/competitors'
+import { ProductsTable, type MarketPrice } from '@/components/admin/ProductsTable'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminProductsPage() {
   const [products, categories] = await Promise.all([getProducts({ adminView: true }), getCategories()])
+  let marketPrices: Record<string, MarketPrice> = {}
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient()
+    marketPrices = await getCompetitorPriceMap(supabase)
+  }
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
@@ -18,7 +25,7 @@ export default async function AdminProductsPage() {
           <Plus size={16} /> Add product
         </Link>
       </div>
-      <ProductsTable initial={products} categories={categories} />
+      <ProductsTable initial={products} categories={categories} marketPrices={marketPrices} />
     </div>
   )
 }

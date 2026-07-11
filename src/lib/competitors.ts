@@ -285,6 +285,43 @@ export type PriceComparison = {
   fetchedAt: string
 }
 
+export type CompetitorListing = {
+  competitor: string
+  name: string
+  price: number
+  previous_price: number | null
+  url: string | null
+  fetched_at: string
+}
+
+/** All competitor listings matched to one product (for the product edit page). */
+export async function getCompetitorPricesForProduct(supabase: AnyClient, productId: string): Promise<CompetitorListing[]> {
+  const { data, error } = await supabase
+    .from('competitor_prices')
+    .select('competitor, name, price, previous_price, url, fetched_at')
+    .eq('matched_product_id', productId)
+    .order('price')
+  if (error) return []
+  return ((data as CompetitorListing[]) ?? []).map((r) => ({ ...r, price: Number(r.price), previous_price: r.previous_price === null ? null : Number(r.previous_price) }))
+}
+
+/** Cheapest competitor price per product (for the products table chip). */
+export async function getCompetitorPriceMap(supabase: AnyClient): Promise<Record<string, { price: number; competitor: string }>> {
+  const { data, error } = await supabase
+    .from('competitor_prices')
+    .select('competitor, price, matched_product_id')
+    .not('matched_product_id', 'is', null)
+  if (error) return {}
+  const map: Record<string, { price: number; competitor: string }> = {}
+  for (const r of ((data as { competitor: string; price: number; matched_product_id: string }[]) ?? [])) {
+    const price = Number(r.price)
+    if (price <= 0) continue
+    const cur = map[r.matched_product_id]
+    if (!cur || price < cur.price) map[r.matched_product_id] = { price, competitor: r.competitor }
+  }
+  return map
+}
+
 export async function getPriceComparisons(supabase: AnyClient): Promise<{
   comparisons: PriceComparison[]
   trackedTotal: number
