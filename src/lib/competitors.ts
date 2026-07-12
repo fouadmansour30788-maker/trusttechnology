@@ -70,13 +70,16 @@ async function getJson(url: string, viaProxy = false): Promise<unknown> {
       })
       if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}${viaProxy ? ' (via proxy)' : ''}`)
       if (kind === 'jina') {
-        // Body looks like "Title: …\nURL Source: …\nMarkdown Content:\n<raw JSON>"
+        // Body looks like "Title: …\nURL Source: …\nMarkdown Content:\n<raw JSON>".
+        // Jina's conversion leaves literal control chars inside JSON strings —
+        // strip them (verified harmless: names/prices parse intact).
         const text = await res.text()
         const marker = text.indexOf('Markdown Content:')
         const body = marker >= 0 ? text.slice(marker + 'Markdown Content:'.length) : text
         const start = body.search(/[[{]/)
         if (start < 0) throw new Error(`no JSON in jina response for ${url}`)
-        return JSON.parse(body.slice(start))
+        // eslint-disable-next-line no-control-regex
+        return JSON.parse(body.slice(start).replace(/[\u0000-\u001f]+/g, ' '))
       }
       return await res.json()
     } catch (e) {
