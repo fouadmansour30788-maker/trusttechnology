@@ -153,8 +153,9 @@ async function fetchWooCompetitor(
           viaProxy
         )) as WooProduct[]
       } catch (e) {
-        // Partial data beats no data — keep what we've collected so far.
         console.error(`[competitor-sync] ${competitor} ${cat.slug} p${page} failed: ${e instanceof Error ? e.message : e}`)
+        // Partial data beats no data — but zero items is a real failure.
+        if (byId.size === 0) throw e
         return [...byId.values()]
       }
       for (const p of batch) {
