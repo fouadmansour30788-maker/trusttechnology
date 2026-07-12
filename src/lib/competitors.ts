@@ -44,22 +44,24 @@ const MAX_PAGES_PER_SOURCE = 20
 // Some competitors 403 requests from datacenter IPs (Vercel) while allowing
 // residential ones — route those through free fetch proxies. The proxies are
 // flaky, so alternate between two and retry; callers must tolerate partial data.
-const PROXIES = [
-  (u: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  (u: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+// Jina's reader wraps the body in a text preamble — parsed below.
+type ProxyAttempt = { target: string; kind: 'raw' | 'jina' }
+const proxyAttempts = (u: string): ProxyAttempt[] => [
+  { target: `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, kind: 'raw' },
+  { target: `https://r.jina.ai/${u}`, kind: 'jina' },
+  { target: `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, kind: 'raw' },
+  { target: `https://r.jina.ai/${u}`, kind: 'jina' },
 ]
 
 async function getJson(url: string, viaProxy = false): Promise<unknown> {
-  const attempts = viaProxy
-    ? [PROXIES[0](url), PROXIES[1](url), PROXIES[0](url)]
-    : [url]
+  const attempts: ProxyAttempt[] = viaProxy ? proxyAttempts(url) : [{ target: url, kind: 'raw' }]
   let lastErr: unknown = null
-  for (const target of attempts) {
+  for (const { target, kind } of attempts) {
     try {
       const res = await fetch(target, {
         headers: {
           'User-Agent': UA,
-          Accept: 'application/json',
+          Accept: kind === 'jina' ? 'text/plain' : 'application/json',
           'Accept-Language': 'en-US,en;q=0.9',
           ...(viaProxy ? {} : { Referer: url.split('/wp-json')[0] + '/' }),
         },
@@ -67,6 +69,15 @@ async function getJson(url: string, viaProxy = false): Promise<unknown> {
         cache: 'no-store',
       })
       if (!res.ok) throw new Error(`HTTP ${res.status} on ${url}${viaProxy ? ' (via proxy)' : ''}`)
+      if (kind === 'jina') {
+        // Body looks like "Title: …\nURL Source: …\nMarkdown Content:\n<raw JSON>"
+        const text = await res.text()
+        const marker = text.indexOf('Markdown Content:')
+        const body = marker >= 0 ? text.slice(marker + 'Markdown Content:'.length) : text
+        const start = body.search(/[[{]/)
+        if (start < 0) throw new Error(`no JSON in jina response for ${url}`)
+        return JSON.parse(body.slice(start))
+      }
       return await res.json()
     } catch (e) {
       lastErr = e
@@ -104,15 +115,25 @@ function decodeEntities(s: string): string {
     .replace(/\s+/g, ' ').trim()
 }
 
-async function fetchWooCompetitor(competitor: string, base: string, viaProxy = false, deadline = Infinity): Promise<CompetitorItem[]> {
+async function fetchWooCompetitor(
+  competitor: string,
+  base: string,
+  viaProxy = false,
+  deadline = Infinity,
+  fallbackCats?: WooCategory[]
+): Promise<CompetitorItem[]> {
   const cats: WooCategory[] = []
   for (let page = 1; page <= 4; page++) {
-    // First page failing fails the source; later pages return what we have.
+    // First page failing fails the source (unless we have a hardcoded fallback);
+    // later pages just return what we have.
     let batch: WooCategory[]
     try {
       batch = (await getJson(`${base}/wp-json/wc/store/v1/products/categories?per_page=100&page=${page}`, viaProxy)) as WooCategory[]
     } catch (e) {
-      if (page === 1) throw e
+      if (page === 1) {
+        if (!fallbackCats) throw e
+        cats.push(...fallbackCats)
+      }
       break
     }
     cats.push(...batch)
@@ -259,7 +280,14 @@ export async function syncCompetitorPrices(supabase: AnyClient): Promise<SyncSum
     fetchWooCompetitor('mojitech', 'https://mojitech.net', false, deadline),
     fetchWooCompetitor('pcandparts', 'https://pcandparts.com', false, deadline),
     fetchAyoub(deadline),
-    fetchWooCompetitor('multitech', 'https://multitech-lb.com', true, deadline), // 403s datacenter IPs → proxy
+    // Multitech 403s datacenter IPs → proxied; category IDs hardcoded (verified 2026-07-12)
+    // so a failed categories request doesn't kill the whole source.
+    fetchWooCompetitor('multitech', 'https://multitech-lb.com', true, deadline, [
+      { id: 4156, slug: 'all-laptops', name: 'All Laptops', count: 722 },
+      { id: 106, slug: 'monitors', name: 'Monitors', count: 31 },
+      { id: 90, slug: 'printers', name: 'Printers', count: 12 },
+      { id: 3299, slug: 'ink-and-toners', name: 'Ink and Toners', count: 35 },
+    ]),
     fetchWooCompetitor('mediatech', 'https://mediatechlb.com', false, deadline),
   ])
   const names = ['mojitech', 'pcandparts', 'ayoubcomputers', 'multitech', 'mediatech']
