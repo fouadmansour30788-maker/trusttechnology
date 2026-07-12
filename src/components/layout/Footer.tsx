@@ -51,7 +51,7 @@ export function Footer() {
               {[
                 { label: 'Bundle & Save', href: '/bundles' },
                 { label: 'Apple Collection', href: '/categories/apple' },
-                { label: 'Deals', href: '/products?sale=true' },
+                { label: 'Deals', href: '/deals' },
                 { label: 'New Arrivals', href: '/products?sort=newest' },
               ].map((item) => (
                 <li key={item.href}>

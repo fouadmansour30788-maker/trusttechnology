@@ -1,6 +1,6 @@
 'use client'
 import { useCartStore } from '@/store/cart'
-import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, MessageCircle } from 'lucide-react'
+import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, MessageCircle, Truck } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -97,10 +97,22 @@ export default function CartPage() {
             <span className="text-slate-900 font-bold text-xl">${totalPrice().toFixed(2)}</span>
           </div>
 
+          {totalPrice() > 0 && (
+            <Link
+              href="/checkout"
+              className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+            >
+              <Truck size={16} /> Checkout — cash on delivery
+            </Link>
+          )}
           <a
             href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("I'd like to order: " + items.map((i) => `${i.product.name} x${i.quantity}`).join(', '))}`}
             target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+            className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold transition-colors ${
+              totalPrice() > 0
+                ? 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                : 'bg-blue-600 hover:bg-blue-700 text-white'
+            }`}
           >
             <MessageCircle size={16} /> Order via WhatsApp
           </a>

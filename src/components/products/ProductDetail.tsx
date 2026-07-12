@@ -78,9 +78,14 @@ export function ProductDetail({ product: p }: { product: Product }) {
           {onRequest ? (
             <p className="text-2xl font-bold text-blue-600">Call for price</p>
           ) : (
-            <div className="flex items-baseline gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
               <span className="text-4xl font-bold text-slate-900">${p.price.toFixed(2)}</span>
               {p.compare_at_price && <span className="text-slate-400 line-through text-xl">${p.compare_at_price.toFixed(2)}</span>}
+              {p.bestPrice && (
+                <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-xs font-semibold rounded-full px-2.5 py-1">
+                  🇱🇧 Best price in Lebanon
+                </span>
+              )}
             </div>
           )}
 

@@ -70,11 +70,14 @@ export function ProductCard({ product }: Props) {
             <span className="text-4xl">📦</span>
           </div>
         )}
-        {discount && (
-          <Badge variant="red" className="absolute top-2 left-2">
-            -{discount}%
-          </Badge>
-        )}
+        <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
+          {discount && <Badge variant="red">-{discount}%</Badge>}
+          {product.bestPrice && (
+            <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold rounded-full px-2 py-0.5 shadow-sm">
+              🇱🇧 Best price in Lebanon
+            </span>
+          )}
+        </div>
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="text-white text-sm font-medium">Out of Stock</span>

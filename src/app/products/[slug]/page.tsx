@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getProductBySlug } from '@/lib/db'
+import { getBestPriceIds } from '@/lib/best-price'
 import { ProductDetail } from '@/components/products/ProductDetail'
 import { SITE_URL } from '@/lib/site'
 
@@ -21,8 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const product = await getProductBySlug(slug)
-  if (!product) notFound()
+  const [fetched, bestIds] = await Promise.all([getProductBySlug(slug), getBestPriceIds()])
+  if (!fetched) notFound()
+  const product = bestIds.has(fetched.id) ? { ...fetched, bestPrice: true } : fetched
 
   const onRequest = product.priceOnRequest || product.price === 0
   const ld = {

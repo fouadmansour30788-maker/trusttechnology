@@ -1,6 +1,7 @@
 'use client'
-import { X, ShoppingCart, Plus, Minus, Trash2, MessageCircle } from 'lucide-react'
+import { X, ShoppingCart, Plus, Minus, Trash2, MessageCircle, Truck } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 
@@ -103,9 +104,22 @@ export function CartDrawer() {
                 {callCount} item{callCount > 1 ? 's' : ''} priced on request — included in your WhatsApp quote.
               </p>
             )}
+            {pricedTotal > 0 && (
+              <Link
+                href="/checkout"
+                onClick={closeCart}
+                className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/20 transition-colors"
+              >
+                <Truck size={18} /> Checkout — cash on delivery
+              </Link>
+            )}
             <button
               onClick={buildQuote}
-              className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-blue-600/20 transition-colors"
+              className={`w-full inline-flex items-center justify-center gap-2 font-semibold py-3 rounded-xl transition-colors ${
+                pricedTotal > 0
+                  ? 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20'
+              }`}
             >
               <MessageCircle size={18} /> Send quote on WhatsApp
             </button>

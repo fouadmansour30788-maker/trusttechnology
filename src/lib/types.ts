@@ -38,6 +38,8 @@ export type Product = {
   tags?: Tag[]
   /** True when the price is "Call" in the price list (shown as "Call for price"). */
   priceOnRequest?: boolean
+  /** Verifiably cheaper than all matched competitors — "Best price in Lebanon" badge. */
+  bestPrice?: boolean
   /** Internal purchase cost (admin only — never shown to customers). */
   cost?: number | null
   /** VAT rate % (Lebanon standard 11%). */

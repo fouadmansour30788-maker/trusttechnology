@@ -1,6 +1,7 @@
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts, getCategories } from '@/lib/db'
+import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
@@ -32,7 +33,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const { tags: tagFilter, sort } = await searchParams
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
 
-  const [all, categories] = await Promise.all([getProducts(), getCategories()])
+  const [fetched, categories, bestIds] = await Promise.all([getProducts(), getCategories(), getBestPriceIds()])
+  const all = withBestPrice(fetched, bestIds)
 
   // Resolve which category identifiers count as "in this category".
   let matchIds: Set<string>
