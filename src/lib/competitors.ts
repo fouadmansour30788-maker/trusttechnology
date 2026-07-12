@@ -152,8 +152,9 @@ async function fetchWooCompetitor(
           `${base}/wp-json/wc/store/v1/products?category=${cat.id}&per_page=100&page=${page}`,
           viaProxy
         )) as WooProduct[]
-      } catch {
+      } catch (e) {
         // Partial data beats no data — keep what we've collected so far.
+        console.error(`[competitor-sync] ${competitor} ${cat.slug} p${page} failed: ${e instanceof Error ? e.message : e}`)
         return [...byId.values()]
       }
       for (const p of batch) {
