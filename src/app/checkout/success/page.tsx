@@ -28,6 +28,9 @@ export default async function CheckoutSuccessPage({ searchParams }: { searchPara
         >
           <MessageCircle size={16} /> Chat with us on WhatsApp
         </a>
+        <Link href="/track" className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-6 py-3 rounded-xl transition-colors">
+          Track your order
+        </Link>
         <Link href="/products" className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold px-6 py-3 rounded-xl transition-colors">
           Continue shopping <ArrowRight size={15} />
         </Link>

@@ -128,7 +128,9 @@ export function ProductDetail({ product: p }: { product: Product }) {
                   <span className="px-4 text-slate-900 font-medium w-12 text-center">{qty}</span>
                   <button onClick={() => setQty(qty + 1)} className="px-4 py-3 text-slate-500 hover:bg-slate-100">+</button>
                 </div>
-                <span className="text-slate-400 text-sm">{p.stock > 0 ? `${p.stock} in stock` : 'Out of stock'}</span>
+                <span className={`text-sm ${p.stock > 0 && p.stock <= 3 ? 'text-amber-600 font-semibold' : 'text-slate-400'}`}>
+                  {p.stock === 0 ? 'Out of stock' : p.stock <= 3 ? `Only ${p.stock} left in stock` : `${p.stock} in stock`}
+                </span>
               </div>
               <Button fullWidth size="lg" onClick={() => addItem(cartProduct, qty)} disabled={p.stock === 0}>
                 <ShoppingCart size={18} /> Add to cart — ${(p.price * qty).toFixed(2)}

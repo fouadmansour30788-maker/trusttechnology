@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
+import { DELIVERY_REGIONS, deliveryFee } from '@/lib/delivery'
 
 const WHATSAPP = '96171998983'
 
@@ -12,12 +13,15 @@ export default function CheckoutPage() {
   const router = useRouter()
   const { items, removeItem } = useCartStore()
   const [form, setForm] = useState({ name: '', phone: '', address: '', note: '', website: '' })
+  const [region, setRegion] = useState<string>(DELIVERY_REGIONS[0].id)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const priced = items.filter((i) => !i.product.priceOnRequest && i.product.price > 0)
   const callItems = items.filter((i) => i.product.priceOnRequest || i.product.price === 0)
-  const total = priced.reduce((s, i) => s + i.product.price * i.quantity, 0)
+  const subtotal = priced.reduce((s, i) => s + i.product.price * i.quantity, 0)
+  const { fee } = deliveryFee(region, subtotal)
+  const total = subtotal + fee
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -29,6 +33,7 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
+          region,
           items: priced.map((i) => ({ slug: i.product.slug, quantity: i.quantity })),
         }),
       })
@@ -84,6 +89,15 @@ export default function CheckoutPage() {
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-400" placeholder="+961 71 123 456" inputMode="tel" />
           </div>
           <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Delivery region</label>
+            <select value={region} onChange={(e) => setRegion(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-400">
+              {DELIVERY_REGIONS.map((r) => (
+                <option key={r.id} value={r.id}>{r.label} — ${r.fee} delivery</option>
+              ))}
+            </select>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Delivery address</label>
             <textarea required value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} rows={3}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-400 resize-none" placeholder="City / area, street, building…" />
@@ -120,9 +134,19 @@ export default function CheckoutPage() {
               </div>
             ))}
           </div>
-          <div className="border-t border-slate-100 pt-4 flex justify-between">
-            <span className="font-bold text-slate-900">Total (cash on delivery)</span>
-            <span className="font-bold text-slate-900 text-xl tabular-nums">${total.toFixed(2)}</span>
+          <div className="border-t border-slate-100 pt-4 space-y-1.5">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Subtotal</span>
+              <span className="text-slate-700 tabular-nums">${subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Delivery</span>
+              <span className="text-slate-700 tabular-nums">{fee === 0 ? 'Free' : `$${fee.toFixed(2)}`}</span>
+            </div>
+            <div className="flex justify-between pt-2">
+              <span className="font-bold text-slate-900">Total (cash on delivery)</span>
+              <span className="font-bold text-slate-900 text-xl tabular-nums">${total.toFixed(2)}</span>
+            </div>
           </div>
           {callItems.length > 0 && (
             <div className="bg-blue-50 rounded-xl px-4 py-3 text-xs text-blue-800">

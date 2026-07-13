@@ -12,12 +12,17 @@ const ChatWidget = dynamic(
   () => import('@/components/ai/ChatWidget').then((m) => m.ChatWidget),
   { ssr: false }
 )
+const CompareBar = dynamic(
+  () => import('@/components/products/CompareBar').then((m) => m.CompareBar),
+  { ssr: false }
+)
 
 export function ClientWidgets() {
   return (
     <>
       <CommandPalette />
       <ChatWidget />
+      <CompareBar />
     </>
   )
 }

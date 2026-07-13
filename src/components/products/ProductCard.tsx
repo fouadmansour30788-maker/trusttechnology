@@ -1,10 +1,11 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, Star, MessageCircle } from 'lucide-react'
+import { ShoppingCart, Star, MessageCircle, Scale } from 'lucide-react'
 import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/store/cart'
+import { useCompareStore } from '@/store/compare'
 import { Badge } from '@/components/ui/badge'
 
 type Props = { product: Product }
@@ -13,6 +14,8 @@ const WHATSAPP = '96171998983'
 
 export function ProductCard({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem)
+  const toggleCompare = useCompareStore((s) => s.toggle)
+  const comparing = useCompareStore((s) => s.items.some((p) => p.id === product.id))
   const onRequest = product.priceOnRequest || product.price === 0
   // Show the 3 most useful specs of ANY product (laptops/desktops → RAM/Storage/VGA,
   // monitors → Resolution/Connectivity, toner → Capacity, etc.), falling back to
@@ -78,6 +81,15 @@ export function ProductCard({ product }: Props) {
             </span>
           )}
         </div>
+        <button
+          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
+          title={comparing ? 'Remove from compare' : 'Add to compare'}
+          className={`absolute top-2 right-2 z-10 w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
+            comparing ? 'bg-blue-600 text-white' : 'bg-white/90 text-slate-400 hover:text-blue-600 border border-slate-200'
+          }`}
+        >
+          <Scale size={13} />
+        </button>
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="text-white text-sm font-medium">Out of Stock</span>
@@ -117,6 +129,9 @@ export function ProductCard({ product }: Props) {
             <Star key={i} size={10} className="fill-blue-400 text-blue-400" />
           ))}
           <span className="text-zinc-500 text-xs ml-1">(4.8)</span>
+          {product.stock > 0 && product.stock <= 3 && !onRequest && (
+            <span className="ml-auto text-[10px] font-semibold text-amber-600">Only {product.stock} left</span>
+          )}
         </div>
 
         <div className="mt-auto flex items-center justify-between">

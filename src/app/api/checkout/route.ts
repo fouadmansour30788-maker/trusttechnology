@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { isSupabaseConfigured } from '@/lib/db'
+import { deliveryFee } from '@/lib/delivery'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -10,6 +11,7 @@ type CheckoutBody = {
   name?: string
   phone?: string
   address?: string
+  region?: string
   note?: string
   website?: string // honeypot — real users never fill this
   items?: CheckoutItem[]
@@ -80,6 +82,8 @@ export async function POST(req: Request) {
     lines.push({ product_id: p.id, quantity: qty, unit_price: Number(p.price) })
   }
   const subtotal = Math.round(lines.reduce((s, l) => s + l.unit_price * l.quantity, 0) * 100) / 100
+  const { region, fee } = deliveryFee(body.region ?? '', subtotal)
+  const total = Math.round((subtotal + fee) * 100) / 100
 
   // Find-or-create the customer by phone.
   let customerId: string | null = null
@@ -99,12 +103,13 @@ export async function POST(req: Request) {
   const orderNotes = [
     'Website order — Cash on Delivery',
     `Deliver to: ${address}`,
+    `Delivery region: ${region.label} — fee $${fee}`,
     note ? `Customer note: ${note}` : null,
   ].filter(Boolean).join('\n')
 
   const { data: order, error: orderErr } = await supabase
     .from('sales_orders')
-    .insert({ customer_id: customerId, status: 'draft', subtotal, discount: 0, total: subtotal, notes: orderNotes })
+    .insert({ customer_id: customerId, status: 'draft', subtotal, discount: 0, total, notes: orderNotes })
     .select('id, reference')
     .single()
   if (orderErr || !order) return NextResponse.json({ error: 'unavailable' }, { status: 500 })
@@ -118,5 +123,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'unavailable' }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true, reference, total: subtotal })
+  return NextResponse.json({ ok: true, reference, total })
 }
