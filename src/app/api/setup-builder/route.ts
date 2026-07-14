@@ -71,7 +71,7 @@ ${catalog}`
     const parsed = JSON.parse(text) as { intro?: string; items?: { slug?: string; role?: string; reason?: string }[] }
 
     const seen = new Set<string>()
-    const items = []
+    const items: { product: (typeof priced)[number]; role: string; reason: string }[] = []
     for (const it of parsed.items ?? []) {
       const p = it.slug ? priced.find((x) => x.slug === it.slug) : undefined
       if (!p || seen.has(p.slug)) continue
