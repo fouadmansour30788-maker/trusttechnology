@@ -17,8 +17,12 @@ export type Analytics = {
     outOfStock: number
     revenueThisMonth: KpiDelta
     ordersThisMonth: KpiDelta
+    /** Estimated gross profit from items whose product has a cost set; null when no cost data. */
+    grossProfit: number | null
+    marginPct: number | null
+    costCoverage: number
   }
-  monthly: { month: string; revenue: number; orders: number; aov: number }[]
+  monthly: { month: string; revenue: number; orders: number; aov: number; profit: number }[]
   categoryRevenue: { name: string; revenue: number }[]
   statusMix: { status: string; count: number }[]
   weekday: { day: string; orders: number; revenue: number }[]
@@ -35,18 +39,19 @@ const EMPTY: Analytics = {
     revenue: 0, orders: 0, aov: 0, unitsSold: 0, customers: 0,
     fulfillmentRate: null, inventoryValue: 0, lowStock: 0, outOfStock: 0,
     revenueThisMonth: { value: 0, pct: null }, ordersThisMonth: { value: 0, pct: null },
+    grossProfit: null, marginPct: null, costCoverage: 0,
   },
   monthly: [], categoryRevenue: [], statusMix: [], weekday: [], radar: [],
   funnel: [], topProducts: [], topCustomers: [], analysis: [], recommendations: [],
 }
 
 type OrderRow = {
-  total: number; order_date: string; status: string
+  id: string; total: number; order_date: string; status: string
   customer: { name: string } | null
 }
-type ItemRow = { product_id: string | null; quantity: number; unit_price: number }
+type ItemRow = { so_id: string | null; product_id: string | null; quantity: number; unit_price: number }
 type ProductRow = {
-  id: string; name: string; stock: number; price: number
+  id: string; name: string; stock: number; price: number; cost: number | null
   is_active: boolean; primary_category_id: string | null
 }
 type CategoryRow = { id: string; name: string }
@@ -62,9 +67,9 @@ export async function getAnalytics(): Promise<Analytics> {
   try {
     const s = await createClient()
     const [ordersRes, itemsRes, prodRes, catRes, custRes, poRes, compRes, adminStats] = await Promise.all([
-      s.from('sales_orders').select('total, order_date, status, customer:customers(name)'),
-      s.from('sales_order_items').select('product_id, quantity, unit_price'),
-      s.from('products').select('id, name, stock, price, is_active, primary_category_id'),
+      s.from('sales_orders').select('id, total, order_date, status, customer:customers(name)'),
+      s.from('sales_order_items').select('so_id, product_id, quantity, unit_price'),
+      s.from('products').select('id, name, stock, price, cost, is_active, primary_category_id'),
       s.from('categories').select('id, name'),
       s.from('customers').select('id', { count: 'exact', head: true }),
       s.from('purchase_orders').select('status, total, expected_date'),
@@ -105,17 +110,42 @@ export async function getAnalytics(): Promise<Analytics> {
       monthIndex.set(monthKey(d), monthly.length)
       monthly.push({
         month: d.toLocaleString('en', { month: 'short', ...(d.getMonth() === 0 ? { year: '2-digit' } : {}) }),
-        revenue: 0, orders: 0, aov: 0,
+        revenue: 0, orders: 0, aov: 0, profit: 0,
       })
     }
+    const orderById = new Map(orders.map((o) => [o.id, o]))
     for (const o of orders) {
       const idx = monthIndex.get(monthKey(new Date(o.order_date)))
       if (idx === undefined) continue
       monthly[idx].revenue += Number(o.total)
       monthly[idx].orders += 1
     }
+
+    // Estimated gross profit — items whose product carries a cost, joined to
+    // their (non-cancelled) order for the monthly series.
+    let grossProfit = 0
+    let costedRevenue = 0
+    let unitsWithCost = 0
+    for (const it of items) {
+      const order = it.so_id ? orderById.get(it.so_id) : undefined
+      if (it.so_id && !order) continue // cancelled order
+      const p = it.product_id ? productById.get(it.product_id) : undefined
+      const cost = p?.cost === null || p?.cost === undefined ? null : Number(p.cost)
+      if (cost === null || cost <= 0) continue
+      const lineProfit = (Number(it.unit_price) - cost) * it.quantity
+      grossProfit += lineProfit
+      costedRevenue += Number(it.unit_price) * it.quantity
+      unitsWithCost += it.quantity
+      if (order) {
+        const idx = monthIndex.get(monthKey(new Date(order.order_date)))
+        if (idx !== undefined) monthly[idx].profit += lineProfit
+      }
+    }
+    const costCoverage = unitsSold > 0 ? Math.round((unitsWithCost / unitsSold) * 100) : 0
+    const hasProfitData = unitsWithCost > 0
     for (const m of monthly) {
       m.revenue = Math.round(m.revenue)
+      m.profit = Math.round(m.profit)
       m.aov = m.orders ? Math.round(m.revenue / m.orders) : 0
     }
     const cur = monthly[monthly.length - 1]
@@ -240,6 +270,22 @@ export async function getAnalytics(): Promise<Analytics> {
 
       const bestDay = weekday.reduce((a, b) => (b.orders > a.orders ? b : a))
       if (bestDay.orders > 1) analysis.push({ tone: 'info', text: `${bestDay.day} is your busiest day (${bestDay.orders} orders, ${money(bestDay.revenue)}).` })
+
+      if (hasProfitData && costedRevenue > 0) {
+        const margin = Math.round((grossProfit / costedRevenue) * 100)
+        analysis.push({
+          tone: margin >= 15 ? 'good' : margin >= 5 ? 'info' : 'warning',
+          text: `Estimated gross margin: ${margin}% (${money(Math.round(grossProfit))} profit on ${money(Math.round(costedRevenue))} of costed sales — cost data covers ${costCoverage}% of units sold).`,
+        })
+        const soldBelowCost = items.some((it) => {
+          const p = it.product_id ? productById.get(it.product_id) : undefined
+          const c = p?.cost === null || p?.cost === undefined ? null : Number(p.cost)
+          return c !== null && c > 0 && Number(it.unit_price) < c
+        })
+        if (soldBelowCost) analysis.push({ tone: 'critical', text: 'Some items were sold below their recorded cost — check pricing or fix wrong cost values.' })
+      } else if (orders.length > 0) {
+        recommendations.push({ text: 'Add cost prices to your products to unlock profit & margin analytics.', href: '/admin/products' })
+      }
     }
 
     if (lowStock > 0) {
@@ -293,6 +339,9 @@ export async function getAnalytics(): Promise<Analytics> {
         aov: orders.length ? Math.round(revenue / orders.length) : 0,
         unitsSold, customers, fulfillmentRate, inventoryValue, lowStock, outOfStock,
         revenueThisMonth, ordersThisMonth,
+        grossProfit: hasProfitData ? Math.round(grossProfit) : null,
+        marginPct: hasProfitData && costedRevenue > 0 ? Math.round((grossProfit / costedRevenue) * 100) : null,
+        costCoverage,
       },
       monthly, categoryRevenue, statusMix, weekday, radar, funnel,
       topProducts, topCustomers, analysis, recommendations,

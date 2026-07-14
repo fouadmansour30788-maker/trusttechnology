@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { getProducts } from '@/lib/db'
+import { GUIDES } from '@/lib/guides'
 import { SITE_URL } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
@@ -7,7 +8,8 @@ export const dynamic = 'force-dynamic'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
   const routes = [
-    '', '/products', '/bundles', '/recommend', '/setup-builder', '/about', '/deals', '/warranty', '/returns', '/track',
+    '', '/products', '/bundles', '/recommend', '/setup-builder', '/about', '/deals', '/warranty', '/returns', '/track', '/repairs', '/faq', '/guides',
+    ...GUIDES.map((g) => `/guides/${g.slug}`),
     '/categories/computing', '/categories/laptops', '/categories/desktops',
     '/categories/displays', '/categories/monitors', '/categories/printing',
     '/categories/ink-toner', '/categories/professional', '/categories/pos-systems',

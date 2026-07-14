@@ -1,6 +1,6 @@
 'use client'
 import {
-  ResponsiveContainer, AreaChart, Area, LineChart, Line, BarChart, Bar, Cell,
+  ResponsiveContainer, ComposedChart, Area, LineChart, Line, BarChart, Bar, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   FunnelChart, Funnel, LabelList,
@@ -36,26 +36,45 @@ export function Card({ title, subtitle, children, className = '' }: {
   )
 }
 
-// ── Revenue trend (area) ────────────────────────────────────────────────
+// ── Revenue trend (area) + estimated profit line ────────────────────────
+const AQUA = '#1baf7a'
+
 export function RevenueTrend({ data }: { data: Analytics['monthly'] }) {
   if (data.every((d) => d.revenue === 0)) return <Empty label="No revenue recorded yet." />
+  const hasProfit = data.some((d) => d.profit !== 0)
   return (
-    <ResponsiveContainer width="100%" height={260}>
-      <AreaChart data={data} margin={{ top: 6, right: 8, bottom: 0, left: -4 }}>
-        <defs>
-          <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={BLUE} stopOpacity={0.18} />
-            <stop offset="100%" stopColor={BLUE} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-        <XAxis dataKey="month" tick={tick} axisLine={false} tickLine={false} />
-        <YAxis tick={tick} axisLine={false} tickLine={false} width={52} tickFormatter={moneyAxis} />
-        <Tooltip contentStyle={tip} formatter={(v) => [money(Number(v)), 'Revenue']} />
-        <Area type="monotone" dataKey="revenue" stroke={BLUE} strokeWidth={2} fill="url(#revFill)"
-          dot={{ r: 3, fill: BLUE, strokeWidth: 0 }} activeDot={{ r: 5 }} />
-      </AreaChart>
-    </ResponsiveContainer>
+    <div>
+      <ResponsiveContainer width="100%" height={hasProfit ? 240 : 260}>
+        <ComposedChart data={data} margin={{ top: 6, right: 8, bottom: 0, left: -4 }}>
+          <defs>
+            <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={BLUE} stopOpacity={0.18} />
+              <stop offset="100%" stopColor={BLUE} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+          <XAxis dataKey="month" tick={tick} axisLine={false} tickLine={false} />
+          <YAxis tick={tick} axisLine={false} tickLine={false} width={52} tickFormatter={moneyAxis} />
+          <Tooltip contentStyle={tip} formatter={(v, name) => [money(Number(v)), name === 'profit' ? 'Est. profit' : 'Revenue']} />
+          <Area type="monotone" dataKey="revenue" stroke={BLUE} strokeWidth={2} fill="url(#revFill)"
+            dot={{ r: 3, fill: BLUE, strokeWidth: 0 }} activeDot={{ r: 5 }} />
+          {hasProfit && (
+            <Line type="monotone" dataKey="profit" stroke={AQUA} strokeWidth={2}
+              dot={{ r: 3, fill: AQUA, strokeWidth: 0 }} activeDot={{ r: 5 }} />
+          )}
+        </ComposedChart>
+      </ResponsiveContainer>
+      {hasProfit && (
+        <div className="flex gap-4 mt-1">
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+            <span className="w-2 h-2 rounded-full" style={{ background: BLUE }} /> Revenue
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500">
+            <span className="w-2 h-2 rounded-full" style={{ background: AQUA }} /> Est. profit
+          </span>
+        </div>
+      )}
+    </div>
   )
 }
 

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar } from 'lucide-react'
+import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar, Wrench, MessageSquare } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isSupabaseConfigured } from '@/lib/db'
 import { signOut } from './actions'
@@ -12,6 +12,8 @@ const NAV = [
   { label: 'Inventory', href: '/admin/inventory', icon: Boxes },
   { label: 'Purchase Orders', href: '/admin/purchase-orders', icon: ClipboardList },
   { label: 'Suppliers', href: '/admin/suppliers', icon: Truck },
+  { label: 'Repairs', href: '/admin/repairs', icon: Wrench },
+  { label: 'Q&A', href: '/admin/questions', icon: MessageSquare },
   { label: 'Reports', href: '/admin/reports', icon: BarChart3 },
   { label: 'Competitors', href: '/admin/competitors', icon: Radar },
 ]
@@ -46,7 +48,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col shrink-0">
+      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col shrink-0 print:hidden">
         <div className="px-4 py-5 border-b border-slate-200">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">

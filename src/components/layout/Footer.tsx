@@ -71,8 +71,11 @@ export function Footer() {
                 { label: 'About Us', href: '/about' },
                 { label: 'Contact', href: '/about#contact' },
                 { label: 'Track Order', href: '/track' },
+                { label: 'Repairs & Service', href: '/repairs' },
                 { label: 'Warranty Policy', href: '/warranty' },
                 { label: 'Returns & Exchange', href: '/returns' },
+                { label: 'FAQ', href: '/faq' },
+                { label: 'Buying Guides', href: '/guides' },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="hover:text-blue-600 transition-colors">

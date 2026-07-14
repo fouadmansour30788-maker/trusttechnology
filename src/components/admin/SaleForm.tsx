@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react'
 import type { Customer, ProductLite } from '@/lib/erp'
 import { createSale } from '@/app/admin/erp-actions'
+import { BarcodeScanner } from './BarcodeScanner'
 
 type Line = { product_id: string; quantity: number; unit_price: number }
 
@@ -27,6 +28,17 @@ export function SaleForm({ customers, products }: { customers: Customer[]; produ
   function pickProduct(i: number, product_id: string) {
     const prod = products.find((p) => p.id === product_id)
     setLine(i, { product_id, unit_price: prod && prod.price > 0 ? Number(prod.price) : lines[i].unit_price })
+  }
+
+  function addScanned(prod: ProductLite) {
+    setLines((prev) => {
+      const existing = prev.findIndex((l) => l.product_id === prod.id)
+      if (existing >= 0) return prev.map((l, j) => (j === existing ? { ...l, quantity: l.quantity + 1 } : l))
+      const empty = prev.findIndex((l) => !l.product_id)
+      const line = { product_id: prod.id, quantity: 1, unit_price: prod.price > 0 ? Number(prod.price) : 0 }
+      if (empty >= 0) return prev.map((l, j) => (j === empty ? line : l))
+      return [...prev, line]
+    })
   }
 
   function submit() {
@@ -59,6 +71,7 @@ export function SaleForm({ customers, products }: { customers: Customer[]; produ
 
       <div className="bg-white border border-slate-200 rounded-2xl p-5">
         <p className="text-xs font-medium text-slate-500 mb-3">Items</p>
+        <BarcodeScanner products={products} onFound={addScanned} />
         <div className="space-y-2">
           {lines.map((l, i) => {
             const prod = products.find((p) => p.id === l.product_id)

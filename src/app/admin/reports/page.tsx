@@ -37,6 +37,12 @@ export default async function ReportsPage() {
     { label: 'Customers', value: String(kpis.customers), icon: Users },
     { label: 'Inventory value', value: money(kpis.inventoryValue), icon: Warehouse },
     { label: 'Low / out of stock', value: `${kpis.lowStock} / ${kpis.outOfStock}`, icon: Boxes },
+    ...(kpis.grossProfit !== null
+      ? [
+          { label: `Est. gross profit · ${kpis.costCoverage}% cost coverage`, value: money(kpis.grossProfit), icon: TrendingUp },
+          { label: 'Gross margin', value: `${kpis.marginPct}%`, icon: DollarSign },
+        ]
+      : []),
   ]
 
   return (
@@ -127,6 +133,7 @@ export default async function ReportsPage() {
                 <th className="py-2 pr-4 font-semibold">Month</th>
                 <th className="py-2 pr-4 font-semibold text-right">Orders</th>
                 <th className="py-2 pr-4 font-semibold text-right">Revenue</th>
+                <th className="py-2 pr-4 font-semibold text-right">Est. profit</th>
                 <th className="py-2 font-semibold text-right">Avg order</th>
               </tr>
             </thead>
@@ -136,6 +143,7 @@ export default async function ReportsPage() {
                   <td className="py-2 pr-4 text-slate-700 font-medium">{m.month}</td>
                   <td className="py-2 pr-4 text-right tabular-nums text-slate-600">{m.orders}</td>
                   <td className="py-2 pr-4 text-right tabular-nums text-slate-600">{money(m.revenue)}</td>
+                  <td className="py-2 pr-4 text-right tabular-nums text-slate-600">{m.profit !== 0 ? money(m.profit) : '—'}</td>
                   <td className="py-2 text-right tabular-nums text-slate-600">{money(m.aov)}</td>
                 </tr>
               ))}

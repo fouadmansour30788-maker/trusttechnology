@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getProductBySlug, getProducts } from '@/lib/db'
+import { getProductBySlug, getProducts, isSupabaseConfigured } from '@/lib/db'
+import { createClient } from '@/lib/supabase/server'
 import { getBestPriceIds, withBestPrice, getMarketRange } from '@/lib/best-price'
 import { ProductDetail } from '@/components/products/ProductDetail'
 import { ProductCard } from '@/components/products/ProductCard'
+import { ProductQA, type PublishedQA } from '@/components/products/ProductQA'
 import { SITE_URL } from '@/lib/site'
 import type { Product } from '@/lib/types'
 
@@ -49,6 +51,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const rawRange = product.price > 0 ? await getMarketRange(product.id) : null
   const marketRange = rawRange && product.price <= rawRange.min * 1.03 ? rawRange : null
 
+  // Published Q&A (anon RLS allows reading published rows only)
+  let questions: PublishedQA[] = []
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('product_questions')
+      .select('name, question, answer, answered_at')
+      .eq('product_id', product.id)
+      .eq('is_published', true)
+      .not('answer', 'is', null)
+      .order('answered_at', { ascending: false })
+      .limit(20)
+    questions = (data as PublishedQA[]) ?? []
+  }
+
   const onRequest = product.priceOnRequest || product.price === 0
   const ld = {
     '@context': 'https://schema.org',
@@ -79,6 +96,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
+      <ProductQA productId={product.id} questions={questions} />
     </>
   )
 }
