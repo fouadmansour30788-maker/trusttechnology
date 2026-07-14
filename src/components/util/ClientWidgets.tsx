@@ -16,6 +16,10 @@ const CompareBar = dynamic(
   () => import('@/components/products/CompareBar').then((m) => m.CompareBar),
   { ssr: false }
 )
+const SocialProofToasts = dynamic(
+  () => import('@/components/util/SocialProofToasts').then((m) => m.SocialProofToasts),
+  { ssr: false }
+)
 
 export function ClientWidgets() {
   return (
@@ -23,6 +27,7 @@ export function ClientWidgets() {
       <CommandPalette />
       <ChatWidget />
       <CompareBar />
+      <SocialProofToasts />
     </>
   )
 }

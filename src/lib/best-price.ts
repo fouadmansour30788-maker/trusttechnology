@@ -36,6 +36,36 @@ export async function getBestPriceIds(): Promise<Set<string>> {
   }
 }
 
+export type MarketRange = { min: number; max: number; stores: number }
+
+/**
+ * Anonymous market range for one product from matched competitor listings.
+ * Only meant to be displayed when it flatters us — the caller decides.
+ */
+export async function getMarketRange(productId: string): Promise<MarketRange | null> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) return null
+  try {
+    const s = createServiceClient(url, key, { auth: { persistSession: false } })
+    const { data } = await s
+      .from('competitor_prices')
+      .select('competitor, price')
+      .eq('matched_product_id', productId)
+      .gt('price', 0)
+    const rows = (data as { competitor: string; price: number }[]) ?? []
+    if (rows.length < 2) return null
+    const prices = rows.map((r) => Number(r.price))
+    return {
+      min: Math.min(...prices),
+      max: Math.max(...prices),
+      stores: new Set(rows.map((r) => r.competitor)).size,
+    }
+  } catch {
+    return null
+  }
+}
+
 /** Stamp the bestPrice flag onto a product list. */
 export function withBestPrice<T extends Product>(products: T[], ids: Set<string>): T[] {
   if (ids.size === 0) return products

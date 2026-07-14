@@ -49,6 +49,7 @@ export function Footer() {
             <p className="text-sm font-semibold text-slate-900 mb-4">Store</p>
             <ul className="space-y-2 text-sm text-slate-500">
               {[
+                { label: 'AI Setup Builder', href: '/setup-builder' },
                 { label: 'Bundle & Save', href: '/bundles' },
                 { label: 'Apple Collection', href: '/categories/apple' },
                 { label: 'Deals', href: '/deals' },

@@ -3,9 +3,26 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { Search, CornerDownLeft, Sparkles, Package } from 'lucide-react'
+import { Search, CornerDownLeft, Sparkles, Package, Mic } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CATALOG_PRODUCTS } from '@/data/products'
+
+// Web Speech API (Chrome/Edge/Android). Feature-detected — the mic simply
+// doesn't render where unsupported.
+type SpeechRecognitionLike = {
+  lang: string
+  interimResults: boolean
+  onresult: ((e: { results: { [i: number]: { [j: number]: { transcript: string } } } }) => void) | null
+  onend: (() => void) | null
+  onerror: (() => void) | null
+  start: () => void
+  stop: () => void
+}
+function getSpeechRecognition(): (new () => SpeechRecognitionLike) | null {
+  if (typeof window === 'undefined') return null
+  const w = window as unknown as { SpeechRecognition?: new () => SpeechRecognitionLike; webkitSpeechRecognition?: new () => SpeechRecognitionLike }
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null
+}
 
 type Hit = (typeof CATALOG_PRODUCTS)[number]
 
@@ -27,8 +44,32 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState('')
   const [active, setActive] = useState(0)
+  const [listening, setListening] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  const recRef = useRef<SpeechRecognitionLike | null>(null)
   const router = useRouter()
+  const speechSupported = useMemo(() => getSpeechRecognition() !== null, [])
+
+  function toggleVoice() {
+    if (listening) {
+      recRef.current?.stop()
+      return
+    }
+    const SR = getSpeechRecognition()
+    if (!SR) return
+    const rec = new SR()
+    recRef.current = rec
+    rec.lang = 'en-US'
+    rec.interimResults = true
+    rec.onresult = (e) => {
+      const transcript = e.results[0]?.[0]?.transcript ?? ''
+      if (transcript) setQ(transcript)
+    }
+    rec.onend = () => setListening(false)
+    rec.onerror = () => setListening(false)
+    setListening(true)
+    rec.start()
+  }
 
   // Global hotkeys: ⌘K / Ctrl+K / "/"
   useEffect(() => {
@@ -107,9 +148,18 @@ export function CommandPalette() {
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={onInputKey}
-                placeholder="Search 186 products…"
+                placeholder={listening ? 'Listening…' : 'Search 186 products…'}
                 className="flex-1 py-4 text-slate-900 placeholder-slate-400 outline-none bg-transparent"
               />
+              {speechSupported && (
+                <button
+                  onClick={toggleVoice}
+                  title={listening ? 'Stop listening' : 'Search by voice'}
+                  className={`p-2 rounded-lg transition-colors shrink-0 ${listening ? 'bg-red-50 text-red-600 animate-pulse' : 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'}`}
+                >
+                  <Mic size={16} />
+                </button>
+              )}
               <kbd className="hidden sm:block text-[10px] font-medium text-slate-400 bg-slate-100 px-1.5 py-1 rounded">ESC</kbd>
             </div>
 

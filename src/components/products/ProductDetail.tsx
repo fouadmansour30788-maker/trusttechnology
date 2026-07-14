@@ -2,15 +2,19 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package } from 'lucide-react'
+import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
+import { FitCheck } from './FitCheck'
+import { TrueSize } from './TrueSize'
 import type { Product } from '@/lib/types'
 
 const WHATSAPP = '96171998983'
 
-export function ProductDetail({ product: p }: { product: Product }) {
+export type MarketRangeProp = { min: number; max: number; stores: number }
+
+export function ProductDetail({ product: p, marketRange }: { product: Product; marketRange?: MarketRangeProp | null }) {
   const addItem = useCartStore((s) => s.addItem)
   const onRequest = p.priceOnRequest || p.price === 0
   const [qty, setQty] = useState(1)
@@ -89,6 +93,20 @@ export function ProductDetail({ product: p }: { product: Product }) {
             </div>
           )}
 
+          {/* Verified market range (shown only when it flatters us) */}
+          {marketRange && !onRequest && (
+            <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3">
+              <BadgeCheck size={16} className="text-emerald-600 mt-0.5 shrink-0" />
+              <p className="text-sm text-emerald-900 leading-relaxed">
+                Market price in Lebanon: <span className="font-semibold">${marketRange.min.toLocaleString()}–${marketRange.max.toLocaleString()}</span> across {marketRange.stores} other stores — our price <span className="font-semibold">${p.price.toLocaleString()}</span>.
+                <span className="block text-xs text-emerald-700 mt-0.5">Checked automatically every day.</span>
+              </p>
+            </div>
+          )}
+
+          {/* True-size screen preview */}
+          <TrueSize productName={p.name} screenText={p.specs?.Screen ?? p.specs?.Resolution ?? ''} />
+
           {p.description && <p className="text-slate-500 leading-relaxed whitespace-pre-line">{p.description}</p>}
 
           {/* Colour options */}
@@ -144,6 +162,8 @@ export function ProductDetail({ product: p }: { product: Product }) {
               </a>
             </div>
           )}
+
+          <FitCheck slug={p.slug} />
 
           <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-200">
             <div className="flex items-center gap-2 text-sm text-slate-500"><Shield size={16} className="text-blue-600 shrink-0" /> Genuine product</div>

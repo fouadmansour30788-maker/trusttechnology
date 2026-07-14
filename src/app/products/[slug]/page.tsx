@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { getProductBySlug, getProducts } from '@/lib/db'
-import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { getBestPriceIds, withBestPrice, getMarketRange } from '@/lib/best-price'
 import { ProductDetail } from '@/components/products/ProductDetail'
 import { ProductCard } from '@/components/products/ProductCard'
 import { SITE_URL } from '@/lib/site'
@@ -45,6 +45,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = bestIds.has(fetched.id) ? { ...fetched, bestPrice: true } : fetched
   const related = withBestPrice(relatedProducts(product, all), bestIds)
 
+  // Market-range panel: only rendered when our price sits at (or within 3% of) the bottom.
+  const rawRange = product.price > 0 ? await getMarketRange(product.id) : null
+  const marketRange = rawRange && product.price <= rawRange.min * 1.03 ? rawRange : null
+
   const onRequest = product.priceOnRequest || product.price === 0
   const ld = {
     '@context': 'https://schema.org',
@@ -66,7 +70,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <ProductDetail product={product} />
+      <ProductDetail product={product} marketRange={marketRange} />
       {related.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
           <h2 className="text-xl font-bold text-slate-900 mb-4">You may also like</h2>
