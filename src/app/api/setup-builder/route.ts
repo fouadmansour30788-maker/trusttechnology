@@ -85,7 +85,12 @@ ${catalog}`
     }
     if (items.length === 0) return NextResponse.json({ error: 'ai' }, { status: 502 })
 
-    const total = Math.round(items.reduce((s, it) => s + it.product.price, 0) * 100) / 100
+    // The model sometimes overspends — enforce the budget server-side by
+    // dropping extras (never the main machine) until the total fits.
+    const sum = () => Math.round(items.reduce((s, it) => s + it.product.price, 0) * 100) / 100
+    while (items.length > 1 && sum() > budget) items.pop()
+
+    const total = sum()
     return NextResponse.json({ ok: true, intro: String(parsed.intro ?? '').slice(0, 400), items, total, budget })
   } catch {
     return NextResponse.json({ error: 'ai' }, { status: 502 })
