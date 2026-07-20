@@ -99,7 +99,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
               <BadgeCheck size={16} className="text-emerald-600 mt-0.5 shrink-0" />
               <p className="text-sm text-emerald-900 leading-relaxed">
                 Market price in Lebanon: <span className="font-semibold">${marketRange.min.toLocaleString()}–${marketRange.max.toLocaleString()}</span> across {marketRange.stores} other stores — our price <span className="font-semibold">${p.price.toLocaleString()}</span>.
-                <span className="block text-xs text-emerald-700 mt-0.5">Checked automatically every day.</span>
+                <span className="block text-xs text-emerald-700 mt-0.5">Checked automatically every day, all prices compared including VAT.</span>
               </p>
             </div>
           )}

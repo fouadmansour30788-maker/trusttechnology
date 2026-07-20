@@ -40,7 +40,17 @@ export function CompetitorPanel({ listings, ourPrice, history = [] }: {
                 <p className="text-xs text-slate-400 truncate" title={l.name}>{l.name}</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-sm font-semibold text-slate-900 tabular-nums">{money(l.price)}</p>
+                <p className="text-sm font-semibold text-slate-900 tabular-nums">
+                  {money(l.price)}
+                  {l.vatExcluded && (
+                    <span
+                      className="ml-1 text-[9px] font-semibold text-blue-700 bg-blue-50 rounded-full px-1 py-0.5 align-middle"
+                      title={`Listed at ${money(l.priceRaw)} excluding VAT — we added 11%`}
+                    >
+                      +VAT
+                    </span>
+                  )}
+                </p>
                 {gapPct !== null && Math.abs(gapPct) > 1 && (
                   <p className={`text-[11px] font-medium inline-flex items-center gap-0.5 ${gapPct > 0 ? 'text-red-600' : 'text-emerald-600'}`}>
                     {gapPct > 0 ? <ArrowUpRight size={11} /> : <ArrowDownRight size={11} />}

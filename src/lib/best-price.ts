@@ -1,6 +1,7 @@
 import 'server-only'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import type { Product } from '@/lib/types'
+import { comparablePrice } from '@/lib/competitors'
 
 /**
  * Products verifiably cheaper than every matched competitor listing
@@ -16,12 +17,12 @@ export async function getBestPriceIds(): Promise<Set<string>> {
   try {
     const s = createServiceClient(url, key, { auth: { persistSession: false } })
     const [{ data: cp }, { data: prods }] = await Promise.all([
-      s.from('competitor_prices').select('price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
+      s.from('competitor_prices').select('competitor, name, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
       s.from('products').select('id, price').gt('price', 0),
     ])
     const minCompetitor = new Map<string, number>()
-    for (const r of ((cp as { price: number; matched_product_id: string }[]) ?? [])) {
-      const p = Number(r.price)
+    for (const r of ((cp as { competitor: string; name: string; price: number; matched_product_id: string }[]) ?? [])) {
+      const p = comparablePrice(r.competitor, r.name, Number(r.price))
       const cur = minCompetitor.get(r.matched_product_id)
       if (cur === undefined || p < cur) minCompetitor.set(r.matched_product_id, p)
     }
@@ -50,12 +51,12 @@ export async function getMarketRange(productId: string): Promise<MarketRange | n
     const s = createServiceClient(url, key, { auth: { persistSession: false } })
     const { data } = await s
       .from('competitor_prices')
-      .select('competitor, price')
+      .select('competitor, name, price')
       .eq('matched_product_id', productId)
       .gt('price', 0)
-    const rows = (data as { competitor: string; price: number }[]) ?? []
+    const rows = (data as { competitor: string; name: string; price: number }[]) ?? []
     if (rows.length < 2) return null
-    const prices = rows.map((r) => Number(r.price))
+    const prices = rows.map((r) => comparablePrice(r.competitor, r.name, Number(r.price)))
     return {
       min: Math.min(...prices),
       max: Math.max(...prices),

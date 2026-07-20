@@ -29,7 +29,7 @@ export function OpportunitiesTable({ opportunities }: { opportunities: PricingOp
         <Tag size={15} className="text-blue-600" />
         <p className="font-semibold text-slate-900 text-sm">Pricing opportunities</p>
       </div>
-      <p className="text-xs text-slate-400 mb-4">“Call for price” products with a known market price. Suggested = cheapest competitor −2%.</p>
+      <p className="text-xs text-slate-400 mb-4">“Call for price” products with a known market price (VAT-adjusted to match our pricing). Suggested = cheapest competitor −2%.</p>
       {opportunities.length === 0 ? (
         <p className="text-sm text-slate-400 py-6 text-center">None yet — more confirmed matches will surface these.</p>
       ) : (

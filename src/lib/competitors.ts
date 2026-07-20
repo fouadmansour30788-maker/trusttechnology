@@ -30,6 +30,39 @@ export const COMPETITOR_LABELS: Record<string, string> = {
   mediatech: 'Mediatech',
 }
 
+// ── VAT normalization ────────────────────────────────────────────────────
+// Our own prices (src/lib/types.ts Product.price) are VAT-inclusive — the
+// final figure a customer pays. Competitors are NOT consistent about this,
+// so comparing raw scraped prices to ours understates or overstates the real
+// gap. Confirmed per-store, 2026-07:
+//   - Ayoub Computers: EXCLUDES VAT store-wide — their own Terms of Service
+//     states "All prices displayed... are exclusive of VAT" and 11% is added
+//     at checkout for Lebanon-based customers.
+//   - Multitech: INCLUDES VAT store-wide — prices are marked "TTC" (toutes
+//     taxes comprises = all taxes included).
+//   - PC and Parts / Mojitech: inconsistent — many listings (mostly
+//     laptops/monitors) are individually suffixed "(TAX included)" in the
+//     product name; others carry no tag. Detected per-listing below;
+//     unlabeled items default to excluding VAT (the more common Lebanese
+//     wholesale-pricing convention, and the implied baseline when a store
+//     bothers to specially annotate the exceptions).
+//   - Mediatech: no published policy found — defaults to excluding VAT.
+export const VAT_RATE = 0.11
+
+/** True when a competitor's listing price does NOT already include VAT. */
+export function pricesExcludeVat(competitor: string, name: string): boolean {
+  const n = name.toLowerCase()
+  if (n.includes('tax included') || n.includes('vat included') || n.includes('ttc')) return false
+  if (n.includes('tax free') || n.includes('tax excluded') || n.includes('vat excluded')) return true
+  if (competitor === 'multitech') return false
+  return true // ayoubcomputers, pcandparts, mojitech, mediatech default
+}
+
+/** Competitor price normalized to be VAT-inclusive — comparable to our own prices. */
+export function comparablePrice(competitor: string, name: string, rawPrice: number): number {
+  return pricesExcludeVat(competitor, name) ? Math.round(rawPrice * (1 + VAT_RATE) * 100) / 100 : rawPrice
+}
+
 export type SyncSummary = {
   sources: { competitor: string; items: number; error?: string }[]
   total: number
@@ -396,7 +429,9 @@ export type PriceComparison = {
   ourPrice: number
   competitor: string
   theirName: string
-  theirPrice: number
+  theirPrice: number      // VAT-normalized — comparable to ourPrice
+  theirPriceRaw: number   // as actually listed on their site
+  theirVatExcluded: boolean
   theirInStock: boolean
   url: string | null
   diff: number      // ourPrice - theirPrice (positive = we're more expensive)
@@ -407,7 +442,9 @@ export type PriceComparison = {
 export type CompetitorListing = {
   competitor: string
   name: string
-  price: number
+  price: number         // VAT-normalized — comparable to our price
+  priceRaw: number       // as actually listed on their site
+  vatExcluded: boolean
   previous_price: number | null
   url: string | null
   fetched_at: string
@@ -421,7 +458,14 @@ export async function getCompetitorPricesForProduct(supabase: AnyClient, product
     .eq('matched_product_id', productId)
     .order('price')
   if (error) return []
-  return ((data as CompetitorListing[]) ?? []).map((r) => ({ ...r, price: Number(r.price), previous_price: r.previous_price === null ? null : Number(r.previous_price) }))
+  type Row = { competitor: string; name: string; price: number; previous_price: number | null; url: string | null; fetched_at: string }
+  return ((data as Row[]) ?? []).map((r) => ({
+    ...r,
+    priceRaw: Number(r.price),
+    price: comparablePrice(r.competitor, r.name, Number(r.price)),
+    vatExcluded: pricesExcludeVat(r.competitor, r.name),
+    previous_price: r.previous_price === null ? null : Number(r.previous_price),
+  }))
 }
 
 /** Cheapest competitor price per product (for the products table chip). */
@@ -517,13 +561,14 @@ export type PricingOpportunity = {
 export async function getPricingOpportunities(supabase: AnyClient): Promise<PricingOpportunity[]> {
   const [{ data: prodData }, { data: cpData }] = await Promise.all([
     supabase.from('products').select('id, name, price, cost').eq('price', 0),
-    supabase.from('competitor_prices').select('competitor, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
+    supabase.from('competitor_prices').select('competitor, name, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
   ])
   const products = ((prodData as { id: string; name: string; price: number; cost: number | null }[]) ?? [])
   const byProduct = new Map<string, { price: number; competitor: string }>()
-  for (const r of ((cpData as { competitor: string; price: number; matched_product_id: string }[]) ?? [])) {
+  for (const r of ((cpData as { competitor: string; name: string; price: number; matched_product_id: string }[]) ?? [])) {
+    const price = comparablePrice(r.competitor, r.name, Number(r.price))
     const cur = byProduct.get(r.matched_product_id)
-    if (!cur || Number(r.price) < cur.price) byProduct.set(r.matched_product_id, { price: Number(r.price), competitor: r.competitor })
+    if (!cur || price < cur.price) byProduct.set(r.matched_product_id, { price, competitor: r.competitor })
   }
   const out: PricingOpportunity[] = []
   for (const p of products) {
@@ -634,8 +679,9 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
     const p = products.get(r.matched_product_id)
     if (!p) continue
     const ourPrice = Number(p.price)
-    const theirPrice = Number(r.price)
-    if (theirPrice <= 0) continue
+    const theirPriceRaw = Number(r.price)
+    if (theirPriceRaw <= 0) continue
+    const theirPrice = comparablePrice(r.competitor, r.name, theirPriceRaw)
     comparisons.push({
       productId: p.id,
       productName: p.name,
@@ -643,6 +689,8 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
       competitor: r.competitor,
       theirName: r.name,
       theirPrice,
+      theirPriceRaw,
+      theirVatExcluded: pricesExcludeVat(r.competitor, r.name),
       theirInStock: r.in_stock !== false,
       url: r.url,
       diff: Math.round((ourPrice - theirPrice) * 100) / 100,
