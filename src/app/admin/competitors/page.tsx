@@ -167,8 +167,8 @@ export default async function CompetitorsPage() {
         <p className="text-xs text-slate-400 mb-4">
           Sorted by where we’re most overpriced. Positive gap = we cost more. Our prices include VAT —
           competitors whose listings exclude it (Ayoub always; PC and Parts/Mojitech/Mediatech where unlabeled)
-          are marked <span className="font-semibold text-blue-700 bg-blue-50 rounded-full px-1.5 py-0.5">+VAT</span> and
-          have 11% added so the comparison is fair.
+          show as <span className="font-semibold text-blue-700 bg-blue-50 rounded-full px-1.5 py-0.5">incl. VAT</span>,
+          meaning we already added 11% to their listed price for a fair comparison — that 11% is not still owed.
         </p>
         {comparisons.length === 0 ? (
           <p className="text-sm text-slate-400 py-12 text-center">
@@ -203,12 +203,15 @@ export default async function CompetitorsPage() {
                     <td className="py-2.5 pr-4 text-right tabular-nums text-slate-600">
                       {money(c.theirPrice)}
                       {c.theirVatExcluded && (
-                        <span
-                          className="ml-1.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full px-1.5 py-0.5 align-middle"
-                          title={`Listed at ${money(c.theirPriceRaw)} excluding VAT — we added 11% so it's comparable to our VAT-inclusive price`}
-                        >
-                          +VAT
-                        </span>
+                        <>
+                          <span
+                            className="ml-1.5 text-[10px] font-semibold text-blue-700 bg-blue-50 rounded-full px-1.5 py-0.5 align-middle"
+                            title={`Listed at ${money(c.theirPriceRaw)} + 11% VAT = ${money(c.theirPrice)} — the VAT is already added, not still owed`}
+                          >
+                            incl. VAT
+                          </span>
+                          <span className="block text-[10px] text-slate-400 normal-case">listed {money(c.theirPriceRaw)} excl. VAT</span>
+                        </>
                       )}
                       {!c.theirInStock && (
                         <span className="ml-1.5 text-[10px] font-semibold text-amber-700 bg-amber-50 rounded-full px-1.5 py-0.5 align-middle" title="Out of stock at competitor — opportunity">OOS</span>
