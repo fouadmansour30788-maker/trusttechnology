@@ -35,6 +35,7 @@ const localBusinessLd = {
   address: { '@type': 'PostalAddress', addressLocality: 'Tripoli', addressCountry: 'LB' },
   areaServed: 'Lebanon',
   priceRange: '$$',
+  sameAs: ['https://www.facebook.com/trusttechnology.lb/'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
