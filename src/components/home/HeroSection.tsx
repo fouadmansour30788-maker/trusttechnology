@@ -9,7 +9,7 @@ import {
   useSpring,
   type Variants,
 } from 'framer-motion'
-import { ArrowRight, Shield, Truck, Headphones, Sparkles } from 'lucide-react'
+import { ArrowRight, Shield, Truck, Headphones, Sparkles, Radar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const TRUST_ITEMS = [
@@ -83,10 +83,17 @@ export function HeroSection() {
 
             <motion.h1
               variants={fadeUp} initial="hidden" animate="show" custom={1}
-              className="text-5xl md:text-6xl font-bold text-slate-900 leading-[1.05] tracking-tight"
+              className="text-6xl md:text-7xl font-extrabold text-slate-900 leading-[0.98] tracking-tighter"
             >
               Technology
-              <span className="block text-gradient">You Can Trust</span>
+              <span className="flex items-center gap-3 md:gap-4 text-gradient">
+                You Can
+                <span className="inline-flex w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-blue-600 items-center justify-center shadow-lg shadow-blue-600/40 -rotate-6">
+                  <Shield size={22} className="text-white md:hidden" />
+                  <Shield size={28} className="text-white hidden md:block" />
+                </span>
+              </span>
+              Trust.
             </motion.h1>
 
             <motion.p
@@ -130,7 +137,7 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* ── Right: 3D tilt video ───────────────────────────────── */}
+          {/* ── Right: 3D tilt video, spotlight-lit like a product reveal ── */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -139,9 +146,14 @@ export function HeroSection() {
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
           >
+            {/* Dramatic spotlight behind the card — product-theatre glow */}
+            <div className="pointer-events-none absolute -inset-16 -z-10">
+              <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb45,transparent_70%)] blur-2xl" />
+            </div>
+
             <motion.div
               style={{ rotateX, rotateY }}
-              className="glow-ring preserve-3d relative rounded-3xl overflow-hidden border border-white/70 shadow-glow bg-slate-950"
+              className="glow-ring preserve-3d relative rounded-3xl overflow-hidden border border-white/70 shadow-[0_30px_90px_-20px_#1e3a8a80] bg-slate-950"
             >
               <video
                 src="/hero/hero.mp4"
@@ -153,6 +165,24 @@ export function HeroSection() {
                 className="w-full aspect-[4/3] object-cover"
                 style={{ transform: 'translateZ(40px)' }}
               />
+              {/* Vignette for product-shot contrast */}
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000055)]" />
+            </motion.div>
+
+            {/* Floating trust callout — real, verifiable claim */}
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="animate-float-y absolute -bottom-6 -left-8 flex items-center gap-3 bg-white rounded-2xl shadow-xl shadow-slate-900/15 border border-slate-100 px-4 py-3 z-10"
+            >
+              <span className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                <Radar size={18} className="text-emerald-600" />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-slate-900 leading-tight">Price-checked daily</p>
+                <p className="text-xs text-slate-400 leading-tight">Across 5 stores in Lebanon</p>
+              </div>
             </motion.div>
           </motion.div>
         </div>

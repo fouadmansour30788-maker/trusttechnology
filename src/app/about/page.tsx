@@ -101,6 +101,41 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* ── Business clients ────────────────────────────────── */}
+      <section className="pb-20">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-full px-4 py-1.5 mb-5">
+              <Cpu size={14} />
+              For businesses
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Equipping teams, not just individuals
+            </h2>
+            <p className="mt-4 text-slate-500 leading-relaxed">
+              From a single POS setup to fleet laptops for a growing office, we work with
+              Tripoli businesses on bulk pricing, delivery scheduling, and after-sales
+              support — so your team is never waiting on hardware.
+            </p>
+            <a
+              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi! I would like to talk about equipment for my business.')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
+            >
+              Talk to us about your business <ArrowRight size={16} />
+            </a>
+          </div>
+          <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-xl shadow-slate-900/5 aspect-video bg-slate-900">
+            <video
+              src="/about/business-professionals.mp4"
+              autoPlay muted loop playsInline preload="metadata"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── Contact ──────────────────────────────────────────── */}
       <section id="contact" className="pb-20 scroll-mt-24">
         <div className="rounded-3xl bg-gradient-to-br from-blue-600 to-blue-800 shadow-2xl shadow-blue-600/30 px-6 sm:px-12 py-12">
