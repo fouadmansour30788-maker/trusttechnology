@@ -36,7 +36,14 @@ export function CompetitorPanel({ listings, ourPrice, history = [] }: {
           return (
             <li key={i} className="flex items-start gap-3">
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-slate-800">{LABELS[l.competitor] ?? l.competitor}</p>
+                <p className="text-sm font-medium text-slate-800">
+                  {LABELS[l.competitor] ?? l.competitor}
+                  {l.overridden && (
+                    <span className="ml-1.5 text-[9px] font-semibold text-purple-700 bg-purple-50 rounded-full px-1.5 py-0.5 align-middle" title="Price manually corrected by staff — won't be overwritten by the daily sync">
+                      corrected
+                    </span>
+                  )}
+                </p>
                 <p className="text-xs text-slate-400 truncate" title={l.name}>{l.name}</p>
               </div>
               <div className="text-right shrink-0">

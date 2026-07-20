@@ -17,12 +17,12 @@ export async function getBestPriceIds(): Promise<Set<string>> {
   try {
     const s = createServiceClient(url, key, { auth: { persistSession: false } })
     const [{ data: cp }, { data: prods }] = await Promise.all([
-      s.from('competitor_prices').select('competitor, name, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
+      s.from('competitor_prices').select('competitor, name, price, price_override, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
       s.from('products').select('id, price').gt('price', 0),
     ])
     const minCompetitor = new Map<string, number>()
-    for (const r of ((cp as { competitor: string; name: string; price: number; matched_product_id: string }[]) ?? [])) {
-      const p = comparablePrice(r.competitor, r.name, Number(r.price))
+    for (const r of ((cp as { competitor: string; name: string; price: number; price_override: number | null; matched_product_id: string }[]) ?? [])) {
+      const p = comparablePrice(r.competitor, r.name, r.price_override ?? Number(r.price))
       const cur = minCompetitor.get(r.matched_product_id)
       if (cur === undefined || p < cur) minCompetitor.set(r.matched_product_id, p)
     }
@@ -51,12 +51,12 @@ export async function getMarketRange(productId: string): Promise<MarketRange | n
     const s = createServiceClient(url, key, { auth: { persistSession: false } })
     const { data } = await s
       .from('competitor_prices')
-      .select('competitor, name, price')
+      .select('competitor, name, price, price_override')
       .eq('matched_product_id', productId)
       .gt('price', 0)
-    const rows = (data as { competitor: string; name: string; price: number }[]) ?? []
+    const rows = (data as { competitor: string; name: string; price: number; price_override: number | null }[]) ?? []
     if (rows.length < 2) return null
-    const prices = rows.map((r) => comparablePrice(r.competitor, r.name, Number(r.price)))
+    const prices = rows.map((r) => comparablePrice(r.competitor, r.name, r.price_override ?? Number(r.price)))
     return {
       min: Math.min(...prices),
       max: Math.max(...prices),

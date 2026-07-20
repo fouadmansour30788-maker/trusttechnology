@@ -441,10 +441,12 @@ export type PriceComparison = {
 
 export type CompetitorListing = {
   competitor: string
+  external_id: string
   name: string
   price: number         // VAT-normalized — comparable to our price
-  priceRaw: number       // as actually listed on their site
+  priceRaw: number       // as actually listed (staff-corrected if overridden)
   vatExcluded: boolean
+  overridden: boolean
   previous_price: number | null
   url: string | null
   fetched_at: string
@@ -454,18 +456,22 @@ export type CompetitorListing = {
 export async function getCompetitorPricesForProduct(supabase: AnyClient, productId: string): Promise<CompetitorListing[]> {
   const { data, error } = await supabase
     .from('competitor_prices')
-    .select('competitor, name, price, previous_price, url, fetched_at')
+    .select('competitor, external_id, name, price, price_override, previous_price, url, fetched_at')
     .eq('matched_product_id', productId)
     .order('price')
   if (error) return []
-  type Row = { competitor: string; name: string; price: number; previous_price: number | null; url: string | null; fetched_at: string }
-  return ((data as Row[]) ?? []).map((r) => ({
-    ...r,
-    priceRaw: Number(r.price),
-    price: comparablePrice(r.competitor, r.name, Number(r.price)),
-    vatExcluded: pricesExcludeVat(r.competitor, r.name),
-    previous_price: r.previous_price === null ? null : Number(r.previous_price),
-  }))
+  type Row = { competitor: string; external_id: string; name: string; price: number; price_override: number | null; previous_price: number | null; url: string | null; fetched_at: string }
+  return ((data as Row[]) ?? []).map((r) => {
+    const raw = r.price_override ?? Number(r.price)
+    return {
+      competitor: r.competitor, external_id: r.external_id, name: r.name, url: r.url, fetched_at: r.fetched_at,
+      priceRaw: raw,
+      price: comparablePrice(r.competitor, r.name, raw),
+      vatExcluded: pricesExcludeVat(r.competitor, r.name),
+      overridden: r.price_override !== null,
+      previous_price: r.previous_price === null ? null : Number(r.previous_price),
+    }
+  })
 }
 
 /** Cheapest competitor price per product (for the products table chip). */
@@ -561,12 +567,12 @@ export type PricingOpportunity = {
 export async function getPricingOpportunities(supabase: AnyClient): Promise<PricingOpportunity[]> {
   const [{ data: prodData }, { data: cpData }] = await Promise.all([
     supabase.from('products').select('id, name, price, cost').eq('price', 0),
-    supabase.from('competitor_prices').select('competitor, name, price, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
+    supabase.from('competitor_prices').select('competitor, name, price, price_override, matched_product_id').not('matched_product_id', 'is', null).gt('price', 0),
   ])
   const products = ((prodData as { id: string; name: string; price: number; cost: number | null }[]) ?? [])
   const byProduct = new Map<string, { price: number; competitor: string }>()
-  for (const r of ((cpData as { competitor: string; name: string; price: number; matched_product_id: string }[]) ?? [])) {
-    const price = comparablePrice(r.competitor, r.name, Number(r.price))
+  for (const r of ((cpData as { competitor: string; name: string; price: number; price_override: number | null; matched_product_id: string }[]) ?? [])) {
+    const price = comparablePrice(r.competitor, r.name, r.price_override ?? Number(r.price))
     const cur = byProduct.get(r.matched_product_id)
     if (!cur || price < cur.price) byProduct.set(r.matched_product_id, { price, competitor: r.competitor })
   }
@@ -644,14 +650,14 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
   trackedTotal: number
   lastSync: string | null
 }> {
-  type CpRow = { competitor: string; name: string; url: string | null; price: number; in_stock?: boolean; matched_product_id: string; fetched_at: string }
+  type CpRow = { competitor: string; name: string; url: string | null; price: number; price_override?: number | null; in_stock?: boolean; matched_product_id: string; fetched_at: string }
   const cpRes = await supabase
     .from('competitor_prices')
-    .select('competitor, name, sku, url, price, in_stock, matched_product_id, fetched_at')
+    .select('competitor, name, sku, url, price, price_override, in_stock, matched_product_id, fetched_at')
     .not('matched_product_id', 'is', null)
   let cp: CpRow[]
   if (cpRes.error) {
-    // in_stock arrives with migration 008 — retry without it
+    // price_override/in_stock arrive with later migrations — retry without them
     const res2 = await supabase
       .from('competitor_prices')
       .select('competitor, name, sku, url, price, matched_product_id, fetched_at')
@@ -679,7 +685,7 @@ export async function getPriceComparisons(supabase: AnyClient): Promise<{
     const p = products.get(r.matched_product_id)
     if (!p) continue
     const ourPrice = Number(p.price)
-    const theirPriceRaw = Number(r.price)
+    const theirPriceRaw = r.price_override ?? Number(r.price)
     if (theirPriceRaw <= 0) continue
     const theirPrice = comparablePrice(r.competitor, r.name, theirPriceRaw)
     comparisons.push({
