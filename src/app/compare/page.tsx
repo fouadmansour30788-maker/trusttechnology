@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Scale, X, ShoppingCart, MessageCircle, ArrowRight } from 'lucide-react'
+import { Scale, Square, X, ShoppingCart, MessageCircle, ArrowRight } from 'lucide-react'
 import { useCompareStore } from '@/store/compare'
 import { useCartStore } from '@/store/cart'
 
@@ -16,7 +16,7 @@ export default function ComparePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-24 flex flex-col items-center text-center gap-5">
         <Scale size={44} className="text-slate-300" />
         <h1 className="text-2xl font-bold text-slate-900">Nothing to compare yet</h1>
-        <p className="text-slate-500 max-w-md">Tap the <Scale size={13} className="inline text-blue-600" /> compare icon on any product card to add it — pick up to 3 products.</p>
+        <p className="text-slate-500 max-w-md">Tap <span className="inline-flex items-center gap-1 text-blue-600 font-medium align-middle"><Square size={13} className="inline" /> Compare</span> on any product card to add it — pick up to 3 products.</p>
         <Link href="/products" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
           Browse products <ArrowRight size={15} />
         </Link>

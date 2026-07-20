@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, Star, MessageCircle, Scale } from 'lucide-react'
+import { ShoppingCart, Star, MessageCircle, Square, SquareCheck } from 'lucide-react'
 import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import type { Product } from '@/lib/types'
 import { useCartStore } from '@/store/cart'
@@ -84,11 +84,14 @@ export function ProductCard({ product }: Props) {
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
           title={comparing ? 'Remove from compare' : 'Add to compare'}
-          className={`absolute top-2 right-2 z-10 w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${
-            comparing ? 'bg-blue-600 text-white' : 'bg-white/90 text-slate-400 hover:text-blue-600 border border-slate-200'
+          className={`absolute top-2 right-2 z-10 inline-flex items-center gap-1 h-7 pl-1.5 pr-2 rounded-full text-[11px] font-semibold shadow-sm transition-colors ${
+            comparing
+              ? 'bg-blue-600 text-white'
+              : 'bg-white/95 text-slate-500 hover:text-blue-600 border border-slate-200'
           }`}
         >
-          <Scale size={13} />
+          {comparing ? <SquareCheck size={14} /> : <Square size={14} />}
+          Compare
         </button>
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
