@@ -17,18 +17,16 @@ export function ProductCard({ product }: Props) {
   const toggleCompare = useCompareStore((s) => s.toggle)
   const comparing = useCompareStore((s) => s.items.some((p) => p.id === product.id))
   const onRequest = product.priceOnRequest || product.price === 0
-  // Show the 3 most useful specs of ANY product (laptops/desktops → RAM/Storage/VGA,
-  // monitors → Resolution/Connectivity, toner → Capacity, etc.), falling back to
-  // whatever specs the product actually has.
-  const SPEC_PRIORITY = ['RAM', 'Storage', 'Hard Disk', 'VGA', 'Graphics', 'CPU', 'Screen', 'Resolution', 'Connectivity', 'Capacity']
+  // Full spec sheet, shown right on the card (not just on the detail page) —
+  // ordered by shopper relevance: performance specs first, housekeeping last.
+  const SPEC_PRIORITY = ['CPU', 'RAM', 'Storage', 'Hard Disk', 'VGA', 'Graphics', 'Screen', 'Resolution', 'Connectivity', 'LAN', 'OS', 'Capacity', 'Keyboard', 'Warranty']
   const keySpecs = Object.entries(product.specs ?? {})
-    .filter(([k, v]) => v && k.toLowerCase() !== 'warranty')
+    .filter(([, v]) => v)
     .sort((a, b) => {
       const ia = SPEC_PRIORITY.indexOf(a[0])
       const ib = SPEC_PRIORITY.indexOf(b[0])
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
     })
-    .slice(0, 3)
   const discount = product.compare_at_price
     ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
     : null
@@ -118,11 +116,12 @@ export function ProductCard({ product }: Props) {
         </Link>
 
         {keySpecs.length > 0 && (
-          <div className="mt-1.5 space-y-0.5">
+          <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1.5 border-t border-slate-100 pt-2">
             {keySpecs.map(([k, v]) => (
-              <p key={k} className="text-[11px] text-slate-500 truncate">
-                <span className="text-slate-400">{k}:</span> <span className="font-medium text-slate-600">{v}</span>
-              </p>
+              <div key={k} className="min-w-0">
+                <p className="text-[9px] uppercase tracking-wide text-slate-400 truncate">{k}</p>
+                <p className="text-[11px] font-medium text-slate-700 truncate" title={v}>{v}</p>
+              </div>
             ))}
           </div>
         )}
