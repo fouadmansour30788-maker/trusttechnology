@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Scale, X, ArrowRight } from 'lucide-react'
+import { Scale, X, ArrowRight, Sparkles } from 'lucide-react'
 import { useCompareStore } from '@/store/compare'
 
 /** Floating bar shown while products are selected for comparison. */
@@ -29,6 +29,7 @@ export function CompareBar() {
       </div>
       <Link href="/compare"
         className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
+        {items.length > 1 ? <Sparkles size={13} /> : null}
         Compare {items.length > 1 ? `(${items.length})` : ''} <ArrowRight size={14} />
       </Link>
       <button onClick={clear} className="text-xs text-slate-400 hover:text-slate-600">Clear</button>
