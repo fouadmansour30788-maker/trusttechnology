@@ -117,8 +117,8 @@ export function CartDrawer() {
               onClick={buildQuote}
               className={`w-full inline-flex items-center justify-center gap-2 font-semibold py-3 rounded-xl transition-colors ${
                 pricedTotal > 0
-                  ? 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20'
+                  ? 'bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                  : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-600/20'
               }`}
             >
               <MessageCircle size={18} /> Send quote on WhatsApp

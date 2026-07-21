@@ -184,7 +184,7 @@ export default function ComparePage() {
                         {p.priceOnRequest || p.price === 0 ? (
                           <a href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + p.name)}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg px-3 py-2">
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg px-3 py-2">
                             <MessageCircle size={12} /> Ask price
                           </a>
                         ) : (

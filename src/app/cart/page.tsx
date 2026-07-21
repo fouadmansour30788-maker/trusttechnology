@@ -110,8 +110,8 @@ export default function CartPage() {
             target="_blank" rel="noopener noreferrer"
             className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold transition-colors ${
               totalPrice() > 0
-                ? 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-                : 'bg-blue-600 hover:bg-blue-700 text-white'
+                ? 'bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                : 'bg-emerald-500 hover:bg-emerald-600 text-white'
             }`}
           >
             <MessageCircle size={16} /> Order via WhatsApp

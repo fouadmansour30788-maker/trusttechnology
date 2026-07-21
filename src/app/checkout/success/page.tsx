@@ -24,7 +24,7 @@ export default async function CheckoutSuccessPage({ searchParams }: { searchPara
         <a
           href={`https://wa.me/96171998983?text=${encodeURIComponent(`Hi! I just placed order ${ref ?? ''} on your website.`)}`}
           target="_blank" rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
+          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
         >
           <MessageCircle size={16} /> Chat with us on WhatsApp
         </a>

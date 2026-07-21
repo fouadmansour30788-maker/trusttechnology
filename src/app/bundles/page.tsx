@@ -153,7 +153,7 @@ export default function BundlesPage() {
           <a
             href="https://wa.me/96171998983?text=I%20need%20a%20custom%20bundle"
             target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-slate-900 font-semibold px-6 py-3 rounded-xl hover:bg-slate-100 transition-colors"
+            className="inline-flex items-center gap-2 bg-emerald-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-emerald-600 transition-colors"
           >
             Chat with us on WhatsApp
           </a>

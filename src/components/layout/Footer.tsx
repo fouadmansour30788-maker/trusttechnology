@@ -47,7 +47,7 @@ export function Footer() {
                 <FacebookIcon size={15} />
               </a>
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-blue-50 text-slate-500 hover:text-blue-600 flex items-center justify-center transition-colors">
+                className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-emerald-50 text-slate-500 hover:text-emerald-600 flex items-center justify-center transition-colors">
                 <MessageCircle size={15} />
               </a>
             </div>

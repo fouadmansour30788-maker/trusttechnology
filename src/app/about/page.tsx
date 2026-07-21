@@ -12,6 +12,9 @@ export const metadata = {
 }
 
 const WHATSAPP = '96171998983'
+const STORE_QUERY = 'Trust Technology, Tripoli, Lebanon'
+const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_QUERY)}`
+const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(STORE_QUERY)}&output=embed`
 
 const VALUES = [
   {
@@ -121,7 +124,7 @@ export default function AboutPage() {
               href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi! I would like to talk about equipment for my business.')}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
+              className="mt-6 inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold"
             >
               Talk to us about your business <ArrowRight size={16} />
             </a>
@@ -150,7 +153,7 @@ export default function AboutPage() {
                 href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi Trust Technology! I have a question.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 bg-white text-blue-700 font-semibold rounded-xl px-6 py-3 shadow-lg hover:bg-blue-50 transition-colors"
+                className="mt-6 inline-flex items-center gap-2 bg-emerald-500 text-white font-semibold rounded-xl px-6 py-3 shadow-lg hover:bg-emerald-600 transition-colors"
               >
                 <MessageCircle size={18} /> Chat on WhatsApp
               </a>
@@ -159,7 +162,7 @@ export default function AboutPage() {
               {[
                 { icon: Phone, label: 'Phone / WhatsApp', value: '+961 71 998 983', href: `https://wa.me/${WHATSAPP}` },
                 { icon: Mail, label: 'Email', value: 'info@trust-tech.lb', href: 'mailto:info@trust-tech.lb' },
-                { icon: MapPin, label: 'Store', value: 'Tripoli, Lebanon', href: null },
+                { icon: MapPin, label: 'Store', value: 'Tripoli, Lebanon', href: MAPS_DIRECTIONS_URL },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4">
                   <span className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
@@ -179,6 +182,33 @@ export default function AboutPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Find us ──────────────────────────────────────────── */}
+      <section className="pb-20">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">Find us</h2>
+            <p className="text-slate-500 mt-1">Tripoli, Lebanon — come see the products in person.</p>
+          </div>
+          <a
+            href={MAPS_DIRECTIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl px-5 py-2.5 shadow-lg shadow-blue-600/20 transition-colors"
+          >
+            <MapPin size={16} /> Get directions
+          </a>
+        </div>
+        <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-xl shadow-slate-900/5 aspect-video">
+          <iframe
+            src={MAPS_EMBED_URL}
+            title="Trust Technology location on Google Maps"
+            className="w-full h-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
 

@@ -87,7 +87,7 @@ export default function RepairsPage() {
             <p className="text-slate-600 mt-2">Your repair number is <span className="font-bold">{bookedRef}</span>. We’ll call you to arrange drop-off or pickup. Diagnosis is free.</p>
             <a href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi! I just booked repair ${bookedRef}.`)}`}
               target="_blank" rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+              className="mt-5 inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
               <MessageCircle size={15} /> Chat on WhatsApp
             </a>
           </div>

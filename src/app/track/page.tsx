@@ -116,7 +116,7 @@ export default function TrackPage() {
 
           <a href={`https://wa.me/96171998983?text=${encodeURIComponent(`Hi! Question about my order ${result.reference}`)}`}
             target="_blank" rel="noopener noreferrer"
-            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700">
+            className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700">
             <MessageCircle size={14} /> Questions? Chat with us on WhatsApp
           </a>
         </div>

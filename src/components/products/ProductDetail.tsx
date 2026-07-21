@@ -134,7 +134,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
             <a
               href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + cartProduct.name)}`}
               target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
             >
               <MessageCircle size={18} /> Ask for price on WhatsApp
             </a>
@@ -156,7 +156,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
               <a
                 href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi, I'm interested in: " + cartProduct.name)}`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors text-sm font-medium"
+                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors text-sm font-medium"
               >
                 <MessageCircle size={16} /> Order via WhatsApp
               </a>

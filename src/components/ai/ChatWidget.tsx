@@ -123,7 +123,7 @@ export function ChatWidget() {
                               <a
                                 href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + p.name)}`}
                                 target="_blank" rel="noopener noreferrer"
-                                className="mt-2 flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+                                className="mt-2 flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold transition-colors"
                               >
                                 <MessageCircle size={13} /> Ask price on WhatsApp
                               </a>

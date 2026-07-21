@@ -151,7 +151,7 @@ export default function CheckoutPage() {
           {callItems.length > 0 && (
             <div className="bg-blue-50 rounded-xl px-4 py-3 text-xs text-blue-800">
               {callItems.length} “Call for price” item{callItems.length > 1 ? 's are' : ' is'} not included —{' '}
-              <a className="font-semibold underline" target="_blank" rel="noopener noreferrer"
+              <a className="font-semibold underline text-emerald-700" target="_blank" rel="noopener noreferrer"
                 href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi! Price request: ' + callItems.map((i) => `${i.quantity}× ${i.product.name}`).join(', '))}`}>
                 ask on WhatsApp <MessageCircle size={11} className="inline" />
               </a>

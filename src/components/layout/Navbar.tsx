@@ -1,7 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { ShoppingCart, Search, Menu, X, ChevronDown } from 'lucide-react'
 import { MegaMenu } from './MegaMenu'
 import { NAV_CATEGORIES } from '@/lib/nav-data'
@@ -10,18 +9,9 @@ import { useCartStore } from '@/store/cart'
 export function Navbar() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
   const navRef = useRef<HTMLDivElement>(null)
-  const router = useRouter()
   const totalItems = useCartStore((s) => s.totalItems())
   const openCart = useCartStore((s) => s.openCart)
-
-  function handleSearch(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const value = new FormData(e.currentTarget).get('q')?.toString().trim()
-    setSearchOpen(false)
-    if (value) router.push(`/products?q=${encodeURIComponent(value)}`)
-  }
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -91,30 +81,22 @@ export function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 ml-auto">
-            {searchOpen ? (
-              <form
-                onSubmit={handleSearch}
-                className="flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-1.5 border border-slate-200 focus-within:border-blue-400 transition-colors"
-              >
-                <Search size={16} className="text-slate-400" />
-                <input
-                  autoFocus
-                  type="text"
-                  name="q"
-                  placeholder="Search products..."
-                  className="bg-transparent text-sm text-slate-900 placeholder-slate-400 outline-none w-40 md:w-64"
-                  onBlur={() => setSearchOpen(false)}
-                />
-              </form>
-            ) : (
-              <button
-                onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
-                className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-                title="Search (⌘K)"
-              >
-                <Search size={20} />
-              </button>
-            )}
+            {/* Persistent, always-visible search trigger — opens the full search palette */}
+            <button
+              onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
+              className="hidden md:flex items-center gap-2 w-44 lg:w-72 bg-slate-50 hover:bg-white border-2 border-slate-200 hover:border-blue-400 rounded-xl px-3.5 py-2 text-sm text-slate-400 hover:text-slate-500 transition-colors shadow-sm"
+            >
+              <Search size={16} className="shrink-0" />
+              <span className="flex-1 text-left truncate">Search products...</span>
+              <kbd className="hidden lg:inline-block text-[10px] font-semibold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded">⌘K</kbd>
+            </button>
+            <button
+              onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
+              className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              title="Search (⌘K)"
+            >
+              <Search size={20} />
+            </button>
 
             <button
               onClick={openCart}

@@ -82,7 +82,7 @@ export default function FaqPage() {
         <p className="text-sm text-blue-900 font-medium">Didn’t find your answer?</p>
         <a href={`https://wa.me/96171998983?text=${encodeURIComponent('Hi! I have a question.')}`}
           target="_blank" rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
+          className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
           <MessageCircle size={15} /> Ask on WhatsApp
         </a>
       </div>
