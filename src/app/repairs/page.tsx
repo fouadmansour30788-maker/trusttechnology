@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Wrench, Loader2, CheckCircle2, PackageSearch, MessageCircle, XCircle } from 'lucide-react'
+import { RepairStatsBanner } from '@/components/products/RepairStatsBanner'
 
 const WHATSAPP = '96171998983'
 const STEPS = ['Received', 'Diagnosing', 'Repairing', 'Ready']
@@ -69,6 +70,8 @@ export default function RepairsPage() {
         <h1 className="text-3xl font-bold text-slate-900">Repairs & Service</h1>
         <p className="text-slate-500 mt-1 text-sm">Free diagnosis — laptops, desktops, printers and POS hardware. Book below or track an existing repair.</p>
       </div>
+
+      <RepairStatsBanner />
 
       <div className="flex bg-slate-100 rounded-xl p-1 mb-6">
         {(['book', 'track'] as const).map((t) => (
