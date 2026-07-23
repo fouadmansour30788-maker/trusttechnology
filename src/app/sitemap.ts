@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
   const routes = [
-    '', '/products', '/bundles', '/recommend', '/setup-builder', '/about', '/deals', '/warranty', '/returns', '/track', '/repairs', '/faq', '/guides',
+    '', '/products', '/bundles', '/recommend', '/setup-builder', '/visual-search', '/about', '/deals', '/warranty', '/returns', '/track', '/repairs', '/faq', '/guides',
     ...GUIDES.map((g) => `/guides/${g.slug}`),
     '/categories/computing', '/categories/laptops', '/categories/desktops',
     '/categories/displays', '/categories/monitors', '/categories/printing',
