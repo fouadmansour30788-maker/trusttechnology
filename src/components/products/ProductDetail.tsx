@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
 import { FitCheck } from './FitCheck'
 import { TrueSize } from './TrueSize'
+import { NotifyMeForm } from './NotifyMeForm'
 import type { Product } from '@/lib/types'
 
 const WHATSAPP = '96171998983'
@@ -131,13 +132,16 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
 
           {/* Actions */}
           {onRequest ? (
-            <a
-              href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + cartProduct.name)}`}
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
-            >
-              <MessageCircle size={18} /> Ask for price on WhatsApp
-            </a>
+            <div className="space-y-3">
+              <a
+                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I would like a price for: ' + cartProduct.name)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors"
+              >
+                <MessageCircle size={18} /> Ask for price on WhatsApp
+              </a>
+              <NotifyMeForm productId={p.id} kind="price_drop" label="Notify me when priced" />
+            </div>
           ) : (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -153,13 +157,17 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
               <Button fullWidth size="lg" onClick={() => addItem(cartProduct, qty)} disabled={p.stock === 0}>
                 <ShoppingCart size={18} /> Add to cart — ${(p.price * qty).toFixed(2)}
               </Button>
-              <a
-                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi, I'm interested in: " + cartProduct.name)}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors text-sm font-medium"
-              >
-                <MessageCircle size={16} /> Order via WhatsApp
-              </a>
+              {p.stock === 0 ? (
+                <NotifyMeForm productId={p.id} kind="restock" label="Notify me" />
+              ) : (
+                <a
+                  href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent("Hi, I'm interested in: " + cartProduct.name)}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition-colors text-sm font-medium"
+                >
+                  <MessageCircle size={16} /> Order via WhatsApp
+                </a>
+              )}
             </div>
           )}
 

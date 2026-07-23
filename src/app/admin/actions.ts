@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { notifyStockPriceAlerts } from '@/lib/stock-alerts'
 
 export type ProductInput = {
   id?: string
@@ -44,8 +45,19 @@ export async function saveProduct(input: ProductInput): Promise<{ ok?: true; id?
     let productId = id
 
     if (id) {
+      const { data: prev } = await supabase.from('products').select('stock, price').eq('id', id).maybeSingle()
       const { error } = await supabase.from('products').update(fields).eq('id', id)
       if (error) return { error: error.message }
+      if (prev) {
+        // Awaited (not fire-and-forget): this runs in a serverless function,
+        // which can be frozen the moment the action returns — an un-awaited
+        // call here would silently never complete most of the time.
+        await notifyStockPriceAlerts(
+          supabase, id, input.name, input.slug,
+          Number((prev as { stock: number }).stock), input.stock,
+          Number((prev as { price: number }).price), input.price
+        )
+      }
     } else {
       const { data, error } = await supabase.from('products').insert(fields).select('id').single()
       if (error) return { error: error.message }
