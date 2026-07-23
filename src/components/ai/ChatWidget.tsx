@@ -3,16 +3,17 @@ import { useEffect, useRef, useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Sparkles, X, Send, Loader2, Package, ShoppingCart, MessageCircle, Check } from 'lucide-react'
+import { Sparkles, X, Send, Loader2, Package, ShoppingCart, MessageCircle, Check, CheckCircle2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
 import type { Product } from '@/lib/types'
+import type { ChatStatusResult } from '@/lib/status-lookup'
 
 const WHATSAPP = '96171998983'
 type Rec = Product & { reason: string }
-type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[]; options?: string[] }
+type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[]; options?: string[]; status?: ChatStatusResult }
 
-const STARTERS = ['Laptop for video editing under $1500', 'POS system for a café', '4K monitor for design']
+const STARTERS = ['Laptop for video editing under $1500', 'POS system for a café', '4K monitor for design', 'Track my order']
 
 export function ChatWidget() {
   const pathname = usePathname()
@@ -43,7 +44,7 @@ export function ChatWidget() {
         body: JSON.stringify({ messages: history.map(({ role, content }) => ({ role, content })) }),
       })
       const data = await res.json()
-      setMessages((m) => [...m, { role: 'assistant', content: data.reply, products: data.products ?? [], options: data.options ?? [] }])
+      setMessages((m) => [...m, { role: 'assistant', content: data.reply, products: data.products ?? [], options: data.options ?? [], status: data.status }])
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: 'Sorry — something went wrong. Try again.' }])
     } finally {
@@ -138,6 +139,59 @@ export function ChatWidget() {
                           </div>
                         )
                       })}
+                    </div>
+                  )}
+                  {m.status && (
+                    <div className="mt-2 bg-white border border-slate-200 rounded-xl p-3">
+                      <div className="flex items-center justify-between gap-2 mb-2.5">
+                        <p className="text-xs font-bold text-slate-900 truncate">
+                          {m.status.reference}{m.status.device ? ` · ${m.status.device}` : ''}
+                        </p>
+                      </div>
+                      <div className="flex items-center mb-2">
+                        {Array.from({ length: m.status.totalSteps }).map((_, si) => {
+                          const done = m.status!.step >= si + 1
+                          return (
+                            <div key={si} className="flex items-center flex-1 last:flex-none">
+                              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${done ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                {done ? <CheckCircle2 size={11} /> : si + 1}
+                              </span>
+                              {si < m.status!.totalSteps - 1 && (
+                                <div className={`h-0.5 flex-1 mx-1 ${m.status!.step > si + 1 ? 'bg-blue-600' : 'bg-slate-100'}`} />
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <p className="text-xs text-slate-600">{m.status.statusLabel}</p>
+                      {m.status.quote != null && (
+                        <p className="mt-2 text-xs bg-amber-50 text-amber-900 rounded-lg px-2.5 py-1.5">
+                          Quote: <span className="font-bold">${m.status.quote.toLocaleString()}</span> — message us on WhatsApp to approve.
+                        </p>
+                      )}
+                      {m.status.items && m.status.items.length > 0 && (
+                        <div className="mt-2 pt-2 border-t border-slate-100 space-y-0.5">
+                          {m.status.items.map((it, ii) => (
+                            <p key={ii} className="text-[11px] text-slate-500 flex justify-between gap-2">
+                              <span className="truncate">{it.name}</span>
+                              <span className="shrink-0">× {it.quantity}</span>
+                            </p>
+                          ))}
+                          {m.status.total != null && (
+                            <p className="text-[11px] font-semibold text-slate-700 flex justify-between pt-1">
+                              <span>Total</span>
+                              <span>${m.status.total.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      <a
+                        href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(`Hi! Question about my ${m.status.kind} ${m.status.reference}`)}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="mt-2.5 inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-600 hover:text-emerald-700"
+                      >
+                        <MessageCircle size={12} /> Questions? Chat on WhatsApp
+                      </a>
                     </div>
                   )}
                   {m.role === 'assistant' && m.options && m.options.length > 0 && i === messages.length - 1 && (
