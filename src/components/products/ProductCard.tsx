@@ -141,9 +141,11 @@ export function ProductCard({ product }: Props) {
             <span className="text-blue-600 font-semibold text-sm">Call for price</span>
           ) : (
             <div>
-              <span className="text-slate-900 font-bold">${product.price.toFixed(2)}</span>
+              <span className={`font-bold ${product.compare_at_price ? 'text-emerald-600' : 'text-slate-900'}`}>
+                ${product.price.toFixed(2)}
+              </span>
               {product.compare_at_price && (
-                <span className="text-slate-400 line-through text-sm ml-2">
+                <span className="text-red-500 line-through text-sm ml-2">
                   ${product.compare_at_price.toFixed(2)}
                 </span>
               )}
