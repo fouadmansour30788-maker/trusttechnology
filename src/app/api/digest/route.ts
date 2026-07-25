@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { refreshSearchTrending } from '@/lib/trending'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -22,11 +23,15 @@ export async function GET(req: Request) {
   const s = createServiceClient(url, serviceKey, { auth: { persistSession: false } })
   const dayAgo = new Date(Date.now() - 24 * 3600 * 1000).toISOString()
 
+  // Trending-searches refresh piggybacks on this cron (Vercel Hobby caps us at 2 cron
+  // jobs, both already spoken for) — tight deadline so a slow Google Trends fetch
+  // never risks the digest's own 60s budget; failures here don't affect the digest.
   const [ordersRes, pendingRes, lowRes, changesRes] = await Promise.all([
     s.from('sales_orders').select('total, status').gte('created_at', dayAgo).neq('status', 'cancelled'),
     s.from('sales_orders').select('id', { count: 'exact', head: true }).eq('status', 'draft'),
     s.from('products').select('id', { count: 'exact', head: true }).gt('stock', 0).lte('stock', 5).eq('is_active', true),
     s.from('competitor_prices').select('name, competitor, price, previous_price').gte('price_changed_at', dayAgo).order('price_changed_at', { ascending: false }).limit(5),
+    refreshSearchTrending(Date.now() + 25_000),
   ])
 
   const orders = (ordersRes.data as { total: number; status: string }[]) ?? []

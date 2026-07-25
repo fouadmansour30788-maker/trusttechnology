@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
+import { after } from 'next/server'
 import type { Metadata } from 'next'
 import { getProductBySlug, getProducts, isSupabaseConfigured } from '@/lib/db'
 import { createClient } from '@/lib/supabase/server'
 import { getBestPriceIds, withBestPrice, getMarketRange } from '@/lib/best-price'
+import { trackProductView } from '@/lib/trending'
 import { ProductDetail } from '@/components/products/ProductDetail'
 import { ProductCard } from '@/components/products/ProductCard'
 import { ProductQA, type PublishedQA } from '@/components/products/ProductQA'
@@ -46,6 +48,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!fetched) notFound()
   const product = bestIds.has(fetched.id) ? { ...fetched, bestPrice: true } : fetched
   const related = withBestPrice(relatedProducts(product, all), bestIds)
+  after(() => trackProductView(product.id))
 
   // Market-range panel: only rendered when our price sits at (or within 3% of) the bottom.
   const rawRange = product.price > 0 ? await getMarketRange(product.id) : null

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Sparkles, MessageCircle } from 'lucide-react'
+import { Sparkles, MessageCircle, Flame } from 'lucide-react'
 import { HeroSection } from '@/components/home/HeroSection'
 import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
@@ -7,6 +7,7 @@ import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts } from '@/lib/db'
+import { getStoreTrending } from '@/lib/trending'
 import type { Product } from '@/lib/types'
 
 // Preferred showcase (all carry photos); falls back to is_featured / first with images.
@@ -32,13 +33,30 @@ function pickFeatured(all: Product[]): Product[] {
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const FEATURED_PRODUCTS = pickFeatured(await getProducts())
+  const allProducts = await getProducts()
+  const FEATURED_PRODUCTS = pickFeatured(allProducts)
+  const trending = await getStoreTrending(allProducts)
   return (
     <>
       <HeroSection />
       <BrandMarquee />
       <BentoGrid />
       <WhyChooseUs />
+
+      {/* Trending Now — most-viewed products, last 7 days */}
+      {trending.length >= 4 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-16">
+          <div className="flex items-center gap-2 mb-8">
+            <Flame size={20} className="text-orange-500" />
+            <h2 className="text-3xl font-bold text-slate-900">Trending Now</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {trending.map(({ product }) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Featured Products */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">

@@ -5,10 +5,13 @@ import {
   getPriceComparisons, getRecentChanges, getAssortmentGaps, getPricingOpportunities,
   type PriceComparison, type PriceChange, type AssortmentGap, type PricingOpportunity,
 } from '@/lib/competitors'
+import { getLocalMarketTrending, getSearchTrending, type LocalMarketTrend, type SearchTrend } from '@/lib/trending'
 import { CompetitorSyncButton } from '@/components/admin/CompetitorSyncButton'
 import { CompetitorDigest } from '@/components/admin/CompetitorDigest'
 import { MatchReview } from '@/components/admin/MatchReview'
 import { OpportunitiesTable } from '@/components/admin/OpportunitiesTable'
+import { MarketTrendsPanel } from '@/components/admin/MarketTrendsPanel'
+import { TrendingRefreshButton } from '@/components/admin/TrendingRefreshButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,6 +41,8 @@ export default async function CompetitorsPage() {
   let changes: PriceChange[] = []
   let gaps: AssortmentGap[] = []
   let opportunities: PricingOpportunity[] = []
+  let localTrends: LocalMarketTrend[] = []
+  let searchTrends: SearchTrend[] = []
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient()
@@ -45,11 +50,13 @@ export default async function CompetitorsPage() {
     const ourBrands = new Set(
       ((brandTags as { name: string }[]) ?? []).map((t) => t.name.toUpperCase().replace(/[^A-Z0-9]/g, ''))
     )
-    ;[{ comparisons, trackedTotal, lastSync }, changes, gaps, opportunities] = await Promise.all([
+    ;[{ comparisons, trackedTotal, lastSync }, changes, gaps, opportunities, localTrends, searchTrends] = await Promise.all([
       getPriceComparisons(supabase),
       getRecentChanges(supabase, 12),
       getAssortmentGaps(supabase, ourBrands),
       getPricingOpportunities(supabase),
+      getLocalMarketTrending(supabase),
+      getSearchTrending(supabase),
     ])
   }
 
@@ -90,6 +97,10 @@ export default async function CompetitorsPage() {
       </div>
 
       <div className="mb-6"><CompetitorDigest /></div>
+
+      <div className="mb-6">
+        <MarketTrendsPanel localTrends={localTrends} searchTrends={searchTrends} refreshButton={<TrendingRefreshButton />} />
+      </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
         {/* Recent price changes */}
