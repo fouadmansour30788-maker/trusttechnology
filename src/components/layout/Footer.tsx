@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react'
+import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
 const FACEBOOK_URL = 'https://www.facebook.com/trusttechnology.lb/'
 const WHATSAPP_URL = 'https://wa.me/96171998983'
@@ -25,7 +26,8 @@ export function Footer() {
               <span className="font-bold text-slate-900">Trust Technology</span>
             </div>
             <p className="text-slate-500 text-sm leading-relaxed">
-              Your trusted technology partner in Tripoli. Premium products, expert service.
+              Your trusted technology partner in Tripoli since {FOUNDED_YEAR} —
+              {' '}{YEARS_IN_BUSINESS} years of premium products, expert service.
             </p>
             <div className="mt-4 space-y-2 text-sm text-slate-500">
               <div className="flex items-center gap-2">

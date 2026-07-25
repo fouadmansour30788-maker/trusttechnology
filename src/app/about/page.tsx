@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import {
   ShieldCheck, Wallet, Activity, Cpu, MapPin, Phone, Mail,
-  MessageCircle, ArrowRight, Sparkles, Package, Layers,
+  MessageCircle, ArrowRight, Sparkles, Package, Layers, Award,
 } from 'lucide-react'
 import { CATALOG_PRODUCTS } from '@/data/products'
+import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
 export const metadata = {
   title: 'About Us',
   description:
-    'Trust Technology is Tripoli’s premier tech store — premium laptops, desktops, POS systems, printers, monitors and accessories, with honest pricing and genuine warranty across Lebanon.',
+    `Trust Technology is Tripoli’s premier tech store, serving Lebanon since ${FOUNDED_YEAR} — ${YEARS_IN_BUSINESS} years of premium laptops, desktops, POS systems, printers, monitors and accessories, with honest pricing and genuine warranty.`,
 }
 
 const WHATSAPP = '96171998983'
@@ -50,22 +51,24 @@ export default function AboutPage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="pt-16 pb-12 text-center">
         <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-full px-4 py-1.5 mb-6">
-          <Sparkles size={14} />
-          Tripoli, Lebanon
+          <Award size={14} />
+          Serving Lebanon since {FOUNDED_YEAR} · {YEARS_IN_BUSINESS} years strong
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight">
           Your trusted technology partner
         </h1>
         <p className="mt-5 max-w-2xl mx-auto text-lg text-slate-500 leading-relaxed">
-          Trust Technology is Tripoli’s premier tech store. We supply premium laptops,
-          desktops, monitors, printers, POS systems and accessories to homes and
-          businesses across Lebanon — with the advice to match.
+          Founded in {FOUNDED_YEAR}, Trust Technology is Tripoli’s premier tech store —
+          {' '}{YEARS_IN_BUSINESS} years supplying premium laptops, desktops, monitors,
+          printers, POS systems and accessories to homes and businesses across Lebanon,
+          with the advice to match.
         </p>
       </section>
 
       {/* ── Stats ────────────────────────────────────────────── */}
-      <section className="grid grid-cols-3 gap-4 max-w-3xl mx-auto pb-16">
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto pb-16">
         {[
+          { icon: Award, value: `${YEARS_IN_BUSINESS}+`, label: 'Years of experience' },
           { icon: Package, value: `${productCount}+`, label: 'Products in catalog' },
           { icon: Layers, value: `${brandCount}+`, label: 'Brands we carry' },
           { icon: MapPin, value: 'All Lebanon', label: 'Fast delivery' },

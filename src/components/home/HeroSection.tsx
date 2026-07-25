@@ -11,6 +11,7 @@ import {
 } from 'framer-motion'
 import { ArrowRight, Shield, Truck, Headphones, Sparkles, Radar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
 const TRUST_ITEMS = [
   { icon: Shield, label: 'Genuine Products', sub: 'Authorized dealer' },
@@ -78,7 +79,7 @@ export function HeroSection() {
               className="inline-flex items-center gap-2 bg-white/70 backdrop-blur border border-blue-100 rounded-full px-4 py-1.5 text-sm text-blue-700 mb-6 shadow-sm"
             >
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-              Tripoli&apos;s Premier Tech Store
+              Tripoli&apos;s Premier Tech Store · {YEARS_IN_BUSINESS} Years Strong
             </motion.div>
 
             <motion.h1
@@ -100,8 +101,9 @@ export function HeroSection() {
               variants={fadeUp} initial="hidden" animate="show" custom={2}
               className="text-slate-500 text-lg mt-6 leading-relaxed max-w-xl"
             >
-              From professional POS systems to premium laptops — curated tech solutions
-              for businesses and individuals across Lebanon.
+              {YEARS_IN_BUSINESS} years in business, since {FOUNDED_YEAR} — from professional POS
+              systems to premium laptops, curated tech solutions for businesses and
+              individuals across Lebanon.
             </motion.p>
 
             <motion.div

@@ -32,6 +32,7 @@ const localBusinessLd = {
   description: SITE_DESCRIPTION,
   url: SITE_URL,
   telephone: '+961 71 998 983',
+  foundingDate: '2006',
   address: { '@type': 'PostalAddress', addressLocality: 'Tripoli', addressCountry: 'LB' },
   areaServed: 'Lebanon',
   priceRange: '$$',
