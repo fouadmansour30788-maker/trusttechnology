@@ -2,11 +2,12 @@ import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts, getCategories } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ tags?: string; sort?: string }>
+  searchParams: Promise<{ tags?: string; specs?: string; sort?: string }>
 }
 
 export const dynamic = 'force-dynamic'
@@ -30,8 +31,9 @@ const PARENT_TO_CHILDREN: Record<string, string[]> = {
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { tags: tagFilter, sort } = await searchParams
+  const { tags: tagFilter, specs: specFilter, sort } = await searchParams
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
+  const selectedSpecs = parseSpecParam(specFilter)
 
   const [fetched, categories, bestIds] = await Promise.all([getProducts(), getCategories(), getBestPriceIds()])
   const all = withBestPrice(fetched, bestIds)
@@ -61,9 +63,16 @@ export default async function CategoryPage({ params, searchParams }: Props) {
     new Map(products.flatMap((p) => p.tags ?? []).map((t) => [t.slug, t])).values()
   ).sort((a, b) => a.name.localeCompare(b.name))
 
+  // Facet options reflect the category's products before spec-filtering, so
+  // unchecking a box doesn't make its sibling options disappear.
+  const specFacetOptions = Object.fromEntries(
+    SPEC_FACETS.map(({ key }) => [key, facetOptions(products, key)])
+  )
+
   if (selectedTags.length > 0) {
     products = products.filter((p) => p.tags?.some((t) => selectedTags.includes(t.slug)))
   }
+  products = products.filter((p) => matchesSpecFilters(p, selectedSpecs))
 
   const priced = (p: Product) => (p.priceOnRequest || p.price === 0 ? Infinity : p.price)
   if (sort === 'price_asc') products = [...products].sort((a, b) => priced(a) - priced(b))
@@ -85,7 +94,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
       </div>
 
       <div className="flex gap-8">
-        <FilterSidebar tags={categoryTags} />
+        <FilterSidebar tags={categoryTags} specFacetOptions={specFacetOptions} />
 
         <div className="flex-1 min-w-0">
           {products.length === 0 ? (

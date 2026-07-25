@@ -3,9 +3,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import type { Tag } from '@/lib/types'
+import { SPEC_FACETS, parseSpecParam, specParamToString, type SpecFacetKey } from '@/lib/spec-facets'
 
 type Props = {
   tags: Tag[]
+  specFacetOptions?: Partial<Record<SpecFacetKey, { value: string; count: number }[]>>
 }
 
 type FilterSection = { label: string; type: string }
@@ -16,33 +18,48 @@ const SECTIONS: FilterSection[] = [
   { label: 'Type', type: 'type' },
 ]
 
-export function FilterSidebar({ tags }: Props) {
+export function FilterSidebar({ tags, specFacetOptions = {} }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     brand: true,
     use_case: true,
     type: true,
+    cpu: true,
+    vga: true,
+    screen: true,
+    storage: true,
   })
 
   const selectedTags = searchParams.get('tags')?.split(',').filter(Boolean) ?? []
+  const selectedSpecs = parseSpecParam(searchParams.get('specs') ?? undefined)
+  const hasAnyFilter = selectedTags.length > 0 || Object.values(selectedSpecs).some((v) => v && v.length > 0)
 
   function toggleTag(slug: string) {
     const next = selectedTags.includes(slug)
       ? selectedTags.filter((t) => t !== slug)
       : [...selectedTags, slug]
     const params = new URLSearchParams(searchParams.toString())
-    if (next.length > 0) {
-      params.set('tags', next.join(','))
-    } else {
-      params.delete('tags')
-    }
+    if (next.length > 0) params.set('tags', next.join(','))
+    else params.delete('tags')
+    router.push(`?${params.toString()}`, { scroll: false })
+  }
+
+  function toggleSpec(key: SpecFacetKey, value: string) {
+    const current = selectedSpecs[key] ?? []
+    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value]
+    const updated = { ...selectedSpecs, [key]: next }
+    const params = new URLSearchParams(searchParams.toString())
+    const str = specParamToString(updated)
+    if (str) params.set('specs', str)
+    else params.delete('specs')
     router.push(`?${params.toString()}`, { scroll: false })
   }
 
   function clearAll() {
     const params = new URLSearchParams(searchParams.toString())
     params.delete('tags')
+    params.delete('specs')
     router.push(`?${params.toString()}`, { scroll: false })
   }
 
@@ -55,7 +72,7 @@ export function FilterSidebar({ tags }: Props) {
       <div className="sticky top-20 space-y-1">
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm font-semibold text-slate-900">Filters</span>
-          {selectedTags.length > 0 && (
+          {hasAnyFilter && (
             <button onClick={clearAll} className="text-xs text-blue-600 hover:text-blue-700">
               Clear all
             </button>
@@ -96,6 +113,43 @@ export function FilterSidebar({ tags }: Props) {
             )}
           </div>
         ))}
+
+        {/* Spec-based filters (CPU, Graphics, Screen size, Storage) — only shown when the
+            current product list actually has that spec (e.g. hidden for accessories). */}
+        {SPEC_FACETS.map(({ key, label }) => {
+          const options = specFacetOptions[key]
+          if (!options || options.length === 0) return null
+          const selected = selectedSpecs[key] ?? []
+          return (
+            <div key={key} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+              <button
+                onClick={() => setExpanded((p) => ({ ...p, [key]: !p[key] }))}
+                className="w-full flex items-center justify-between px-4 py-3 text-sm text-slate-700 hover:text-slate-900"
+              >
+                <span className="font-medium">{label}</span>
+                <ChevronDown size={14} className={`transition-transform text-slate-400 ${expanded[key] ? 'rotate-180' : ''}`} />
+              </button>
+              {expanded[key] && (
+                <div className="px-4 pb-3 space-y-1.5">
+                  {options.map(({ value, count }) => (
+                    <label key={value} className="flex items-center gap-2 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={selected.includes(value)}
+                        onChange={() => toggleSpec(key, value)}
+                        className="w-3.5 h-3.5 rounded border-slate-300 bg-white text-blue-600 accent-blue-600"
+                      />
+                      <span className="text-sm text-slate-500 group-hover:text-slate-900 transition-colors flex-1">
+                        {value}
+                      </span>
+                      <span className="text-xs text-slate-300">{count}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          )
+        })}
 
         {/* Sort */}
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden mt-2 shadow-sm">

@@ -2,10 +2,11 @@ import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
-  searchParams: Promise<{ tags?: string; sort?: string; q?: string }>
+  searchParams: Promise<{ tags?: string; specs?: string; sort?: string; q?: string }>
 }
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +17,7 @@ export const metadata = {
 }
 
 export default async function ProductsPage({ searchParams }: Props) {
-  const { tags: tagFilter, sort, q } = await searchParams
+  const { tags: tagFilter, specs: specFilter, sort, q } = await searchParams
 
   // Live from Supabase when configured; static catalog otherwise.
   const [fetched, bestIds] = await Promise.all([getProducts(), getBestPriceIds()])
@@ -26,6 +27,7 @@ export default async function ProductsPage({ searchParams }: Props) {
   ).sort((a, b) => a.name.localeCompare(b.name))
 
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
+  const selectedSpecs = parseSpecParam(specFilter)
   const query = q?.trim().toLowerCase() ?? ''
 
   let products = allProducts.filter((p) => p.is_active)
@@ -39,11 +41,18 @@ export default async function ProductsPage({ searchParams }: Props) {
     )
   }
 
+  // Facet option counts reflect the list before spec-filtering (so unchecking
+  // a box doesn't make its sibling options disappear), matching how brand tags work.
+  const specFacetOptions = Object.fromEntries(
+    SPEC_FACETS.map(({ key }) => [key, facetOptions(products, key)])
+  )
+
   if (selectedTags.length > 0) {
     products = products.filter((p) =>
       p.tags?.some((t) => selectedTags.includes(t.slug))
     )
   }
+  products = products.filter((p) => matchesSpecFilters(p, selectedSpecs))
 
   // "Call for price" items (price 0) always sort to the end.
   const priced = (p: Product) => (p.priceOnRequest || p.price === 0 ? Infinity : p.price)
@@ -67,7 +76,7 @@ export default async function ProductsPage({ searchParams }: Props) {
       </div>
 
       <div className="flex gap-8">
-        <FilterSidebar tags={ALL_TAGS} />
+        <FilterSidebar tags={ALL_TAGS} specFacetOptions={specFacetOptions} />
 
         <div className="flex-1 min-w-0">
           {products.length === 0 ? (
