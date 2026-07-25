@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { CATALOG_PRODUCTS } from '@/data/products'
+import { extractPhone, extractReference, looksLikeStatusIntent, lookupOrderStatus, lookupRepairStatus } from '@/lib/status-lookup'
 
 export const runtime = 'nodejs'
 
@@ -45,6 +46,44 @@ ${CATALOG_TEXT}`
 
 export async function POST(req: Request) {
   const { messages } = (await req.json()) as { messages: ChatMsg[] }
+
+  // Order/repair status: handled directly against the database, never by the
+  // model — the model would otherwise be free to invent a plausible-looking
+  // status, and that's not a risk worth taking for something as high-trust as
+  // "is my order coming."
+  const lastUser = [...messages].reverse().find((m) => m.role === 'user')?.content ?? ''
+  const recentText = messages.slice(-6).map((m) => m.content).join(' \n ')
+  const ref = extractReference(lastUser) ?? extractReference(recentText)
+  if (ref) {
+    const phone = extractPhone(lastUser, ref.reference) ?? extractPhone(recentText, ref.reference)
+    if (!phone) {
+      return NextResponse.json({
+        reply: `Sure — what's the phone number you used for ${ref.reference}?`,
+        needsMoreInfo: true,
+        options: [],
+        products: [],
+      })
+    }
+    const lookup = ref.kind === 'order' ? await lookupOrderStatus(ref.reference, phone) : await lookupRepairStatus(ref.reference, phone)
+    if (!lookup.ok) {
+      return NextResponse.json({ reply: lookup.error, needsMoreInfo: false, options: [], products: [] })
+    }
+    return NextResponse.json({
+      reply: `Here's the latest on ${lookup.result.reference}:`,
+      needsMoreInfo: false,
+      options: [],
+      products: [],
+      status: lookup.result,
+    })
+  }
+  if (looksLikeStatusIntent(lastUser)) {
+    return NextResponse.json({
+      reply: "I can check that — what's your order number (e.g. SO-0012) or repair number (e.g. REP-0003), and the phone you used?",
+      needsMoreInfo: true,
+      options: [],
+      products: [],
+    })
+  }
 
   if (!GEMINI_KEY) {
     return NextResponse.json({

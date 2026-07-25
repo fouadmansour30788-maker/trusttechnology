@@ -1,15 +1,36 @@
 'use client'
-import { X, ShoppingCart, Plus, Minus, Trash2, MessageCircle, Truck } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { X, ShoppingCart, Plus, Minus, Trash2, MessageCircle, Truck, Check } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
+import type { Product } from '@/lib/types'
 
 const WHATSAPP = '96171998983'
 
 export function CartDrawer() {
-  const { items, isOpen, closeCart, removeItem, updateQuantity, totalItems, totalPrice } =
+  const { items, isOpen, closeCart, removeItem, updateQuantity, addItem, totalItems, totalPrice } =
     useCartStore()
+  const [suggestions, setSuggestions] = useState<Product[]>([])
+  const [added, setAdded] = useState<string | null>(null)
+
+  const ids = items.map((i) => i.product.id).join(',')
+  const categories = [...new Set(items.map((i) => i.product.primary_category_id).filter(Boolean))].join(',')
+
+  useEffect(() => {
+    // Cart-empty/closed suggestions are simply never rendered (gated below by
+    // items.length > 0), so there's no need to clear state synchronously here.
+    if (!isOpen || items.length === 0) return
+    let cancelled = false
+    const params = new URLSearchParams({ exclude: ids, categories })
+    fetch(`/api/cart-suggestions?${params}`)
+      .then((r) => r.json())
+      .then((data) => { if (!cancelled) setSuggestions(data.products ?? []) })
+      .catch(() => {})
+    return () => { cancelled = true }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, ids, categories])
 
   if (!isOpen) return null
 
@@ -91,6 +112,37 @@ export function CartDrawer() {
             })
           )}
         </div>
+
+        {/* Cross-sell */}
+        {items.length > 0 && suggestions.length > 0 && (
+          <div className="border-t border-slate-100 px-6 py-4">
+            <p className="text-xs font-semibold text-slate-500 mb-3">You might also need</p>
+            <div className="flex gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+              {suggestions.map((p) => (
+                <div key={p.id} className="w-28 shrink-0">
+                  <Link href={`/products/${p.slug}`} onClick={closeCart} className="block w-28 h-20 rounded-lg bg-slate-50 border border-slate-200 relative overflow-hidden">
+                    {p.images[0] ? (
+                      <Image src={p.images[0]} alt={p.name} fill className="object-contain p-2" sizes="112px" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300 text-[10px]">No img</div>
+                    )}
+                  </Link>
+                  <p className="text-[11px] text-slate-600 mt-1.5 line-clamp-2 leading-tight">{p.name}</p>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs font-bold text-slate-900">${p.price.toFixed(0)}</span>
+                    <button
+                      onClick={() => { addItem(p); setAdded(p.id); setTimeout(() => setAdded(null), 1200) }}
+                      className="w-6 h-6 rounded-md bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition-colors shrink-0"
+                      aria-label={`Add ${p.name} to cart`}
+                    >
+                      {added === p.id ? <Check size={12} /> : <Plus size={12} />}
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         {items.length > 0 && (
