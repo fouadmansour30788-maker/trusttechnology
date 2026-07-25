@@ -51,8 +51,16 @@ export default async function HomePage() {
             <h2 className="text-3xl font-bold text-slate-900">Trending Now</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {trending.map(({ product }) => (
-              <ProductCard key={product.id} product={product} />
+            {trending.map(({ product, views }, i) => (
+              <div key={product.id} className="relative">
+                <span className="absolute -top-2 -left-2 z-20 w-7 h-7 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center shadow-lg shadow-orange-500/30 ring-2 ring-white">
+                  {i + 1}
+                </span>
+                <ProductCard product={product} />
+                <p className="mt-1.5 text-center text-xs text-slate-400">
+                  {views} view{views === 1 ? '' : 's'} this week
+                </p>
+              </div>
             ))}
           </div>
         </section>

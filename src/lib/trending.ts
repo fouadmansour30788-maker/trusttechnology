@@ -2,7 +2,7 @@ import 'server-only'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { comparablePrice } from '@/lib/competitors'
-import type { Product } from '@/lib/types'
+import type { Product, Category } from '@/lib/types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyClient = SupabaseClient<any, any, any>
@@ -67,6 +67,9 @@ export type LocalMarketTrend = {
   price: number
   previousPrice: number
   changedAt: string
+  ourPrice: number
+  diff: number
+  diffPct: number
 }
 
 /**
@@ -78,7 +81,7 @@ export type LocalMarketTrend = {
 export async function getLocalMarketTrending(supabase: AnyClient, limit = 8): Promise<LocalMarketTrend[]> {
   const { data, error } = await supabase
     .from('competitor_prices')
-    .select('matched_product_id, name, competitor, price, previous_price, price_changed_at, products:matched_product_id(name)')
+    .select('matched_product_id, name, competitor, price, previous_price, price_changed_at, products:matched_product_id(name, price)')
     .not('matched_product_id', 'is', null)
     .not('price_changed_at', 'is', null)
     .order('price_changed_at', { ascending: false })
@@ -86,22 +89,77 @@ export async function getLocalMarketTrending(supabase: AnyClient, limit = 8): Pr
   if (error) return []
   type Row = {
     matched_product_id: string; name: string; competitor: string; price: number
-    previous_price: number; price_changed_at: string; products: { name: string } | null
+    previous_price: number; price_changed_at: string; products: { name: string; price: number } | null
   }
   const seen = new Set<string>()
   const out: LocalMarketTrend[] = []
   for (const r of ((data as unknown as Row[]) ?? [])) {
     if (seen.has(r.matched_product_id)) continue
     seen.add(r.matched_product_id)
+    const theirPrice = comparablePrice(r.competitor, r.name, Number(r.price))
+    const ourPrice = Number(r.products?.price ?? 0)
     out.push({
       productId: r.matched_product_id,
       productName: r.products?.name ?? r.name,
       competitor: r.competitor,
-      price: comparablePrice(r.competitor, r.name, Number(r.price)),
+      price: theirPrice,
       previousPrice: Number(r.previous_price),
       changedAt: r.price_changed_at,
+      ourPrice,
+      diff: ourPrice > 0 ? Math.round((ourPrice - theirPrice) * 100) / 100 : 0,
+      diffPct: ourPrice > 0 && theirPrice > 0 ? Math.round(((ourPrice - theirPrice) / theirPrice) * 100) : 0,
     })
     if (out.length >= limit) break
+  }
+  return out
+}
+
+// ── Keyword → catalog matching ──────────────────────────────────────────
+// Turns an abstract Google Trends score into concrete items: which of OUR
+// products correspond to each trending search term. A keyword with zero
+// matches is itself a useful signal (a demand gap in our assortment).
+
+/** Resolve a product's category slug regardless of static-catalog vs Supabase mode (mirrors categories/[slug]/page.tsx). */
+function categorySlugOf(p: Product, categories: Category[]): string | null {
+  if (!p.primary_category_id) return null
+  if (categories.length === 0) return p.primary_category_id // static catalog: already a slug
+  return categories.find((c) => c.id === p.primary_category_id)?.slug ?? null
+}
+
+const GAMING_RE = /gaming|legion|omen|victus|nitro|predator|\brog\b|\btuf\b/i
+const GPU_RE = /\b(rtx|gtx|radeon)\s?\d{3,4}/i
+
+/** Maps a curated Google Trends keyword (see google-trends.ts) to a predicate over our catalog. */
+const KEYWORD_MATCHERS: Record<string, (p: Product, categorySlug: string | null) => boolean> = {
+  laptop: (_p, cat) => cat === 'laptops',
+  'gaming laptop': (p, cat) => cat === 'laptops' && GAMING_RE.test(p.name),
+  iphone: (p) => /iphone/i.test(p.name),
+  macbook: (p) => /macbook/i.test(p.name),
+  monitor: (_p, cat) => cat === 'monitors',
+  'graphics card': (p) => GPU_RE.test(p.name) || Object.values(p.specs ?? {}).some((v) => GPU_RE.test(String(v))),
+  printer: (_p, cat) => cat === 'printing' || cat === 'ink-toner',
+  'pos system': (_p, cat) => cat === 'pos-systems',
+}
+
+export type KeywordMatch = { id: string; name: string; price: number; priceOnRequest: boolean; image: string | null }
+
+/** Which of our own active products correspond to each trending search keyword. */
+export function getKeywordProductMatches(
+  keywords: string[],
+  allProducts: Product[],
+  categories: Category[],
+  limit = 4
+): Record<string, KeywordMatch[]> {
+  const withCat = allProducts.filter((p) => p.is_active).map((p) => ({ p, cat: categorySlugOf(p, categories) }))
+  const out: Record<string, KeywordMatch[]> = {}
+  for (const keyword of keywords) {
+    const matcher = KEYWORD_MATCHERS[keyword]
+    if (!matcher) continue
+    out[keyword] = withCat
+      .filter(({ p, cat }) => matcher(p, cat))
+      .sort((a, b) => (b.p.images?.length ? 1 : 0) - (a.p.images?.length ? 1 : 0))
+      .slice(0, limit)
+      .map(({ p }) => ({ id: p.id, name: p.name, price: p.price, priceOnRequest: p.priceOnRequest || p.price === 0, image: p.images?.[0] ?? null }))
   }
   return out
 }

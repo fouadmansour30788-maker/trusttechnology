@@ -1,11 +1,15 @@
 import { ExternalLink, Radar, Link2, TrendingUp, TrendingDown, History, PackageSearch } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
-import { isSupabaseConfigured } from '@/lib/db'
+import { isSupabaseConfigured, getProducts, getCategories } from '@/lib/db'
 import {
   getPriceComparisons, getRecentChanges, getAssortmentGaps, getPricingOpportunities,
   type PriceComparison, type PriceChange, type AssortmentGap, type PricingOpportunity,
 } from '@/lib/competitors'
-import { getLocalMarketTrending, getSearchTrending, type LocalMarketTrend, type SearchTrend } from '@/lib/trending'
+import {
+  getLocalMarketTrending, getSearchTrending, getKeywordProductMatches,
+  type LocalMarketTrend, type SearchTrend, type KeywordMatch,
+} from '@/lib/trending'
+import type { Product, Category } from '@/lib/types'
 import { CompetitorSyncButton } from '@/components/admin/CompetitorSyncButton'
 import { CompetitorDigest } from '@/components/admin/CompetitorDigest'
 import { MatchReview } from '@/components/admin/MatchReview'
@@ -43,6 +47,7 @@ export default async function CompetitorsPage() {
   let opportunities: PricingOpportunity[] = []
   let localTrends: LocalMarketTrend[] = []
   let searchTrends: SearchTrend[] = []
+  let keywordMatches: Record<string, KeywordMatch[]> = {}
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient()
@@ -50,14 +55,19 @@ export default async function CompetitorsPage() {
     const ourBrands = new Set(
       ((brandTags as { name: string }[]) ?? []).map((t) => t.name.toUpperCase().replace(/[^A-Z0-9]/g, ''))
     )
-    ;[{ comparisons, trackedTotal, lastSync }, changes, gaps, opportunities, localTrends, searchTrends] = await Promise.all([
+    let allProducts: Product[]
+    let categories: Category[]
+    ;[{ comparisons, trackedTotal, lastSync }, changes, gaps, opportunities, localTrends, searchTrends, allProducts, categories] = await Promise.all([
       getPriceComparisons(supabase),
       getRecentChanges(supabase, 12),
       getAssortmentGaps(supabase, ourBrands),
       getPricingOpportunities(supabase),
       getLocalMarketTrending(supabase),
       getSearchTrending(supabase),
+      getProducts(),
+      getCategories(),
     ])
+    keywordMatches = getKeywordProductMatches(searchTrends.map((t) => t.keyword), allProducts, categories)
   }
 
   const weHigher = comparisons.filter((c) => c.diffPct > 3 && c.ourPrice > 0)
@@ -99,7 +109,7 @@ export default async function CompetitorsPage() {
       <div className="mb-6"><CompetitorDigest /></div>
 
       <div className="mb-6">
-        <MarketTrendsPanel localTrends={localTrends} searchTrends={searchTrends} refreshButton={<TrendingRefreshButton />} />
+        <MarketTrendsPanel localTrends={localTrends} searchTrends={searchTrends} keywordMatches={keywordMatches} refreshButton={<TrendingRefreshButton />} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">
