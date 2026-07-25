@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {
   ShieldCheck, Wallet, Activity, Cpu, MapPin, Phone, Mail,
   MessageCircle, ArrowRight, Sparkles, Package, Layers, Award,
+  Laptop, Monitor, Printer, CreditCard,
 } from 'lucide-react'
 import { CATALOG_PRODUCTS } from '@/data/products'
 import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
@@ -16,6 +17,15 @@ const WHATSAPP = '96171998983'
 const STORE_QUERY = 'Trust Technology, Tripoli, Lebanon'
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_QUERY)}`
 const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(STORE_QUERY)}&output=embed`
+
+const SUPPLY_CATEGORIES = [
+  { icon: Laptop, label: 'Laptops', href: '/categories/laptops' },
+  { icon: Cpu, label: 'Desktops', href: '/categories/desktops' },
+  { icon: Monitor, label: 'Monitors', href: '/categories/monitors' },
+  { icon: Printer, label: 'Printers', href: '/categories/printing' },
+  { icon: CreditCard, label: 'POS Systems', href: '/categories/pos-systems' },
+  { icon: Package, label: 'Accessories', href: '/categories/peripherals' },
+]
 
 const VALUES = [
   {
@@ -63,6 +73,43 @@ export default function AboutPage() {
           printers, POS systems and accessories to homes and businesses across Lebanon,
           with the advice to match.
         </p>
+      </section>
+
+      {/* ── Journey timeline ─────────────────────────────────── */}
+      <section className="pb-16">
+        <div className="max-w-2xl mx-auto flex items-center gap-3 sm:gap-5 px-4">
+          <div className="text-center shrink-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-lg shadow-slate-900/20">
+              {FOUNDED_YEAR}
+            </div>
+            <p className="text-xs text-slate-500 mt-2 font-medium">Founded</p>
+          </div>
+          <div className="flex-1 h-1.5 rounded-full bg-gradient-to-r from-slate-200 via-blue-500 to-emerald-500 relative">
+            <span className="absolute -top-[5px] right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20" />
+          </div>
+          <div className="text-center shrink-0">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-bold text-sm sm:text-base shadow-lg shadow-emerald-500/30">
+              {YEARS_IN_BUSINESS}+
+            </div>
+            <p className="text-xs text-slate-500 mt-2 font-medium">Years strong</p>
+          </div>
+        </div>
+
+        {/* What we supply */}
+        <div className="max-w-4xl mx-auto mt-12 grid grid-cols-3 sm:grid-cols-6 gap-3 px-4">
+          {SUPPLY_CATEGORIES.map(({ icon: Icon, label, href }) => (
+            <Link
+              key={label}
+              href={href}
+              className="group bg-white rounded-2xl border border-slate-100 shadow-lg shadow-slate-900/5 p-4 text-center hover:border-blue-200 hover:shadow-blue-600/10 transition-colors"
+            >
+              <span className="mx-auto mb-2 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                <Icon size={18} className="text-blue-600" />
+              </span>
+              <p className="text-xs font-medium text-slate-700">{label}</p>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* ── Stats ────────────────────────────────────────────── */}
