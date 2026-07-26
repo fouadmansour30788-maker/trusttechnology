@@ -7,7 +7,8 @@ import {
 } from '@/lib/competitors'
 import {
   getLocalMarketTrending, getSearchTrending, getKeywordProductMatches,
-  type LocalMarketTrend, type SearchTrend, type KeywordMatch,
+  getBestBuyTrending, getExternalTrendingItems,
+  type LocalMarketTrend, type SearchTrend, type KeywordMatch, type BestBuyTrend, type ExternalTrendingItem,
 } from '@/lib/trending'
 import type { Product, Category } from '@/lib/types'
 import { CompetitorSyncButton } from '@/components/admin/CompetitorSyncButton'
@@ -16,6 +17,7 @@ import { MatchReview } from '@/components/admin/MatchReview'
 import { OpportunitiesTable } from '@/components/admin/OpportunitiesTable'
 import { MarketTrendsPanel } from '@/components/admin/MarketTrendsPanel'
 import { TrendingRefreshButton } from '@/components/admin/TrendingRefreshButton'
+import { ExternalMarketplacesPanel } from '@/components/admin/ExternalMarketplacesPanel'
 
 export const dynamic = 'force-dynamic'
 
@@ -48,6 +50,8 @@ export default async function CompetitorsPage() {
   let localTrends: LocalMarketTrend[] = []
   let searchTrends: SearchTrend[] = []
   let keywordMatches: Record<string, KeywordMatch[]> = {}
+  let bestBuyItems: BestBuyTrend[] = []
+  let amazonItems: ExternalTrendingItem[] = []
 
   if (isSupabaseConfigured()) {
     const supabase = await createClient()
@@ -57,7 +61,10 @@ export default async function CompetitorsPage() {
     )
     let allProducts: Product[]
     let categories: Category[]
-    ;[{ comparisons, trackedTotal, lastSync }, changes, gaps, opportunities, localTrends, searchTrends, allProducts, categories] = await Promise.all([
+    ;[
+      { comparisons, trackedTotal, lastSync }, changes, gaps, opportunities, localTrends, searchTrends,
+      allProducts, categories, bestBuyItems, amazonItems,
+    ] = await Promise.all([
       getPriceComparisons(supabase),
       getRecentChanges(supabase, 12),
       getAssortmentGaps(supabase, ourBrands),
@@ -66,6 +73,8 @@ export default async function CompetitorsPage() {
       getSearchTrending(supabase),
       getProducts(),
       getCategories(),
+      getBestBuyTrending(supabase),
+      getExternalTrendingItems(supabase, 'amazon'),
     ])
     keywordMatches = getKeywordProductMatches(searchTrends.map((t) => t.keyword), allProducts, categories)
   }
@@ -110,6 +119,14 @@ export default async function CompetitorsPage() {
 
       <div className="mb-6">
         <MarketTrendsPanel localTrends={localTrends} searchTrends={searchTrends} keywordMatches={keywordMatches} refreshButton={<TrendingRefreshButton />} />
+      </div>
+
+      <div className="mb-6">
+        <ExternalMarketplacesPanel
+          bestBuyItems={bestBuyItems}
+          bestBuyConfigured={Boolean(process.env.BESTBUY_API_KEY)}
+          amazonItems={amazonItems}
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mb-6">

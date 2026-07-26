@@ -204,3 +204,115 @@ export async function refreshSearchTrending(deadline?: number): Promise<{ ok: bo
     return { ok: false, fetched: 0, error: e instanceof Error ? e.message : String(e) }
   }
 }
+
+// ── Best Buy (US market, auto-fetched via free self-serve API) ─────────
+
+export type BestBuyTrend = {
+  sku: string
+  keyword: string
+  name: string
+  price: number | null
+  imageUrl: string | null
+  productUrl: string | null
+  reviewCount: number | null
+  reviewAverage: number | null
+}
+
+/** Cached Best Buy popularity snapshot (see refreshBestBuyTrending). */
+export async function getBestBuyTrending(supabase: AnyClient, limit = 24): Promise<BestBuyTrend[]> {
+  const { data, error } = await supabase
+    .from('bestbuy_trending_products')
+    .select('sku, keyword, name, price, image_url, product_url, review_count, review_average')
+    .order('review_count', { ascending: false, nullsFirst: false })
+    .limit(limit)
+  if (error) return []
+  type Row = {
+    sku: string; keyword: string; name: string; price: number | null; image_url: string | null
+    product_url: string | null; review_count: number | null; review_average: number | null
+  }
+  return ((data as Row[]) ?? []).map((r) => ({
+    sku: r.sku, keyword: r.keyword, name: r.name,
+    price: r.price === null ? null : Number(r.price),
+    imageUrl: r.image_url, productUrl: r.product_url,
+    reviewCount: r.review_count, reviewAverage: r.review_average === null ? null : Number(r.review_average),
+  }))
+}
+
+/** Refresh bestbuy_trending_products from the live Best Buy API — needs BESTBUY_API_KEY. */
+export async function refreshBestBuyTrending(deadline?: number): Promise<{ ok: boolean; fetched: number; error?: string }> {
+  const s = serviceClient()
+  if (!s) return { ok: false, fetched: 0, error: 'not configured' }
+  if (!process.env.BESTBUY_API_KEY) return { ok: false, fetched: 0, error: 'BESTBUY_API_KEY not set' }
+  try {
+    const { fetchBestBuyTrending } = await import('@/lib/bestbuy')
+    const results = await fetchBestBuyTrending(deadline)
+    if (results.length === 0) return { ok: false, fetched: 0, error: 'no data fetched' }
+    const nowIso = new Date().toISOString()
+    const rows = results.map((r) => ({
+      sku: r.sku, keyword: r.keyword, name: r.name, price: r.price,
+      image_url: r.imageUrl, product_url: r.productUrl,
+      review_count: r.reviewCount, review_average: r.reviewAverage, fetched_at: nowIso,
+    }))
+    const { error } = await s.from('bestbuy_trending_products').upsert(rows, { onConflict: 'sku' })
+    if (error) return { ok: false, fetched: 0, error: error.message }
+    return { ok: true, fetched: rows.length }
+  } catch (e) {
+    return { ok: false, fetched: 0, error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
+// ── Amazon / AliExpress (staff-curated — no viable auto-fetch path) ────
+// Amazon's Product Advertising API is closed to new applicants and being
+// deprecated; AliExpress's affiliate API needs a manual approval
+// application we haven't submitted. Staff log what they see trending
+// instead — same visual section, just not automatic for these two.
+
+export type ExternalSource = 'amazon' | 'aliexpress'
+
+export type ExternalTrendingItem = {
+  id: string
+  source: ExternalSource
+  name: string
+  price: number | null
+  currency: string
+  url: string
+  imageUrl: string | null
+  note: string | null
+  createdAt: string
+}
+
+export async function getExternalTrendingItems(supabase: AnyClient, source: ExternalSource, limit = 12): Promise<ExternalTrendingItem[]> {
+  const { data, error } = await supabase
+    .from('external_trending_items')
+    .select('id, source, name, price, currency, url, image_url, note, created_at')
+    .eq('source', source)
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  if (error) return []
+  type Row = {
+    id: string; source: ExternalSource; name: string; price: number | null; currency: string
+    url: string; image_url: string | null; note: string | null; created_at: string
+  }
+  return ((data as Row[]) ?? []).map((r) => ({
+    id: r.id, source: r.source, name: r.name, price: r.price === null ? null : Number(r.price),
+    currency: r.currency, url: r.url, imageUrl: r.image_url, note: r.note, createdAt: r.created_at,
+  }))
+}
+
+export async function addExternalTrendingItem(
+  supabase: AnyClient,
+  input: { source: ExternalSource; name: string; price: number | null; url: string; imageUrl: string | null; note: string | null }
+): Promise<{ ok: boolean; error?: string }> {
+  const { error } = await supabase.from('external_trending_items').insert({
+    source: input.source, name: input.name, price: input.price, url: input.url,
+    image_url: input.imageUrl, note: input.note,
+  })
+  if (error) return { ok: false, error: error.message }
+  return { ok: true }
+}
+
+export async function deleteExternalTrendingItem(supabase: AnyClient, id: string): Promise<{ ok: boolean; error?: string }> {
+  const { error } = await supabase.from('external_trending_items').delete().eq('id', id)
+  if (error) return { ok: false, error: error.message }
+  return { ok: true }
+}
