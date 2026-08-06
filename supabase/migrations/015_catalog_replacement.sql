@@ -549,200 +549,200 @@ INSERT INTO products (name, slug, description, price, primary_category_id, stock
   1075.0, (SELECT id FROM categories WHERE slug = 'desktops'), 5, '12SC00ANEX', TRUE, '{}'::text[], '{"CPU": "CORE 5-210H", "RAM": "16GB DDR5", "Storage": "512GB NVME", "Language": "EN", "Screen": "23.8\" FHD TOUCHSCREEN", "Warranty": "1 YEAR", "OS": "DOS", "Color": "INTEL / LUNA GREY/ WIRED KEYBOARD AND MOUSE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGEE4LL/A', 'apple-mgee4ll-a', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 48GB, Storage: 2TB SSD',
+  'Apple MacBook Pro 16" M5 MAX 48GB/2TB SSD — SPACE BLACK', 'apple-macbook-pro-16-m5-max-48gb-2tb-ssd-space-black', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 48GB, Storage: 2TB SSD',
   4850.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGEE4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 MAX 18-Core Chip", "RAM": "48GB", "Storage": "2TB SSD", "Language": "EN", "Screen": "16\" 3456 x 2234 Liquid Retina XDR Screen", "VGA": "40-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGED4LL/A', 'apple-mged4ll-a', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
+  'Apple MacBook Pro 16" M5 MAX 36GB/2TB SSD — SPACE BLACK', 'apple-macbook-pro-16-m5-max-36gb-2tb-ssd-space-black', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
   4350.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGED4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 MAX 18-Core Chip", "RAM": "36GB", "Storage": "2TB SSD", "Language": "EN", "Screen": "16\" 3456 x 2234 Liquid Retina XDR Screen", "VGA": "32-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGDU4LL/A', 'apple-mgdu4ll-a', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
+  'Apple MacBook Pro 14" M5 MAX 36GB/2TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-max-36gb-2tb-ssd-space-black', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
   4100.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGDU4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 MAX 18-Core Chip", "RAM": "36GB", "Storage": "2TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "32-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGDQ4LL/A', 'apple-mgdq4ll-a', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
+  'Apple MacBook Pro 14" M5 MAX 36GB/2TB SSD — SILVER', 'apple-macbook-pro-14-m5-max-36gb-2tb-ssd-silver', 'CPU: Apple M5 MAX 18-Core Chip, RAM: 36GB, Storage: 2TB SSD',
   4075.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGDQ4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 MAX 18-Core Chip", "RAM": "36GB", "Storage": "2TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "32-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGEC4LL/A', 'apple-mgec4ll-a', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 48GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 16" M5 PRO 48GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-16-m5-pro-48gb-1tb-ssd-space-black', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 48GB, Storage: 1TB SSD',
   0.0, (SELECT id FROM categories WHERE slug = 'laptops'), 0, 'MGEC4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 18-Core Chip", "RAM": "48GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "16\" 3456 x 2234 Liquid Retina XDR Screen", "VGA": "20-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGE64LL/A', 'apple-mge64ll-a', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 48GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 16" M5 PRO 48GB/1TB SSD — SILVER', 'apple-macbook-pro-16-m5-pro-48gb-1tb-ssd-silver', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 48GB, Storage: 1TB SSD',
   3650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGE64LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 18-Core Chip", "RAM": "48GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "16\" 3456 x 2234 Liquid Retina XDR Screen", "VGA": "20-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGEA4LL/A', 'apple-mgea4ll-a', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 16" M5 PRO 24GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-16-m5-pro-24gb-1tb-ssd-space-black', 'CPU: Apple M5 PRO 18-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   3200.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGEA4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 18-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "16\" 3456 x 2234 Liquid Retina XDR Screen", "VGA": "20-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MJLW4LL/A', 'apple-mjlw4ll-a', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 2TB SSD',
+  'Apple MacBook Pro 14" M5 PRO 24GB/2TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-pro-24gb-2tb-ssd-space-black', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 2TB SSD',
   3150.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MJLW4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 15-Core Chip", "RAM": "24GB", "Storage": "2TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "16-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGDN4LL/A', 'apple-mgdn4ll-a', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 PRO 24GB/1TB SSD — SILVER', 'apple-macbook-pro-14-m5-pro-24gb-1tb-ssd-silver', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGDN4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 15-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "16-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MGDR4LL/A', 'apple-mgdr4ll-a', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 PRO 24GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-pro-24gb-1tb-ssd-space-black', 'CPU: Apple M5 PRO 15-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MGDR4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 PRO 15-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "16-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MJ3D4LL/A', 'apple-mj3d4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 32GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 32GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-32gb-1tb-ssd-space-black', 'CPU: Apple M5 10-Core Chip, RAM: 32GB, Storage: 1TB SSD',
   2650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MJ3D4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "32GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MJ3E4LL/A', 'apple-mj3e4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 32GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 32GB/1TB SSD — SILVER', 'apple-macbook-pro-14-m5-32gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 32GB, Storage: 1TB SSD',
   2650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MJ3E4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "32GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDE64LL/A', 'apple-mde64ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 24GB/1TB SSD — SILVER', 'apple-macbook-pro-14-m5-24gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2325.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDE64LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDE34LL/A', 'apple-mde34ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 24GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-24gb-1tb-ssd-space-black', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2325.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDE34LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDE14LL/A', 'apple-mde14ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 16GB/1TB SSD — SPACE BLACK', 'apple-macbook-pro-14-m5-16gb-1tb-ssd-space-black', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDE14LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SPACE BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDE54LL/A', 'apple-mde54ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Pro 14" M5 16GB/1TB SSD — SILVER', 'apple-macbook-pro-14-m5-16gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDE54LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "14\" 3024 x 1964 Liquid Retina XDR Screen", "VGA": "10-Core GPU | 16-Core Neural Accelerators", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVN4LL/A', 'apple-mdvn4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 24GB/1TB SSD — MIDNIGHT', 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVN4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVC4LL/A', 'apple-mdvc4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 24GB/1TB SSD — SILVER', 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVC4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVF4LL/A', 'apple-mdvf4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 24GB/1TB SSD — STARLIGHT', 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-starlight', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVF4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "STARLIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVU4LL/A', 'apple-mdvu4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 24GB/1TB SSD — SKYBLUE', 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-skyblue', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   2125.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVU4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SKYBLUE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVT4LL/A', 'apple-mdvt4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/1TB SSD — SKYBLUE', 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-skyblue', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1925.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVT4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SKYBLUE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVA4LL/A', 'apple-mdva4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/1TB SSD — SILVER', 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1925.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVA4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVK4LL/A', 'apple-mdvk4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/1TB SSD — MIDNIGHT', 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1925.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVK4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDH94LL/A', 'apple-mdh94ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 24GB/1TB SSD — SILVER', 'apple-macbook-air-13-6-m5-24gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   1850.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDH94LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHG4LL/A', 'apple-mdhg4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 24GB/1TB SSD — MIDNIGHT', 'apple-macbook-air-13-6-m5-24gb-1tb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 24GB, Storage: 1TB SSD',
   1850.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHG4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "24GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHF4LL/A', 'apple-mdhf4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/1TB SSD — MIDNIGHT', 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHF4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDH84LL/A', 'apple-mdh84ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/1TB SSD — SILVER', 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDH84LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHJ4LL/A', 'apple-mdhj4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/1TB SSD — SKYBLUE', 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-skyblue', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHJ4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SKYBLUE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHC4LL/A', 'apple-mdhc4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/1TB SSD — STARLIGHT', 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-starlight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 1TB SSD',
   1650.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHC4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "STARLIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVD4LL/A', 'apple-mdvd4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/512GB SSD — STARLIGHT', 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-starlight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1685.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVD4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "STARLIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVQ4LL/A', 'apple-mdvq4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/512GB SSD — SKYBLUE', 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-skyblue', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1685.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVQ4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SKYBLUE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDV94LL/A', 'apple-mdv94ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/512GB SSD — SILVER', 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1685.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDV94LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDVH4LL/A', 'apple-mdvh4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 15.3" M5 16GB/512GB SSD — MIDNIGHT', 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1685.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDVH4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "15.3\" 2880x1864", "VGA": "10-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHH4LL/A', 'apple-mdhh4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/512GB SSD — SKYBLUE', 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-skyblue', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1425.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHH4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "8-CORE GPU", "OS": "MAC OS", "Color": "SKYBLUE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHA4LL/A', 'apple-mdha4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/512GB SSD — STARLIGHT', 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-starlight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1425.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHA4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "8-CORE GPU", "OS": "MAC OS", "Color": "STARLIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDHE4LL/A', 'apple-mdhe4ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/512GB SSD — MIDNIGHT', 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-midnight', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1425.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDHE4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "8-CORE GPU", "OS": "MAC OS", "Color": "MIDNIGHT"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MDH74LL/A', 'apple-mdh74ll-a', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13.6" M5 16GB/512GB SSD — SILVER', 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-silver', 'CPU: Apple M5 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1425.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDH74LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "8-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFE4LL/A', 'apple-mhfe4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — CITRUS', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   1045.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFE4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "CITRUS"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFC4LL/A', 'apple-mhfc4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — SILVER', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   0.0, (SELECT id FROM categories WHERE slug = 'laptops'), 0, 'MHFC4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFG4LL/A', 'apple-mhfg4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — INDIGO', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   1045.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFG4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "INDIGO"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFF4LL/A', 'apple-mhff4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — INDIGO', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFF4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "INDIGO"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFD4LL/A', 'apple-mhfd4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — CITRUS', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFD4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "CITRUS"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFH4LL/A', 'apple-mhfh4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — BLUSH', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-blush', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   945.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFH4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "BLUSH"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHFA4LL/A', 'apple-mhfa4ll-a', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — SILVER', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFA4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MU9E3LL/A', 'apple-mu9e3ll-a', 'CPU: Apple M4 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
+  'Apple MacBook Air M4 16GB/512GB SSD — SILVER', 'apple-macbook-air-m4-16gb-512gb-ssd-silver', 'CPU: Apple M4 10-Core Chip, RAM: 16GB, Storage: 512GB SSD',
   1165.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MU9E3LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M4 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "VGA": "10-CORE GPU", "OS": "MACOS WITH APPLE INTELLIGENCE", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MU9D3LL/A', 'apple-mu9d3ll-a', 'CPU: Apple M4 10-Core Chip, RAM: 16GB, Storage: 256GB SSD',
+  'Apple MacBook Air M4 16GB/256GB SSD — SILVER', 'apple-macbook-air-m4-16gb-256gb-ssd-silver', 'CPU: Apple M4 10-Core Chip, RAM: 16GB, Storage: 256GB SSD',
   995.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MU9D3LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M4 10-Core Chip", "RAM": "16GB", "Storage": "256GB SSD", "VGA": "10-CORE GPU", "OS": "MACOS WITH APPLE INTELLIGENCE", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MHWK4LL/A', 'apple-mhwk4ll-a', 'Color: AirPods Max 2,Over-ear wireless,Up to 20 hours with Active Noise Cancellation enabled / BLACK',
-  585.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHWK4LL/A', TRUE, '{}'::text[], '{"Color": "AirPods Max 2,Over-ear wireless,Up to 20 hours with Active Noise Cancellation enabled / BLACK"}'::jsonb
+  'Apple AirPods Max 2,Over-ear wireless,Up to 20 hours with Active Noise Cancellation enabled', 'apple-airpods-max-2-over-ear-wireless-up-to-20-hours-with-active-noise-cancellat', 'Color: BLACK',
+  585.0, (SELECT id FROM categories WHERE slug = 'peripherals'), 5, 'MHWK4LL/A', TRUE, '{}'::text[], '{"Color": "BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MXK63ZA/A', 'apple-mxk63za-a', 'Color: MAGIC MOUSE MULTI-TOUCH SURFACE/USB-C CHARGE CABLE / BLACK',
-  145.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MXK63ZA/A', TRUE, '{}'::text[], '{"Color": "MAGIC MOUSE MULTI-TOUCH SURFACE/USB-C CHARGE CABLE / BLACK"}'::jsonb
+  'Apple Magic Mouse Multi-Touch Surface/Usb-C Charge Cable', 'apple-magic-mouse-multi-touch-surface-usb-c-charge-cable', 'Color: BLACK',
+  145.0, (SELECT id FROM categories WHERE slug = 'peripherals'), 5, 'MXK63ZA/A', TRUE, '{}'::text[], '{"Color": "BLACK"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'MXK53ZA/A', 'apple-mxk53za-a', 'Color: MAGIC MOUSE MULTI-TOUCH SURFACE/USB-C CHARGE CABLE / WHITE',
-  115.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MXK53ZA/A', TRUE, '{}'::text[], '{"Color": "MAGIC MOUSE MULTI-TOUCH SURFACE/USB-C CHARGE CABLE / WHITE"}'::jsonb
+  'Apple Magic Mouse Multi-Touch Surface/Usb-C Charge Cable', 'apple-magic-mouse-multi-touch-surface-usb-c-charge-cable-2', 'Color: WHITE',
+  115.0, (SELECT id FROM categories WHERE slug = 'peripherals'), 5, 'MXK53ZA/A', TRUE, '{}'::text[], '{"Color": "WHITE"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
   'Seagate ONE TOUCH HUB 20TB External Hard Drive', 'seagate-one-touch-hub-20tb-external-hard-drive', NULL,
@@ -1349,55 +1349,55 @@ INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p 
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('dell') WHERE p.slug = 'dell-aio-24-dec24250-7482wht-pus' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('lenovo') WHERE p.slug = 'lenovo-thinkcentre-aio-neo-50a-24-g6-13qg0016ex' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('lenovo') WHERE p.slug = 'lenovo-thinkcentre-aio-neo-50a-24-g5-12sc00anex' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgee4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mged4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgdu4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgdq4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgec4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mge64ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgea4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mjlw4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgdn4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mgdr4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mj3d4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mj3e4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mde64ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mde34ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mde14ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mde54ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvn4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvc4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvf4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvu4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvt4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdva4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvk4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdh94ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhg4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhf4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdh84ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhj4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhc4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvd4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvq4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdv94ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdvh4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhh4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdha4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdhe4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mdh74ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfe4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfc4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfg4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhff4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfd4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfh4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhfa4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mu9e3ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mu9d3ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mhwk4ll-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mxk63za-a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-mxk53za-a' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-16-m5-max-48gb-2tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-16-m5-max-36gb-2tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-max-36gb-2tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-max-36gb-2tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-16-m5-pro-48gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-16-m5-pro-48gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-16-m5-pro-24gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-pro-24gb-2tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-pro-24gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-pro-24gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-32gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-32gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-24gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-24gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-16gb-1tb-ssd-space-black' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-pro-14-m5-16gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-starlight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-24gb-1tb-ssd-skyblue' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-skyblue' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-1tb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-24gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-24gb-1tb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-skyblue' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-1tb-ssd-starlight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-starlight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-skyblue' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-15-3-m5-16gb-512gb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-skyblue' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-starlight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-midnight' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-citrus' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-indigo' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-indigo' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-citrus' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-blush' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-m4-16gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-m4-16gb-256gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-airpods-max-2-over-ear-wireless-up-to-20-hours-with-active-noise-cancellat' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-magic-mouse-multi-touch-surface-usb-c-charge-cable' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-magic-mouse-multi-touch-surface-usb-c-charge-cable-2' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('seagate') WHERE p.slug = 'seagate-one-touch-hub-20tb-external-hard-drive' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('seagate') WHERE p.slug = 'seagate-one-touch-hub-16tb-external-hard-drive' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('seagate') WHERE p.slug = 'seagate-one-touch-hub-12tb-external-hard-drive' ON CONFLICT DO NOTHING;

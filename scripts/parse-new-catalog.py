@@ -195,6 +195,54 @@ def parse_blob_sheet(rows, category, ptype, sheet_brand_default=None, gaming=Fal
             specs_ptype = ptype
         add(name, category, brand, specs_ptype, specs, price_val, sku=sku)
 
+def parse_apple_sheet(rows, category):
+    """Apple's sheet leads every row with a bare SKU (e.g. 'MGEE4LL/A'), not a
+    readable model name — classify_segments would otherwise leave the SKU
+    itself as the product's display `name`. Build a real name (MacBook
+    Pro/Air + size + chip + RAM/storage + color) from the spec chain, or
+    handle the handful of non-Mac accessory rows (AirPods, Magic Mouse)
+    which have a totally different shape (no CPU/RAM/storage chain at all)."""
+    for row in rows:
+        raw = row[0]
+        price_val = row[1] if len(row) > 1 else None
+        s = clean(raw)
+        if not s:
+            continue
+        segments = [seg.strip() for seg in s.split(" , ") if seg.strip()]
+        if not segments:
+            continue
+        sku = segments[0]
+        rest = segments[1:]
+        if not rest:
+            continue
+        head = rest[0].upper()
+        if "AIRPODS" in head:
+            name = f"Apple {clean(rest[0])}"
+            specs = {}
+            if len(rest) > 2:
+                specs["Details"] = " / ".join(rest[1:-1])
+            if len(rest) > 1:
+                specs["Color"] = rest[-1]
+            add(name, "peripherals", "Apple", "Headphones", specs, price_val, sku=sku)
+            continue
+        if "MOUSE" in head or "MAGIC" in head or "TRACKPAD" in head or "KEYBOARD" in head:
+            name = f"Apple {clean(rest[0]).title()}"
+            specs = {"Color": rest[-1]} if len(rest) > 1 else {}
+            add(name, "peripherals", "Apple", "Accessory", specs, price_val, sku=sku)
+            continue
+        specs = classify_segments(rest[:SPEC_FIELD_COUNT])
+        chip_m = re.search(r"M\d\s*(MAX|PRO)?", specs.get("CPU", ""), re.I)
+        chip = re.sub(r"\s+", " ", chip_m.group(0)).strip().upper() if chip_m else specs.get("CPU", "Apple Silicon")
+        screen = specs.get("Screen", "")
+        size_m = re.match(r"(\d+(\.\d+)?)", screen)
+        size = f'{size_m.group(1)}" ' if size_m else ""
+        line = "MacBook Pro" if "XDR" in screen.upper() else "MacBook Air"
+        ram = specs.get("RAM", "")
+        storage = specs.get("Storage", "")
+        color = specs.get("Color", "")
+        name = f"Apple {line} {size}{chip} {ram}/{storage} — {color}".strip(" —")
+        add(name, category, "Apple", "Laptop", specs, price_val, sku=sku)
+
 def parse_simple_sheet(rows, category, ptype, brand_default=None, sku_prefix_split=False, long_spec_dump=False):
     for row in rows:
         raw = row[0]
@@ -242,7 +290,7 @@ parse_blob_sheet(sheet_rows(wb1, "LENOVO+DELL+ASUS"), "laptops", "Laptop")
 parse_blob_sheet(sheet_rows(wb1, "HP+ACER"), "laptops", "Laptop")
 parse_blob_sheet(sheet_rows(wb1, "THINKPAD+THINKBOOK+SURFACE PRO"), "laptops", "Laptop", sheet_brand_default="Lenovo")
 parse_blob_sheet(sheet_rows(wb1, " DESKTOPS+AIO"), "desktops", "Desktop", sheet_brand_default="Lenovo")
-parse_blob_sheet(sheet_rows(wb1, "APPLE"), "laptops", "Laptop", sheet_brand_default="Apple")
+parse_apple_sheet(sheet_rows(wb1, "APPLE"), "laptops")
 parse_simple_sheet(sheet_rows(wb1, "HDD+DOCKING STATION"), "storage", "Accessory", brand_default="Seagate")
 parse_simple_sheet(sheet_rows(wb1, "LENOVO ACCESSORIES"), "peripherals", "Accessory", brand_default="Lenovo", sku_prefix_split=True)
 
