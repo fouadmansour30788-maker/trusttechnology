@@ -15,6 +15,7 @@ type CheckoutBody = {
   note?: string
   website?: string // honeypot — real users never fill this
   items?: CheckoutItem[]
+  giftCertificateCode?: string
 }
 
 const MAX_LINES = 30
@@ -83,7 +84,24 @@ export async function POST(req: Request) {
   }
   const subtotal = Math.round(lines.reduce((s, l) => s + l.unit_price * l.quantity, 0) * 100) / 100
   const { region, fee } = deliveryFee(body.region ?? '', subtotal)
-  const total = Math.round((subtotal + fee) * 100) / 100
+  const preDiscountTotal = Math.round((subtotal + fee) * 100) / 100
+
+  // Gift certificate redemption — validated and applied atomically here (not
+  // in the separate preview endpoint) so two simultaneous checkouts can't
+  // both spend the same balance.
+  let giftCert: { id: string; remaining_balance: number } | null = null
+  let giftCertAmountApplied = 0
+  const code = (body.giftCertificateCode ?? '').trim().toUpperCase()
+  if (code) {
+    const { data: gcRow } = await supabase.from('gift_certificates').select('id, remaining_balance, status').eq('code', code).maybeSingle()
+    const gc = gcRow as { id: string; remaining_balance: number; status: string } | null
+    if (!gc || gc.status !== 'active' || Number(gc.remaining_balance) <= 0) {
+      return NextResponse.json({ error: 'That gift certificate code is invalid or has no balance remaining.' }, { status: 400 })
+    }
+    giftCert = { id: gc.id, remaining_balance: Number(gc.remaining_balance) }
+    giftCertAmountApplied = Math.round(Math.min(giftCert.remaining_balance, preDiscountTotal) * 100) / 100
+  }
+  const total = Math.round((preDiscountTotal - giftCertAmountApplied) * 100) / 100
 
   // Find-or-create the customer by phone.
   let customerId: string | null = null
@@ -104,12 +122,16 @@ export async function POST(req: Request) {
     'Website order — Cash on Delivery',
     `Deliver to: ${address}`,
     `Delivery region: ${region.label} — fee $${fee}`,
+    giftCert ? `Gift certificate applied: -$${giftCertAmountApplied.toFixed(2)}` : null,
     note ? `Customer note: ${note}` : null,
   ].filter(Boolean).join('\n')
 
   const { data: order, error: orderErr } = await supabase
     .from('sales_orders')
-    .insert({ customer_id: customerId, status: 'draft', subtotal, discount: 0, total, notes: orderNotes })
+    .insert({
+      customer_id: customerId, status: 'draft', subtotal, discount: 0, total, notes: orderNotes,
+      gift_certificate_amount_applied: giftCertAmountApplied,
+    })
     .select('id, reference')
     .single()
   if (orderErr || !order) return NextResponse.json({ error: 'unavailable' }, { status: 500 })
@@ -121,6 +143,28 @@ export async function POST(req: Request) {
   if (itemsErr) {
     await supabase.from('sales_orders').delete().eq('id', soId)
     return NextResponse.json({ error: 'unavailable' }, { status: 500 })
+  }
+
+  if (giftCert && giftCertAmountApplied > 0) {
+    const newBalance = Math.round((giftCert.remaining_balance - giftCertAmountApplied) * 100) / 100
+    // Only spend the balance if it's still what we read (defends against a
+    // concurrent checkout draining it between the read above and now).
+    const { data: updated } = await supabase
+      .from('gift_certificates')
+      .update({ remaining_balance: newBalance, status: newBalance <= 0 ? 'redeemed' : 'active' })
+      .eq('id', giftCert.id)
+      .eq('remaining_balance', giftCert.remaining_balance)
+      .select('id')
+    if (updated && updated.length > 0) {
+      await supabase.from('gift_certificate_redemptions').insert({
+        gift_certificate_id: giftCert.id, sales_order_id: soId, amount_applied: giftCertAmountApplied,
+      })
+    } else {
+      // Lost the race — someone else spent it first. Don't fail the order
+      // (it's already placed); just don't apply a discount that isn't real.
+      await supabase.from('sales_orders').update({ gift_certificate_amount_applied: 0, total: preDiscountTotal }).eq('id', soId)
+      return NextResponse.json({ ok: true, reference, total: preDiscountTotal, giftCertificateFailed: true })
+    }
   }
 
   return NextResponse.json({ ok: true, reference, total })

@@ -9,6 +9,7 @@ import { useCartStore } from '@/store/cart'
 import { FitCheck } from './FitCheck'
 import { TrueSize } from './TrueSize'
 import { NotifyMeForm } from './NotifyMeForm'
+import { WishlistButton } from './WishlistButton'
 import type { Product } from '@/lib/types'
 
 const WHATSAPP = '96171998983'
@@ -141,6 +142,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
                 <MessageCircle size={18} /> Ask for price on WhatsApp
               </a>
               <NotifyMeForm productId={p.id} kind="price_drop" label="Notify me when priced" />
+              <WishlistButton productId={p.id} variant="labeled" />
             </div>
           ) : (
             <div className="space-y-3">
@@ -154,9 +156,12 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
                   {p.stock === 0 ? 'Out of stock' : p.stock <= 3 ? `Only ${p.stock} left in stock` : `${p.stock} in stock`}
                 </span>
               </div>
-              <Button fullWidth size="lg" onClick={() => addItem(cartProduct, qty)} disabled={p.stock === 0}>
-                <ShoppingCart size={18} /> Add to cart — ${(p.price * qty).toFixed(2)}
-              </Button>
+              <div className="flex gap-2">
+                <Button fullWidth size="lg" onClick={() => addItem(cartProduct, qty)} disabled={p.stock === 0}>
+                  <ShoppingCart size={18} /> Add to cart — ${(p.price * qty).toFixed(2)}
+                </Button>
+                <WishlistButton productId={p.id} variant="labeled" />
+              </div>
               {p.stock === 0 ? (
                 <NotifyMeForm productId={p.id} kind="restock" label="Notify me" />
               ) : (

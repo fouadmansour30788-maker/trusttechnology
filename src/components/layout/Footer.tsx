@@ -75,6 +75,7 @@ export function Footer() {
                 { label: 'AI Setup Builder', href: '/setup-builder' },
                 { label: 'Visual Search', href: '/visual-search' },
                 { label: 'Bundle & Save', href: '/bundles' },
+                { label: 'Gift Certificates', href: '/gift-certificates' },
                 { label: 'Apple Collection', href: '/categories/apple' },
                 { label: 'Deals', href: '/deals' },
                 { label: 'New Arrivals', href: '/products?sort=newest' },

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar, Wrench, MessageSquare } from 'lucide-react'
+import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar, Wrench, MessageSquare, Gift } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isSupabaseConfigured } from '@/lib/db'
 import { signOut } from './actions'
@@ -9,6 +9,7 @@ const NAV = [
   { label: 'Products', href: '/admin/products', icon: Package },
   { label: 'Sales', href: '/admin/sales', icon: ShoppingBag },
   { label: 'Customers', href: '/admin/customers', icon: Users },
+  { label: 'Gift Certificates', href: '/admin/gift-certificates', icon: Gift },
   { label: 'Inventory', href: '/admin/inventory', icon: Boxes },
   { label: 'Purchase Orders', href: '/admin/purchase-orders', icon: ClipboardList },
   { label: 'Suppliers', href: '/admin/suppliers', icon: Truck },

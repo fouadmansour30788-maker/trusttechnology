@@ -1,7 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
-import { ShoppingCart, Search, Menu, X, ChevronDown } from 'lucide-react'
+import { ShoppingCart, Search, Menu, X, ChevronDown, User } from 'lucide-react'
 import { MegaMenu } from './MegaMenu'
 import { NAV_CATEGORIES } from '@/lib/nav-data'
 import { useCartStore } from '@/store/cart'
@@ -109,6 +109,14 @@ export function Navbar() {
                 </span>
               )}
             </button>
+
+            <Link
+              href="/account"
+              title="Your account"
+              className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <User size={20} />
+            </Link>
 
             <Link
               href="/admin"

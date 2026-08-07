@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck } from 'lucide-react'
+import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck, Gift, CheckCircle2 } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 import { DELIVERY_REGIONS, deliveryFee } from '@/lib/delivery'
 
@@ -16,12 +16,32 @@ export default function CheckoutPage() {
   const [region, setRegion] = useState<string>(DELIVERY_REGIONS[0].id)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [giftCode, setGiftCode] = useState('')
+  const [giftCheck, setGiftCheck] = useState<{ checking: boolean; valid: boolean | null; balance: number | null; error: string | null }>(
+    { checking: false, valid: null, balance: null, error: null }
+  )
 
   const priced = items.filter((i) => !i.product.priceOnRequest && i.product.price > 0)
   const callItems = items.filter((i) => i.product.priceOnRequest || i.product.price === 0)
   const subtotal = priced.reduce((s, i) => s + i.product.price * i.quantity, 0)
   const { fee } = deliveryFee(region, subtotal)
-  const total = subtotal + fee
+  const preDiscountTotal = subtotal + fee
+  const giftDiscount = giftCheck.valid && giftCheck.balance !== null ? Math.min(giftCheck.balance, preDiscountTotal) : 0
+  const total = preDiscountTotal - giftDiscount
+
+  async function checkGiftCode() {
+    const code = giftCode.trim().toUpperCase()
+    if (!code) return
+    setGiftCheck({ checking: true, valid: null, balance: null, error: null })
+    try {
+      const res = await fetch(`/api/gift-certificates/validate?code=${encodeURIComponent(code)}`)
+      const data = await res.json()
+      if (data.valid) setGiftCheck({ checking: false, valid: true, balance: data.remainingBalance, error: null })
+      else setGiftCheck({ checking: false, valid: false, balance: null, error: data.error ?? 'Invalid code' })
+    } catch {
+      setGiftCheck({ checking: false, valid: false, balance: null, error: 'Could not check that code.' })
+    }
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -35,6 +55,7 @@ export default function CheckoutPage() {
           ...form,
           region,
           items: priced.map((i) => ({ slug: i.product.slug, quantity: i.quantity })),
+          giftCertificateCode: giftCheck.valid ? giftCode.trim().toUpperCase() : undefined,
         }),
       })
       const data = await res.json()
@@ -107,6 +128,27 @@ export default function CheckoutPage() {
             <input value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-400" placeholder="Anything we should know?" />
           </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Gift certificate code <span className="text-slate-400 font-normal">(optional)</span></label>
+            <div className="flex gap-2">
+              <input
+                value={giftCode}
+                onChange={(e) => { setGiftCode(e.target.value); setGiftCheck({ checking: false, valid: null, balance: null, error: null }) }}
+                placeholder="GC-XXXXXXXX"
+                className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-400 uppercase"
+              />
+              <button
+                type="button" onClick={checkGiftCode} disabled={!giftCode.trim() || giftCheck.checking}
+                className="shrink-0 px-4 rounded-xl border border-slate-200 text-sm font-semibold text-slate-600 hover:border-blue-300 disabled:opacity-50"
+              >
+                {giftCheck.checking ? <Loader2 size={15} className="animate-spin" /> : 'Apply'}
+              </button>
+            </div>
+            {giftCheck.valid === true && (
+              <p className="text-xs text-emerald-600 mt-1.5 flex items-center gap-1"><CheckCircle2 size={12} /> ${giftCheck.balance?.toFixed(2)} available — applied to your order.</p>
+            )}
+            {giftCheck.valid === false && <p className="text-xs text-red-600 mt-1.5">{giftCheck.error}</p>}
+          </div>
           {/* Honeypot */}
           <input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
@@ -143,6 +185,12 @@ export default function CheckoutPage() {
               <span className="text-slate-500">Delivery</span>
               <span className="text-slate-700 tabular-nums">{fee === 0 ? 'Free' : `$${fee.toFixed(2)}`}</span>
             </div>
+            {giftDiscount > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-emerald-600 flex items-center gap-1"><Gift size={12} /> Gift certificate</span>
+                <span className="text-emerald-600 tabular-nums">−${giftDiscount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between pt-2">
               <span className="font-bold text-slate-900">Total (cash on delivery)</span>
               <span className="font-bold text-slate-900 text-xl tabular-nums">${total.toFixed(2)}</span>

@@ -7,6 +7,7 @@ import type { Product } from '@/lib/types'
 import { useCartStore } from '@/store/cart'
 import { useCompareStore } from '@/store/compare'
 import { Badge } from '@/components/ui/badge'
+import { WishlistButton } from './WishlistButton'
 
 type Props = { product: Product }
 
@@ -91,6 +92,7 @@ export function ProductCard({ product }: Props) {
           {comparing ? <SquareCheck size={14} /> : <Square size={14} />}
           Compare
         </button>
+        <WishlistButton productId={product.id} />
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="text-white text-sm font-medium">Out of Stock</span>
