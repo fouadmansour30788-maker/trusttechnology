@@ -414,13 +414,27 @@ sql.write("-- New products\n")
 for p in products:
     specs_json = json.dumps(p["specs"], ensure_ascii=False).replace("'", "''")
     desc = p["description"] or (", ".join(f"{k}: {v}" for k, v in list(p["specs"].items())[:3]) or None)
-    images_arr = "'{}'::text[]"
+    images_arr = ("ARRAY[" + ", ".join(sql_str(i) for i in p["images"]) + "]::text[]"
+                  if p["images"] else "'{}'::text[]")
+    # Conflict on sku (the stable identifier) when we have one — a naming/slug
+    # fix (like the Apple MacBook Neo rename) must UPDATE the existing row's
+    # slug rather than attempt a fresh insert, which would collide with the
+    # separate products_sku_key unique constraint. Rows without a sku (most
+    # printers/monitors/POS gear) fall back to conflict-on-slug as before.
+    conflict = (
+        f"ON CONFLICT (sku) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock, "
+        f"slug = EXCLUDED.slug, name = EXCLUDED.name, description = EXCLUDED.description, "
+        f"primary_category_id = EXCLUDED.primary_category_id, images = EXCLUDED.images, specs = EXCLUDED.specs;\n"
+        if p["sku"] else
+        "ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock, "
+        "images = EXCLUDED.images;\n"
+    )
     sql.write(
         "INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (\n"
         f"  {sql_str(p['name'])}, {sql_str(p['slug'])}, {sql_str(desc)},\n"
         f"  {p['price']}, (SELECT id FROM categories WHERE slug = {sql_str(p['category'])}), "
         f"{0 if p['priceOnRequest'] else 5}, {sql_str(p['sku'])}, TRUE, {images_arr}, '{specs_json}'::jsonb\n"
-        ") ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;\n")
+        f") {conflict}")
 sql.write("\n-- Product <-> brand tag links\n")
 for p in products:
     bslugs = [t["slug"] for t in p["tags"] if t["type"] == "brand"]
