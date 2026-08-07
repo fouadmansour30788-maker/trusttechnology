@@ -62,7 +62,10 @@ BRAND_KEYWORDS = [
 ]
 
 def detect_brand(name, default=None):
-    u = name.upper()
+    # Strip parenthetical asides first — supply/toner-compatibility notes like
+    # "(Toner Canon 725 or HP CE285A)" mention OTHER brands on purpose and must
+    # not hijack detection away from the product's actual (leading) brand.
+    u = re.sub(r"\([^)]*\)", " ", name).upper()
     for kw, b in BRAND_KEYWORDS:
         if kw in u:
             return b
@@ -231,15 +234,29 @@ def parse_apple_sheet(rows, category):
             add(name, "peripherals", "Apple", "Accessory", specs, price_val, sku=sku)
             continue
         specs = classify_segments(rest[:SPEC_FIELD_COUNT])
-        chip_m = re.search(r"M\d\s*(MAX|PRO)?", specs.get("CPU", ""), re.I)
-        chip = re.sub(r"\s+", " ", chip_m.group(0)).strip().upper() if chip_m else specs.get("CPU", "Apple Silicon")
+        cpu_raw = specs.get("CPU", "")
+        chip_m = re.search(r"M\d\s*(MAX|PRO)?", cpu_raw, re.I)
+        a_series_m = re.search(r"A\d+\s*(PRO)?", cpu_raw, re.I)
         screen = specs.get("Screen", "")
         size_m = re.match(r"(\d+(\.\d+)?)", screen)
         size = f'{size_m.group(1)}" ' if size_m else ""
-        line = "MacBook Pro" if "XDR" in screen.upper() else "MacBook Air"
         ram = specs.get("RAM", "")
         storage = specs.get("Storage", "")
         color = specs.get("Color", "")
+        if chip_m:
+            # Apple Silicon (M-series) -> MacBook Pro (Liquid Retina XDR screen) or Air.
+            chip = re.sub(r"\s+", " ", chip_m.group(0)).strip().upper()
+            line = "MacBook Pro" if "XDR" in screen.upper() else "MacBook Air"
+        elif a_series_m:
+            # iPhone-class A-series chip -> the budget "MacBook Neo" line, NOT MacBook Air —
+            # a genuinely different real Apple product (confirmed via web search), not just a
+            # cheaper Air config. Mislabeling it would mean shipping the right photo under the
+            # wrong product name.
+            chip = re.sub(r"\s+", " ", a_series_m.group(0)).strip().upper()
+            line = "MacBook Neo"
+        else:
+            chip = cpu_raw or "Apple Silicon"
+            line = "MacBook Air"
         name = f"Apple {line} {size}{chip} {ram}/{storage} — {color}".strip(" —")
         add(name, category, "Apple", "Laptop", specs, price_val, sku=sku)
 

@@ -697,31 +697,31 @@ INSERT INTO products (name, slug, description, price, primary_category_id, stock
   1425.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MDH74LL/A', TRUE, '{}'::text[], '{"CPU": "Apple M5 10-Core Chip", "RAM": "16GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13.6\" 2560x1664", "VGA": "8-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — CITRUS', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/512GB SSD — CITRUS', 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   1045.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFE4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "CITRUS"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — SILVER', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/512GB SSD — SILVER', 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   0.0, (SELECT id FROM categories WHERE slug = 'laptops'), 0, 'MHFC4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/512GB SSD — INDIGO', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/512GB SSD — INDIGO', 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 512GB SSD',
   1045.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFG4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "512GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "INDIGO"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — INDIGO', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/256GB SSD — INDIGO', 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-indigo', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFF4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "INDIGO"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — CITRUS', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/256GB SSD — CITRUS', 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-citrus', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFD4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "CITRUS"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — BLUSH', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-blush', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/256GB SSD — BLUSH', 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-blush', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   945.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFH4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "BLUSH"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'Apple MacBook Air 13" Apple A18 Pro 6-Core Chip 8GB/256GB SSD — SILVER', 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
+  'Apple MacBook Neo 13" A18 PRO 8GB/256GB SSD — SILVER', 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-silver', 'CPU: Apple A18 Pro 6-Core Chip, RAM: 8GB, Storage: 256GB SSD',
   915.0, (SELECT id FROM categories WHERE slug = 'laptops'), 5, 'MHFA4LL/A', TRUE, '{}'::text[], '{"CPU": "Apple A18 Pro 6-Core Chip", "RAM": "8GB", "Storage": "256GB SSD", "Language": "EN", "Screen": "13\" 2408x1506", "VGA": "5-CORE GPU", "OS": "MAC OS", "Color": "SILVER"}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
@@ -1177,11 +1177,11 @@ INSERT INTO products (name, slug, description, price, primary_category_id, stock
   315.0, (SELECT id FROM categories WHERE slug = 'printing'), 5, NULL, TRUE, '{}'::text[], '{}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'CANON LJ LBP 6030 ; (Toner Canon 725 or HP CE285A)', 'hp-canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a', 'imageCLASS Mono Laserjet A4, Speed 18ppm, Res. 600dpi White Color ; Duty Cycle 5,000 pages/month',
+  'CANON LJ LBP 6030 ; (Toner Canon 725 or HP CE285A)', 'canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a', 'imageCLASS Mono Laserjet A4, Speed 18ppm, Res. 600dpi White Color ; Duty Cycle 5,000 pages/month',
   158.0, (SELECT id FROM categories WHERE slug = 'printing'), 5, NULL, TRUE, '{}'::text[], '{}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'CANON LJ LBP 6030 ; (Toner Canon 725 or HP CE285A)', 'hp-canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a-2', 'i-SENSYS Mono Laserjet A4, Speed 18ppm, Res. 600dpi Black Color ; Duty Cycle 5,000 pages/month',
+  'CANON LJ LBP 6030 ; (Toner Canon 725 or HP CE285A)', 'canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a-2', 'i-SENSYS Mono Laserjet A4, Speed 18ppm, Res. 600dpi Black Color ; Duty Cycle 5,000 pages/month',
   165.0, (SELECT id FROM categories WHERE slug = 'printing'), 5, NULL, TRUE, '{}'::text[], '{}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
@@ -1189,7 +1189,7 @@ INSERT INTO products (name, slug, description, price, primary_category_id, stock
   260.0, (SELECT id FROM categories WHERE slug = 'printing'), 5, NULL, TRUE, '{}'::text[], '{}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
-  'CANON MFP MF3010 ; (Toner Canon 725 or HP CE285A)', 'hp-canon-mfp-mf3010-toner-canon-725-or-hp-ce285a', 'i-SENSYS 3in1 print, scan, copy, Mono Laserjet A4, Speed 18ppm, Res. 600dpi ; Flatbed, Duty Cycle 8,000 pages/month',
+  'CANON MFP MF3010 ; (Toner Canon 725 or HP CE285A)', 'canon-mfp-mf3010-toner-canon-725-or-hp-ce285a', 'i-SENSYS 3in1 print, scan, copy, Mono Laserjet A4, Speed 18ppm, Res. 600dpi ; Flatbed, Duty Cycle 8,000 pages/month',
   260.0, (SELECT id FROM categories WHERE slug = 'printing'), 5, NULL, TRUE, '{}'::text[], '{}'::jsonb
 ) ON CONFLICT (slug) DO UPDATE SET is_active = TRUE, price = EXCLUDED.price, stock = EXCLUDED.stock;
 INSERT INTO products (name, slug, description, price, primary_category_id, stock, sku, is_active, images, specs) VALUES (
@@ -1386,13 +1386,13 @@ INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p 
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-starlight' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-midnight' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-6-m5-16gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-citrus' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-512gb-ssd-indigo' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-indigo' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-citrus' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-blush' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-13-apple-a18-pro-6-core-chip-8gb-256gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-citrus' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-512gb-ssd-indigo' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-indigo' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-citrus' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-blush' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-neo-13-a18-pro-8gb-256gb-ssd-silver' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-m4-16gb-512gb-ssd-silver' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-macbook-air-m4-16gb-256gb-ssd-silver' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('apple') WHERE p.slug = 'apple-airpods-max-2-over-ear-wireless-up-to-20-hours-with-active-noise-cancellat' ON CONFLICT DO NOTHING;
@@ -1506,10 +1506,10 @@ INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p 
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-pixma-mg2541s-ink-445bk-446-clr' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-pixma-g3410-ink-tank-ink-gi-490-bk-c-m-y' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-pixma-g4470-ink-tank-ink-gi-41-pgbk-c-m-y' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('hp') WHERE p.slug = 'hp-canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('hp') WHERE p.slug = 'hp-canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a-2' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-lj-lbp-6030-toner-canon-725-or-hp-ce285a-2' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-lj-lbp236dw-toner-canon-057' ON CONFLICT DO NOTHING;
-INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('hp') WHERE p.slug = 'hp-canon-mfp-mf3010-toner-canon-725-or-hp-ce285a' ON CONFLICT DO NOTHING;
+INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-mfp-mf3010-toner-canon-725-or-hp-ce285a' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-mfp-mf275dw-toner-canon-071' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-clj-lbp646cdw-toner-canon-075-bk-c-m-y' ON CONFLICT DO NOTHING;
 INSERT INTO product_tags (product_id, tag_id) SELECT p.id, t.id FROM products p JOIN tags t ON t.slug IN ('canon') WHERE p.slug = 'canon-clj-mf657cdw-toner-canon-067-bk-c-m-y' ON CONFLICT DO NOTHING;
