@@ -20,6 +20,10 @@ const SocialProofToasts = dynamic(
   () => import('@/components/util/SocialProofToasts').then((m) => m.SocialProofToasts),
   { ssr: false }
 )
+const TrustoNudges = dynamic(
+  () => import('@/components/trusto/TrustoNudges').then((m) => m.TrustoNudges),
+  { ssr: false }
+)
 
 export function ClientWidgets() {
   return (
@@ -28,6 +32,7 @@ export function ClientWidgets() {
       <ChatWidget />
       <CompareBar />
       <SocialProofToasts />
+      <TrustoNudges />
     </>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { Sparkles, Loader2, CheckCircle2, MinusCircle, AlertTriangle } from 'lucide-react'
+import { Loader2, CheckCircle2, MinusCircle, AlertTriangle } from 'lucide-react'
+import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 
 type Result = { verdict: 'great' | 'ok' | 'not-ideal'; summary: string; points: string[] }
 
@@ -43,10 +44,10 @@ export function FitCheck({ slug }: { slug: string }) {
   return (
     <div className="border border-slate-200 rounded-2xl p-5 bg-gradient-to-br from-blue-50/60 to-white">
       <div className="flex items-center gap-2 mb-1">
-        <Sparkles size={15} className="text-blue-600" />
+        <TrustoAvatar mood={loading ? 'thinking' : 'idle'} size={22} animated={false} />
         <p className="font-semibold text-slate-900 text-sm">Will it work for me?</p>
       </div>
-      <p className="text-xs text-slate-400 mb-3">Tell us what you’ll use it for — our AI checks it against this exact model.</p>
+      <p className="text-xs text-slate-400 mb-3">Tell Trusto what you’ll use it for — he checks it against this exact model.</p>
 
       <form onSubmit={(e) => { e.preventDefault(); check(useCase) }} className="flex gap-2">
         <input
@@ -58,7 +59,7 @@ export function FitCheck({ slug }: { slug: string }) {
         />
         <button type="submit" disabled={loading || useCase.trim().length < 3}
           className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors disabled:opacity-50">
-          {loading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />} Check
+          {loading && <Loader2 size={14} className="animate-spin" />} Check
         </button>
       </form>
 

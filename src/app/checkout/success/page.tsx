@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { CheckCircle2, MessageCircle, ArrowRight } from 'lucide-react'
+import { MessageCircle, ArrowRight } from 'lucide-react'
+import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 
 export const metadata = { title: 'Order placed' }
 
@@ -7,9 +8,7 @@ export default async function CheckoutSuccessPage({ searchParams }: { searchPara
   const { ref } = await searchParams
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-24 flex flex-col items-center text-center gap-5">
-      <span className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
-        <CheckCircle2 size={34} className="text-emerald-600" />
-      </span>
+      <TrustoAvatar mood="celebratory" size={88} />
       <h1 className="text-3xl font-bold text-slate-900">Order placed!</h1>
       {ref && (
         <p className="text-slate-600">

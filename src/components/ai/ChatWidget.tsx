@@ -3,9 +3,11 @@ import { useEffect, useRef, useState, memo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Sparkles, X, Send, Loader2, Package, ShoppingCart, MessageCircle, Check, CheckCircle2 } from 'lucide-react'
+import { X, Send, Package, ShoppingCart, MessageCircle, Check, CheckCircle2 } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
+import { useChatStore } from '@/store/chat'
+import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 import type { Product } from '@/lib/types'
 import type { ChatStatusResult } from '@/lib/status-lookup'
 
@@ -19,7 +21,9 @@ export function ChatWidget() {
   const pathname = usePathname()
   const addItem = useCartStore((s) => s.addItem)
   const [added, setAdded] = useState<string | null>(null)
-  const [open, setOpen] = useState(false)
+  const open = useChatStore((s) => s.isOpen)
+  const setOpen = useChatStore((s) => s.toggle)
+  const closeChat = useChatStore((s) => s.close)
   const [messages, setMessages] = useState<Msg[]>([])
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -56,11 +60,12 @@ export function ChatWidget() {
     <>
       {/* Launcher */}
       <button
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Open AI assistant"
-        className="fixed bottom-5 right-5 z-[90] w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 text-white shadow-glow flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+        onClick={() => setOpen()}
+        aria-label={open ? 'Close Trusto' : 'Chat with Trusto'}
+        title={open ? undefined : 'Chat with Trusto'}
+        className="fixed bottom-5 right-5 z-[90] w-16 h-16 rounded-2xl bg-white shadow-glow ring-1 ring-slate-200 flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
       >
-        {open ? <X size={22} /> : <Sparkles size={22} />}
+        {open ? <X size={22} className="text-slate-500" /> : <TrustoAvatar mood="idle" size={44} />}
         {!open && <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-blue-400 ring-2 ring-white animate-pulse" />}
       </button>
 
@@ -75,10 +80,10 @@ export function ChatWidget() {
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-              <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center"><Sparkles size={18} /></div>
+              <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center"><TrustoAvatar mood="idle" size={28} animated={false} /></div>
               <div>
-                <p className="font-semibold text-sm leading-none">Tech Advisor</p>
-                <p className="text-[11px] text-blue-100 mt-1">Ask for a recommendation</p>
+                <p className="font-semibold text-sm leading-none">Trusto</p>
+                <p className="text-[11px] text-blue-100 mt-1">Trust Technology's assistant</p>
               </div>
             </div>
 
@@ -86,7 +91,8 @@ export function ChatWidget() {
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3 bg-slate-50/50">
               {messages.length === 0 && (
                 <div className="text-center py-6">
-                  <p className="text-sm text-slate-500 mb-4">Hi! Tell me what you need and I&apos;ll find the right products.</p>
+                  <TrustoAvatar mood="excited" size={52} className="mx-auto mb-3" />
+                  <p className="text-sm text-slate-500 mb-4">Hi, I&apos;m Trusto! Tell me what you need and I&apos;ll find the right products.</p>
                   <div className="space-y-2">
                     {STARTERS.map((s) => (
                       <button key={s} onClick={() => send(s)} className="block w-full text-left text-sm text-slate-600 bg-white border border-slate-200 hover:border-blue-300 rounded-xl px-3 py-2 transition-colors">
@@ -110,7 +116,7 @@ export function ChatWidget() {
                         const onReq = p.priceOnRequest || p.price === 0
                         return (
                           <div key={p.slug} className="bg-white border border-slate-200 rounded-xl p-2">
-                            <Link href={`/products/${p.slug}`} onClick={() => setOpen(false)} className="flex gap-2 items-center group">
+                            <Link href={`/products/${p.slug}`} onClick={closeChat} className="flex gap-2 items-center group">
                               <div className="w-11 h-11 rounded-lg bg-slate-100 relative overflow-hidden shrink-0 flex items-center justify-center">
                                 {p.images[0] ? <Image src={p.images[0]} alt={p.name} fill className="object-cover" sizes="44px" /> : <Package size={15} className="text-slate-300" />}
                               </div>
@@ -211,7 +217,7 @@ export function ChatWidget() {
                 </div>
               ))}
 
-              {loading && <div className="flex items-center gap-2 text-slate-400 text-sm"><Loader2 size={15} className="animate-spin" /> Thinking…</div>}
+              {loading && <div className="flex items-center gap-2 text-slate-400 text-sm"><TrustoAvatar mood="thinking" size={22} animated={false} /> Trusto is thinking…</div>}
             </div>
 
             {/* Composer (isolated state → typing doesn't re-render the message list) */}

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Wand2, Loader2, ShoppingCart, Check, RefreshCw, Package } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
+import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 import type { Product } from '@/lib/types'
 
 type SetupItem = { product: Product; role: string; reason: string }
@@ -52,10 +53,8 @@ export default function SetupBuilderPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
       <div className="text-center mb-10">
-        <span className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium rounded-full px-4 py-1.5 mb-4">
-          <Wand2 size={14} /> AI setup builder
-        </span>
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Tell us your budget.<br className="sm:hidden" /> We build the whole setup.</h1>
+        <TrustoAvatar mood="thinking" size={64} className="mx-auto mb-4" />
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Tell Trusto your budget.<br className="sm:hidden" /> He'll build the whole setup.</h1>
         <p className="text-slate-500 mt-3 max-w-xl mx-auto">
           Computer, monitor, printer, accessories — assembled from real stock to fit your money and your goal. One tap adds it all to the cart.
         </p>
@@ -99,7 +98,10 @@ export default function SetupBuilderPage() {
 
       {setup && (
         <div className="mt-8">
-          <p className="text-slate-700 leading-relaxed mb-5">{setup.intro}</p>
+          <div className="flex items-start gap-3 mb-5">
+            <TrustoAvatar mood="celebratory" size={40} animated={false} className="shrink-0 mt-0.5" />
+            <p className="text-slate-700 leading-relaxed">{setup.intro}</p>
+          </div>
           <div className="space-y-3">
             {setup.items.map(({ product: p, role, reason }) => (
               <div key={p.id} className="flex gap-4 bg-white border border-slate-200 rounded-2xl p-4">

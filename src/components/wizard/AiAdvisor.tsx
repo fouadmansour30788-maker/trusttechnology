@@ -2,8 +2,9 @@
 import { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Send, Sparkles, Package, Loader2, MessageCircle } from 'lucide-react'
+import { Send, Package, MessageCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 
 type Rec = { slug: string; name: string; price: number; priceOnRequest?: boolean; images: string[]; reason: string }
 type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[]; options?: string[] }
@@ -53,12 +54,10 @@ export function AiAdvisor() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-1 py-2 space-y-4">
         {messages.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center text-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg shadow-blue-600/25">
-              <Sparkles size={26} className="text-white" />
-            </div>
+            <TrustoAvatar mood="idle" size={56} />
             <div>
               <p className="text-slate-900 font-semibold text-lg">Tell me what you need</p>
-              <p className="text-slate-500 text-sm mt-1">I&apos;ll recommend real products from our catalog.</p>
+              <p className="text-slate-500 text-sm mt-1">I&apos;m Trusto — I&apos;ll recommend real products from our catalog.</p>
             </div>
             <div className="grid sm:grid-cols-2 gap-2 w-full max-w-lg">
               {STARTERS.map((s) => (
@@ -146,7 +145,7 @@ export function AiAdvisor() {
 
         {loading && (
           <div className="flex items-center gap-2 text-slate-400 text-sm">
-            <Loader2 size={16} className="animate-spin" /> Finding the best matches…
+            <TrustoAvatar mood="thinking" size={24} animated={false} /> Trusto is finding the best matches…
           </div>
         )}
       </div>
