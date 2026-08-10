@@ -1,4 +1,5 @@
 'use client'
+import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ShoppingCart, Star, MessageCircle, Square, SquareCheck } from 'lucide-react'
@@ -39,18 +40,30 @@ export function ProductCard({ product }: Props) {
   const rotateY = useSpring(useTransform(mx, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 })
   const sheen = useMotionTemplate`radial-gradient(380px circle at ${useTransform(mx, (v) => v * 100)}% ${useTransform(my, (v) => v * 100)}%, rgba(37,99,235,0.10), transparent 60%)`
 
+  // Cache the rect on enter instead of calling getBoundingClientRect() on
+  // every mousemove — that forces a synchronous layout reflow per pixel of
+  // movement, which is exactly the kind of long main-thread task that shows
+  // up as a bad INP score (measured this on the live site: an 845ms block
+  // traced to this exact pattern in the hero's tilt handler).
+  const rectRef = useRef<DOMRect | null>(null)
+  function onEnter(e: React.MouseEvent<HTMLDivElement>) {
+    rectRef.current = e.currentTarget.getBoundingClientRect()
+  }
   function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect()
+    const r = rectRef.current
+    if (!r) return
     mx.set((e.clientX - r.left) / r.width)
     my.set((e.clientY - r.top) / r.height)
   }
   function onLeave() {
     mx.set(0.5)
     my.set(0.5)
+    rectRef.current = null
   }
 
   return (
     <motion.div
+      onMouseEnter={onEnter}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={{ rotateX, rotateY, transformPerspective: 900 }}

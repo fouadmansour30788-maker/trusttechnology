@@ -46,14 +46,24 @@ export function HeroSection() {
   const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), { stiffness: 150, damping: 18 })
   const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-14, 14]), { stiffness: 150, damping: 18 })
 
+  // Cache the rect on enter instead of calling getBoundingClientRect() on
+  // every mousemove — that forces a synchronous layout reflow per pixel of
+  // movement, which showed up as an 845ms-blocking INP issue traced to this
+  // exact handler.
+  const rectRef = useRef<DOMRect | null>(null)
+  function handleEnter(e: React.MouseEvent<HTMLDivElement>) {
+    rectRef.current = e.currentTarget.getBoundingClientRect()
+  }
   function handleMove(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect()
+    const rect = rectRef.current
+    if (!rect) return
     mx.set((e.clientX - rect.left) / rect.width - 0.5)
     my.set((e.clientY - rect.top) / rect.height - 0.5)
   }
   function handleLeave() {
     mx.set(0)
     my.set(0)
+    rectRef.current = null
   }
 
   return (
@@ -145,6 +155,7 @@ export function HeroSection() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="relative [perspective:1600px] hidden lg:block"
+            onMouseEnter={handleEnter}
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
           >
