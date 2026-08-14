@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Sparkles, MessageCircle, Flame } from 'lucide-react'
 import { HeroSection } from '@/components/home/HeroSection'
+import { ProductShowcase3D } from '@/components/home/ProductShowcase3D'
 import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
@@ -39,6 +40,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection />
+      <ProductShowcase3D products={FEATURED_PRODUCTS.slice(0, 3)} />
       <BrandMarquee />
       <BentoGrid />
       <WhyChooseUs />
