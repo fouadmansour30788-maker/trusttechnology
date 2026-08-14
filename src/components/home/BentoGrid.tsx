@@ -92,13 +92,13 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
           style={{ rotateX, rotateY }}
           className="relative rounded-3xl overflow-hidden border border-white/70 bg-gradient-to-br from-slate-900 to-slate-950 shadow-soft group-hover:shadow-[0_25px_60px_-15px_#1e3a8a55] transition-shadow duration-300 [transform-style:preserve-3d]"
         >
-          <div className="h-32 sm:h-36 relative flex items-center justify-center p-5" style={{ transform: 'translateZ(30px)' }}>
+          <div className="aspect-[4/3] relative flex items-center justify-center" style={{ transform: 'translateZ(30px)' }}>
             <Image
               src={c.image}
               alt={c.label}
               fill
               sizes="(max-width:768px) 50vw, 33vw"
-              className="object-contain p-4 drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              className="object-contain p-2 drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000050)]" />
