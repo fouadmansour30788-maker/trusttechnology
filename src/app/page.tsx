@@ -109,7 +109,7 @@ export default async function HomePage() {
                 <Sparkles size={18} /> Find My Setup
               </Link>
               <a
-                href={`https://wa.me/96171998983?text=${encodeURIComponent('Hi Trust Technology! I need help choosing the right tech.')}`}
+                href={`https://wa.me/9613393002?text=${encodeURIComponent('Hi Trust Technology! I need help choosing the right tech.')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold px-6 py-3.5 rounded-2xl transition-colors"

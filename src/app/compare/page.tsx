@@ -9,7 +9,7 @@ import {
 import { useCompareStore } from '@/store/compare'
 import { useCartStore } from '@/store/cart'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 type Verdict = 'best' | 'good' | 'overkill' | 'not-ideal'
 type AnalysisItem = { slug: string; verdict: Verdict; reason: string }

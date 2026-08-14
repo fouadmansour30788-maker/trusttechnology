@@ -21,7 +21,7 @@ export default async function CheckoutSuccessPage({ searchParams }: { searchPara
       </p>
       <div className="flex flex-wrap justify-center gap-3 mt-2">
         <a
-          href={`https://wa.me/96171998983?text=${encodeURIComponent(`Hi! I just placed order ${ref ?? ''} on your website.`)}`}
+          href={`https://wa.me/9613393002?text=${encodeURIComponent(`Hi! I just placed order ${ref ?? ''} on your website.`)}`}
           target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors"
         >

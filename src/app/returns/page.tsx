@@ -59,7 +59,7 @@ export default function ReturnsPage() {
 
       <div className="mt-10 bg-blue-50 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-blue-900 font-medium">Want to arrange an exchange?</p>
-        <a href={`https://wa.me/96171998983?text=${encodeURIComponent('Hi! I would like to exchange a product.')}`}
+        <a href={`https://wa.me/9613393002?text=${encodeURIComponent('Hi! I would like to exchange a product.')}`}
           target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
           <MessageCircle size={15} /> WhatsApp us

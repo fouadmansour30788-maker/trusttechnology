@@ -7,7 +7,7 @@ import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck, Gift, CheckCircl
 import { useCartStore } from '@/store/cart'
 import { DELIVERY_REGIONS, deliveryFee } from '@/lib/delivery'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 export default function CheckoutPage() {
   const router = useRouter()

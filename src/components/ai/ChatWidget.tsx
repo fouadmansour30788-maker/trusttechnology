@@ -11,7 +11,7 @@ import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 import type { Product } from '@/lib/types'
 import type { ChatStatusResult } from '@/lib/status-lookup'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 type Rec = Product & { reason: string }
 type Msg = { role: 'user' | 'assistant'; content: string; products?: Rec[]; options?: string[]; status?: ChatStatusResult }
 

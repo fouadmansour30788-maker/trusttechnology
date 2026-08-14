@@ -12,7 +12,7 @@ import { NotifyMeForm } from './NotifyMeForm'
 import { WishlistButton } from './WishlistButton'
 import type { Product } from '@/lib/types'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 export type MarketRangeProp = { min: number; max: number; stores: number }
 

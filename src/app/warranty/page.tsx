@@ -24,7 +24,7 @@ const SECTIONS = [
   {
     title: 'How to make a claim',
     body: [
-      'Message us on WhatsApp (+961 71 998 983) with your order number or invoice, the product, and a short description or photo/video of the issue.',
+      'Message us on WhatsApp (+961 3 393 002) with your order number or invoice, the product, and a short description or photo/video of the issue.',
       'Bring or send the product to our shop in Tripoli with its box and accessories. We diagnose free of charge — covered defects are repaired or the unit replaced; if neither is possible, we refund.',
       'Typical diagnosis takes 2–5 working days depending on the brand.',
     ],
@@ -57,7 +57,7 @@ export default function WarrantyPage() {
 
       <div className="mt-10 bg-blue-50 rounded-2xl p-5 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-blue-900 font-medium">Need to claim, or unsure if you’re covered?</p>
-        <a href={`https://wa.me/96171998983?text=${encodeURIComponent('Hi! I have a warranty question.')}`}
+        <a href={`https://wa.me/9613393002?text=${encodeURIComponent('Hi! I have a warranty question.')}`}
           target="_blank" rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
           <MessageCircle size={15} /> WhatsApp us

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, clearCart } = useCartStore()

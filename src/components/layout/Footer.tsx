@@ -3,7 +3,7 @@ import { MapPin, Phone, Mail, MessageCircle } from 'lucide-react'
 import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
 const FACEBOOK_URL = 'https://www.facebook.com/trusttechnology.lb/'
-const WHATSAPP_URL = 'https://wa.me/96171998983'
+const WHATSAPP_URL = 'https://wa.me/9613393002'
 
 function FacebookIcon({ size = 15 }: { size?: number }) {
   return (
@@ -36,7 +36,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone size={14} />
-                <span>+961 71 998 983</span>
+                <span>+961 3 393 002</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail size={14} />

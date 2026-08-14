@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Wrench, Loader2, CheckCircle2, PackageSearch, MessageCircle, XCircle } from 'lucide-react'
 import { RepairStatsBanner } from '@/components/products/RepairStatsBanner'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 const STEPS = ['Received', 'Diagnosing', 'Repairing', 'Ready']
 
 type TrackResult = {

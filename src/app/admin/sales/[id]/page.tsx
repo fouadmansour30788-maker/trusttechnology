@@ -28,7 +28,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center"><span className="text-white font-bold text-sm">T</span></div>
               <span className="font-bold text-slate-900">{SITE_NAME}</span>
             </div>
-            <p className="text-xs text-slate-400">Tripoli, Lebanon · +961 71 998 983</p>
+            <p className="text-xs text-slate-400">Tripoli, Lebanon · +961 3 393 002</p>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-slate-900">INVOICE</p>

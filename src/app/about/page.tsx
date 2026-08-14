@@ -13,7 +13,7 @@ export const metadata = {
     `Trust Technology is Tripoli’s premier tech store, serving Lebanon since ${FOUNDED_YEAR} — ${YEARS_IN_BUSINESS} years of premium laptops, desktops, POS systems, printers, monitors and accessories, with honest pricing and genuine warranty.`,
 }
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 const STORE_QUERY = 'Trust Technology, Tripoli, Lebanon'
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(STORE_QUERY)}`
 const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(STORE_QUERY)}&output=embed`
@@ -210,7 +210,7 @@ export default function AboutPage() {
             </div>
             <div className="space-y-4">
               {[
-                { icon: Phone, label: 'Phone / WhatsApp', value: '+961 71 998 983', href: `https://wa.me/${WHATSAPP}` },
+                { icon: Phone, label: 'Phone / WhatsApp', value: '+961 3 393 002', href: `https://wa.me/${WHATSAPP}` },
                 { icon: Mail, label: 'Email', value: 'info@trust-tech.lb', href: 'mailto:info@trust-tech.lb' },
                 { icon: MapPin, label: 'Store', value: 'Tripoli, Lebanon', href: MAPS_DIRECTIONS_URL },
               ].map(({ icon: Icon, label, value, href }) => (

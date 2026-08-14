@@ -12,7 +12,7 @@ import { WishlistButton } from './WishlistButton'
 
 type Props = { product: Product }
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 export function ProductCard({ product }: Props) {
   const addItem = useCartStore((s) => s.addItem)

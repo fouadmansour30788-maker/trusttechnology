@@ -7,7 +7,7 @@ import { useCartStore } from '@/store/cart'
 import { Button } from '@/components/ui/button'
 import type { Product } from '@/lib/types'
 
-const WHATSAPP = '96171998983'
+const WHATSAPP = '9613393002'
 
 export function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, addItem, totalItems, totalPrice } =
