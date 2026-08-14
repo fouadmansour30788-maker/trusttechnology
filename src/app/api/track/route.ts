@@ -8,7 +8,8 @@ export const dynamic = 'force-dynamic'
 const STATUS_LABELS: Record<string, { label: string; step: number }> = {
   draft: { label: 'Received — we’ll call you to confirm', step: 1 },
   confirmed: { label: 'Confirmed — preparing your order', step: 2 },
-  fulfilled: { label: 'Delivered', step: 3 },
+  out_for_delivery: { label: 'Out for delivery', step: 3 },
+  fulfilled: { label: 'Delivered', step: 4 },
   cancelled: { label: 'Cancelled', step: 0 },
 }
 

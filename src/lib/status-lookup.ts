@@ -27,7 +27,8 @@ type LookupResult = { ok: true; result: ChatStatusResult } | { ok: false; error:
 const ORDER_STATUS_LABELS: Record<string, { label: string; step: number }> = {
   draft: { label: 'Received — we’ll call you to confirm', step: 1 },
   confirmed: { label: 'Confirmed — preparing your order', step: 2 },
-  fulfilled: { label: 'Delivered', step: 3 },
+  out_for_delivery: { label: 'Out for delivery', step: 3 },
+  fulfilled: { label: 'Delivered', step: 4 },
   cancelled: { label: 'Cancelled', step: 0 },
 }
 
@@ -82,7 +83,7 @@ export async function lookupOrderStatus(reference: string, phone: string): Promi
       reference: order.reference,
       statusLabel: st.label,
       step: st.step,
-      totalSteps: 3,
+      totalSteps: 4,
       total: Number(order.total),
       items: (order.sales_order_items ?? []).map((it) => ({ name: it.product?.name ?? 'Item', quantity: it.quantity })),
     },

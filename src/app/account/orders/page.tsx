@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic'
 const STATUS_LABELS: Record<string, { label: string; className: string }> = {
   draft: { label: 'Received — awaiting confirmation', className: 'text-amber-700 bg-amber-50' },
   confirmed: { label: 'Confirmed — preparing your order', className: 'text-blue-700 bg-blue-50' },
+  out_for_delivery: { label: 'Out for delivery', className: 'text-amber-700 bg-amber-50' },
   fulfilled: { label: 'Delivered', className: 'text-emerald-700 bg-emerald-50' },
   cancelled: { label: 'Cancelled', className: 'text-slate-500 bg-slate-100' },
 }

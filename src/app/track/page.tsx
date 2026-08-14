@@ -12,7 +12,7 @@ type TrackResult = {
   items: { name: string; quantity: number }[]
 }
 
-const STEPS = ['Received', 'Confirmed', 'Delivered']
+const STEPS = ['Received', 'Confirmed', 'Out for delivery', 'Delivered']
 
 export default function TrackPage() {
   const [reference, setReference] = useState('')

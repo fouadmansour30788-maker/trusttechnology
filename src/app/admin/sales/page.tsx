@@ -1,15 +1,9 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { getSalesOrders } from '@/lib/erp'
+import { SalesOrderStatusCell } from '@/components/admin/SalesOrderStatusCell'
 
 export const dynamic = 'force-dynamic'
-
-const STATUS: Record<string, string> = {
-  draft: 'bg-slate-100 text-slate-600',
-  confirmed: 'bg-blue-50 text-blue-700',
-  fulfilled: 'bg-blue-900 text-white',
-  cancelled: 'bg-red-50 text-red-600',
-}
 
 export default async function SalesPage() {
   const orders = await getSalesOrders()
@@ -40,7 +34,12 @@ export default async function SalesPage() {
                 <td className="px-5 py-3"><Link href={`/admin/sales/${o.id}`} className="font-medium text-blue-600">{o.reference}</Link></td>
                 <td className="px-5 py-3 text-slate-700">{o.customer?.name ?? 'Walk-in'}</td>
                 <td className="px-5 py-3 text-slate-500 hidden md:table-cell">{o.order_date}</td>
-                <td className="px-5 py-3"><span className={`text-xs font-medium px-2 py-1 rounded-full ${STATUS[o.status] ?? STATUS.draft}`}>{o.status}</span></td>
+                <td className="px-5 py-3">
+                  <SalesOrderStatusCell
+                    id={o.id} reference={o.reference} status={o.status}
+                    customerName={o.customer?.name ?? 'there'} customerPhone={o.customer?.phone ?? null}
+                  />
+                </td>
                 <td className="px-5 py-3 text-right font-semibold text-slate-900">${Number(o.total).toFixed(2)}</td>
               </tr>
             ))}
