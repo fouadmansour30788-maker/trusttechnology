@@ -15,6 +15,21 @@ type CartStore = {
   totalPrice: () => number
 }
 
+// The cart UI only ever reads id/name/slug/price/images/stock/priceOnRequest
+// off a cart item's product (confirmed — nothing reads .specs/.tags/
+// .description from a CartItem). Zustand's persist middleware
+// JSON.stringifies + writes the WHOLE store to localStorage synchronously
+// on every add/remove/update, so keeping full Product objects (specs
+// dictionaries, tag arrays, long descriptions) in there was serializing far
+// more than the cart needs on every click — measured live as the cause of
+// a 300-540ms blocked-paint (bad INP) on the add-to-cart and checkout
+// buttons. Trimmed here at the persistence boundary only; heavy fields are
+// zeroed rather than made optional so this still satisfies the Product type
+// everywhere else in the app that expects one.
+function trimForStorage(product: Product): Product {
+  return { ...product, specs: {}, tags: [], description: null }
+}
+
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
@@ -57,6 +72,11 @@ export const useCartStore = create<CartStore>()(
       totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
       totalPrice: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
     }),
-    { name: 'trust-tech-cart' }
+    {
+      name: 'trust-tech-cart',
+      partialize: (state) => ({
+        items: state.items.map((i) => ({ product: trimForStorage(i.product), quantity: i.quantity })),
+      }),
+    }
   )
 )
