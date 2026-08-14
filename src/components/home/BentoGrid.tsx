@@ -80,35 +80,47 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
         onMouseEnter={onEnter}
         onMouseMove={onMove}
         onMouseLeave={onLeave}
-        className="group relative block h-52 sm:h-60 [perspective:1400px]"
+        className="group relative block [perspective:1400px]"
       >
         {/* Spotlight glow */}
         <div className="pointer-events-none absolute -inset-6 -z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb35,transparent_70%)] blur-2xl" />
         </div>
 
+        {/* Dark stage — the photo floats on it like a rendered object, not a full-bleed cover shot */}
         <motion.div
           style={{ rotateX, rotateY }}
-          className="relative w-full h-full rounded-3xl overflow-hidden border border-slate-200 shadow-soft group-hover:shadow-[0_25px_60px_-15px_#1e3a8a55] transition-shadow duration-300"
+          className="relative rounded-3xl overflow-hidden border border-white/70 bg-gradient-to-br from-slate-900 to-slate-950 shadow-soft group-hover:shadow-[0_25px_60px_-15px_#1e3a8a55] transition-shadow duration-300 [transform-style:preserve-3d]"
         >
-          <Image src={c.image} alt={c.label} fill sizes="(max-width:768px) 50vw, 33vw" className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/25 to-transparent" />
-          <div className="absolute top-4 left-4 w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/25">
-            <Icon size={18} className="text-white" />
+          <div className="h-32 sm:h-36 relative flex items-center justify-center p-5" style={{ transform: 'translateZ(30px)' }}>
+            <Image
+              src={c.image}
+              alt={c.label}
+              fill
+              sizes="(max-width:768px) 50vw, 33vw"
+              className="object-contain p-4 drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
-          <div className="absolute bottom-0 left-0 right-0 p-5">
-            <h3 className="text-white font-bold text-lg leading-tight">{c.label}</h3>
-            <p className="text-white/70 text-sm mt-0.5">{c.sublabel}</p>
-            <div className="grid transition-[grid-template-rows] duration-300 ease-out grid-rows-[0fr] group-hover:grid-rows-[1fr]">
-              <div className="overflow-hidden">
-                <p className="text-white/60 text-xs mt-2 leading-relaxed">{c.blurb}</p>
-                <span className="inline-flex items-center gap-1.5 mt-2 text-xs font-semibold text-white">
-                  Shop now <ArrowRight size={13} />
-                </span>
-              </div>
-            </div>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000050)]" />
+          <div className="absolute top-3 left-3 w-9 h-9 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/25">
+            <Icon size={16} className="text-white" />
           </div>
         </motion.div>
+
+        {/* Floating plate — same composition as the homepage showcase's price plate */}
+        <div className="relative -mt-5 mx-3 bg-white rounded-2xl shadow-xl shadow-slate-900/15 border border-slate-100 px-4 py-3">
+          <h3 className="font-bold text-slate-900 leading-tight">{c.label}</h3>
+          <p className="text-slate-500 text-sm mt-0.5">{c.sublabel}</p>
+          {/* Reserved fixed height so the reveal never shifts sibling tiles' grid row */}
+          <div className="h-10 mt-1.5 overflow-hidden">
+            <div className="opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              <p className="text-slate-400 text-xs leading-relaxed line-clamp-1">{c.blurb}</p>
+              <span className="inline-flex items-center gap-1.5 mt-1.5 text-xs font-semibold text-blue-600">
+                Shop now <ArrowRight size={12} />
+              </span>
+            </div>
+          </div>
+        </div>
       </Link>
     </motion.div>
   )
