@@ -175,7 +175,7 @@ export function HeroSection() {
                 loop
                 playsInline
                 preload="auto"
-                className="w-full aspect-[4/3] object-cover"
+                className="w-full aspect-video object-cover"
                 style={{ transform: 'translateZ(40px)' }}
               />
               {/* Vignette for product-shot contrast */}
