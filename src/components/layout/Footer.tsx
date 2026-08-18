@@ -97,6 +97,7 @@ export function Footer() {
                 { label: 'Contact', href: '/about#contact' },
                 { label: 'Track Order', href: '/track' },
                 { label: 'Repairs & Service', href: '/repairs' },
+                { label: 'Business & Bulk Orders', href: '/quote' },
                 { label: 'Warranty Policy', href: '/warranty' },
                 { label: 'Returns & Exchange', href: '/returns' },
                 { label: 'FAQ', href: '/faq' },
