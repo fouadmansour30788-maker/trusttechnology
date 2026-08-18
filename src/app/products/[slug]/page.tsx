@@ -4,10 +4,12 @@ import type { Metadata } from 'next'
 import { getProductBySlug, getProducts, isSupabaseConfigured } from '@/lib/db'
 import { createClient } from '@/lib/supabase/server'
 import { getBestPriceIds, withBestPrice, getMarketRange } from '@/lib/best-price'
+import { getReviewStatsMap, withReviewStats, getPublishedReviews } from '@/lib/reviews'
 import { trackProductView } from '@/lib/trending'
 import { ProductDetail } from '@/components/products/ProductDetail'
 import { ProductCard } from '@/components/products/ProductCard'
 import { ProductQA, type PublishedQA } from '@/components/products/ProductQA'
+import { ReviewsSection } from '@/components/products/ReviewsSection'
 import { SITE_URL } from '@/lib/site'
 import type { Product } from '@/lib/types'
 
@@ -44,10 +46,13 @@ function relatedProducts(product: Product, all: Product[]): Product[] {
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  const [fetched, all, bestIds] = await Promise.all([getProductBySlug(slug), getProducts(), getBestPriceIds()])
+  const [fetched, all, bestIds, reviewStats] = await Promise.all([getProductBySlug(slug), getProducts(), getBestPriceIds(), getReviewStatsMap()])
   if (!fetched) notFound()
-  const product = bestIds.has(fetched.id) ? { ...fetched, bestPrice: true } : fetched
-  const related = withBestPrice(relatedProducts(product, all), bestIds)
+  let product = bestIds.has(fetched.id) ? { ...fetched, bestPrice: true } : fetched
+  const stats = reviewStats.get(product.id)
+  if (stats) product = { ...product, ...stats }
+  const related = withReviewStats(withBestPrice(relatedProducts(product, all), bestIds), reviewStats)
+  const reviews = await getPublishedReviews(product.id)
   after(() => trackProductView(product.id))
 
   // Market-range panel: only rendered when our price sits at (or within 3% of) the bottom.
@@ -85,6 +90,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       url: `${SITE_URL}/products/${product.slug}`,
     },
+    ...(product.reviewCount ? {
+      aggregateRating: { '@type': 'AggregateRating', ratingValue: product.rating, reviewCount: product.reviewCount },
+    } : {}),
   }
 
   return (
@@ -99,6 +107,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </section>
       )}
+      <ReviewsSection productId={product.id} reviews={reviews} rating={product.rating} reviewCount={product.reviewCount} />
       <ProductQA productId={product.id} questions={questions} />
     </>
   )

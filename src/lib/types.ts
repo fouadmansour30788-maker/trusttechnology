@@ -46,6 +46,9 @@ export type Product = {
   vat_rate?: number | null
   /** Available colour options, e.g. ['Black','White','Red']. */
   colors?: string[] | null
+  /** Average of published reviews (1–5), stamped on read — omitted if none yet. */
+  rating?: number
+  reviewCount?: number
 }
 
 export type Bundle = {

@@ -2,6 +2,7 @@ import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts, getCategories } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
 import type { Product, Tag } from '@/lib/types'
 
@@ -35,8 +36,8 @@ export default async function CategoryPage({ params, searchParams }: Props) {
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
   const selectedSpecs = parseSpecParam(specFilter)
 
-  const [fetched, categories, bestIds] = await Promise.all([getProducts(), getCategories(), getBestPriceIds()])
-  const all = withBestPrice(fetched, bestIds)
+  const [fetched, categories, bestIds, reviewStats] = await Promise.all([getProducts(), getCategories(), getBestPriceIds(), getReviewStatsMap()])
+  const all = withReviewStats(withBestPrice(fetched, bestIds), reviewStats)
 
   // Resolve which category identifiers count as "in this category".
   let matchIds: Set<string>

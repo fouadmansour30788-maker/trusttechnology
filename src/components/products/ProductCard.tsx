@@ -141,11 +141,15 @@ export function ProductCard({ product }: Props) {
           </div>
         )}
 
-        <div className="flex items-center gap-1 mt-2 mb-3">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} size={10} className="fill-blue-400 text-blue-400" />
-          ))}
-          <span className="text-zinc-500 text-xs ml-1">(4.8)</span>
+        <div className="flex items-center gap-1 mt-2 mb-3 min-h-[14px]">
+          {(product.reviewCount ?? 0) > 0 && (
+            <>
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={10} className={i < Math.round(product.rating!) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'} />
+              ))}
+              <span className="text-zinc-500 text-xs ml-1">{product.rating?.toFixed(1)} ({product.reviewCount})</span>
+            </>
+          )}
           {product.stock > 0 && product.stock <= 3 && !onRequest && (
             <span className="ml-auto text-[10px] font-semibold text-amber-600">Only {product.stock} left</span>
           )}

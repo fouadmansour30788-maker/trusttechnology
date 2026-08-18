@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Flame, ArrowRight } from 'lucide-react'
 import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { ProductCard } from '@/components/products/ProductCard'
 
 export const dynamic = 'force-dynamic'
@@ -12,8 +13,8 @@ export const metadata = {
 }
 
 export default async function DealsPage() {
-  const [fetched, bestIds] = await Promise.all([getProducts(), getBestPriceIds()])
-  const all = withBestPrice(fetched, bestIds)
+  const [fetched, bestIds, reviewStats] = await Promise.all([getProducts(), getBestPriceIds(), getReviewStatsMap()])
+  const all = withReviewStats(withBestPrice(fetched, bestIds), reviewStats)
 
   const deals = all
     .filter((p) => p.is_active && p.price > 0 && p.compare_at_price && Number(p.compare_at_price) > Number(p.price))

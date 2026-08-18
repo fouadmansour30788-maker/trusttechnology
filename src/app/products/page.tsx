@@ -2,6 +2,7 @@ import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
+import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
 import type { Product, Tag } from '@/lib/types'
 
@@ -20,8 +21,8 @@ export default async function ProductsPage({ searchParams }: Props) {
   const { tags: tagFilter, specs: specFilter, sort, q } = await searchParams
 
   // Live from Supabase when configured; static catalog otherwise.
-  const [fetched, bestIds] = await Promise.all([getProducts(), getBestPriceIds()])
-  const allProducts = withBestPrice(fetched, bestIds)
+  const [fetched, bestIds, reviewStats] = await Promise.all([getProducts(), getBestPriceIds(), getReviewStatsMap()])
+  const allProducts = withReviewStats(withBestPrice(fetched, bestIds), reviewStats)
   const ALL_TAGS: Tag[] = Array.from(
     new Map(allProducts.flatMap((p) => p.tags ?? []).map((t) => [t.slug, t])).values()
   ).sort((a, b) => a.name.localeCompare(b.name))

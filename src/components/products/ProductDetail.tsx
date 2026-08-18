@@ -1,15 +1,17 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck } from 'lucide-react'
+import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck, Bell } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
+import { useRecentlyViewedStore } from '@/store/recentlyViewed'
 import { FitCheck } from './FitCheck'
 import { TrueSize } from './TrueSize'
 import { NotifyMeForm } from './NotifyMeForm'
 import { WishlistButton } from './WishlistButton'
+import { RecentlyViewedCarousel } from './RecentlyViewedCarousel'
 import type { Product } from '@/lib/types'
 
 const WHATSAPP = '9613393002'
@@ -18,16 +20,24 @@ export type MarketRangeProp = { min: number; max: number; stores: number }
 
 export function ProductDetail({ product: p, marketRange }: { product: Product; marketRange?: MarketRangeProp | null }) {
   const addItem = useCartStore((s) => s.addItem)
+  const addViewed = useRecentlyViewedStore((s) => s.addViewed)
   const onRequest = p.priceOnRequest || p.price === 0
   const [qty, setQty] = useState(1)
   const [active, setActive] = useState(0)
   const [color, setColor] = useState(p.colors?.[0] ?? '')
+  const [watchingPrice, setWatchingPrice] = useState(false)
   const cartProduct = color ? { ...p, name: `${p.name} — ${color}` } : p
   const discount = p.compare_at_price
     ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100)
     : null
 
+  useEffect(() => {
+    addViewed({ id: p.id, slug: p.slug, name: p.name, price: p.price, priceOnRequest: p.priceOnRequest, image: p.images[0] ?? null })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [p.id])
+
   return (
+    <>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-xs text-slate-400 mb-6">
@@ -74,10 +84,14 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
 
           <div>
             <h1 className="text-3xl font-bold text-slate-900 leading-tight">{p.name}</h1>
-            <div className="flex items-center gap-2 mt-2">
-              {[...Array(5)].map((_, i) => <Star key={i} size={14} className="fill-blue-400 text-blue-400" />)}
-              <span className="text-slate-400 text-sm">4.8 (24 reviews)</span>
-            </div>
+            {(p.reviewCount ?? 0) > 0 && (
+              <a href="#reviews" className="flex items-center gap-2 mt-2 w-fit">
+                {[...Array(5)].map((_, i) => <Star key={i} size={14} className={i < Math.round(p.rating!) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'} />)}
+                <span className="text-slate-400 text-sm hover:text-blue-600 transition-colors">
+                  {p.rating?.toFixed(1)} ({p.reviewCount} review{p.reviewCount === 1 ? '' : 's'})
+                </span>
+              </a>
+            )}
           </div>
 
           {/* Price */}
@@ -173,6 +187,18 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
                   <MessageCircle size={16} /> Order via WhatsApp
                 </a>
               )}
+              {p.stock > 0 && (
+                watchingPrice ? (
+                  <NotifyMeForm productId={p.id} kind="price_drop" label="Watch price" />
+                ) : (
+                  <button
+                    onClick={() => setWatchingPrice(true)}
+                    className="flex items-center justify-center gap-1.5 w-full text-xs font-medium text-slate-400 hover:text-blue-600 transition-colors"
+                  >
+                    <Bell size={12} /> Notify me if the price drops
+                  </button>
+                )
+              )}
             </div>
           )}
 
@@ -200,5 +226,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
         </div>
       )}
     </div>
+    <RecentlyViewedCarousel excludeId={p.id} />
+    </>
   )
 }
