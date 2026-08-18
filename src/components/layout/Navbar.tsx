@@ -12,6 +12,7 @@ export function Navbar() {
   const navRef = useRef<HTMLDivElement>(null)
   const totalItems = useCartStore((s) => s.totalItems())
   const openCart = useCartStore((s) => s.openCart)
+  const [session, setSession] = useState<{ loggedIn: boolean; name: string | null } | null>(null)
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -21,6 +22,10 @@ export function Navbar() {
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/auth/session').then((r) => r.json()).then(setSession).catch(() => {})
   }, [])
 
   return (
@@ -110,13 +115,39 @@ export function Navbar() {
               )}
             </button>
 
-            <Link
-              href="/account"
-              title="Your account"
-              className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <User size={20} />
-            </Link>
+            {session?.loggedIn ? (
+              <Link
+                href="/account"
+                title={session.name ? `Hi, ${session.name}` : 'Your account'}
+                className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <User size={20} />
+              </Link>
+            ) : (
+              <div className="hidden sm:flex items-center gap-1">
+                <Link
+                  href="/login"
+                  className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-3.5 py-1.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
+            {!session?.loggedIn && (
+              <Link
+                href="/login"
+                title="Log in / Sign up"
+                className="sm:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <User size={20} />
+              </Link>
+            )}
 
             <Link
               href="/admin"
@@ -202,6 +233,24 @@ export function Navbar() {
             >
               About
             </Link>
+            {!session?.loggedIn && (
+              <div className="flex gap-2 pt-2 mt-2 border-t border-slate-100">
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 text-center px-3 py-2 text-sm font-medium text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-100"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 text-center px-3 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
