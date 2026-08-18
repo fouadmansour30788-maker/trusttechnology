@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
+import { createClient as createSessionClient } from '@/lib/supabase/server'
 import { isSupabaseConfigured } from '@/lib/db'
 import { deliveryFee } from '@/lib/delivery'
+import { pointsEarned, pointsValue, maxRedeemable } from '@/lib/loyalty'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,6 +18,7 @@ type CheckoutBody = {
   website?: string // honeypot — real users never fill this
   items?: CheckoutItem[]
   giftCertificateCode?: string
+  redeemPoints?: number
 }
 
 const MAX_LINES = 30
@@ -101,21 +104,46 @@ export async function POST(req: Request) {
     giftCert = { id: gc.id, remaining_balance: Number(gc.remaining_balance) }
     giftCertAmountApplied = Math.round(Math.min(giftCert.remaining_balance, preDiscountTotal) * 100) / 100
   }
-  const total = Math.round((preDiscountTotal - giftCertAmountApplied) * 100) / 100
+  const afterGiftCert = Math.round((preDiscountTotal - giftCertAmountApplied) * 100) / 100
 
-  // Find-or-create the customer by phone.
-  let customerId: string | null = null
-  const { data: existing } = await supabase.from('customers').select('id').eq('phone', phone).limit(1)
-  if (existing && existing.length > 0) {
-    customerId = (existing[0] as { id: string }).id
-  } else {
-    const { data: created, error: custErr } = await supabase
-      .from('customers')
-      .insert({ name, phone, address, notes: 'Created by website checkout' })
-      .select('id')
-      .single()
-    if (custErr || !created) return NextResponse.json({ error: 'unavailable' }, { status: 500 })
-    customerId = (created as { id: string }).id
+  // Points redemption requires a signed-in, account-linked customer — that's
+  // the identity used for the whole order below (not the phone-matched one),
+  // so the balance being spent and the balance being credited are the same
+  // row. Guests can't redeem, but still earn (see after order insert).
+  const sessionSupabase = await createSessionClient()
+  const { data: { user: sessionUser } } = await sessionSupabase.auth.getUser()
+  let linkedCustomer: { id: string; points_balance: number } | null = null
+  if (sessionUser) {
+    const { data: lc } = await supabase.from('customers').select('id, points_balance').eq('auth_user_id', sessionUser.id).maybeSingle()
+    if (lc) linkedCustomer = lc as { id: string; points_balance: number }
+  }
+
+  let redeemPoints = Math.max(0, Math.floor(Number(body.redeemPoints) || 0))
+  let pointsAmountApplied = 0
+  if (redeemPoints > 0) {
+    if (!linkedCustomer) return NextResponse.json({ error: 'Sign in to redeem points.' }, { status: 400 })
+    const allowed = maxRedeemable(linkedCustomer.points_balance, afterGiftCert)
+    redeemPoints = Math.min(redeemPoints, allowed)
+    pointsAmountApplied = pointsValue(redeemPoints)
+  }
+  const total = Math.round((afterGiftCert - pointsAmountApplied) * 100) / 100
+
+  // The account-linked customer (if signed in) is the order's customer —
+  // otherwise find-or-create by phone, same as before.
+  let customerId: string | null = linkedCustomer?.id ?? null
+  if (!customerId) {
+    const { data: existing } = await supabase.from('customers').select('id').eq('phone', phone).limit(1)
+    if (existing && existing.length > 0) {
+      customerId = (existing[0] as { id: string }).id
+    } else {
+      const { data: created, error: custErr } = await supabase
+        .from('customers')
+        .insert({ name, phone, address, notes: 'Created by website checkout' })
+        .select('id')
+        .single()
+      if (custErr || !created) return NextResponse.json({ error: 'unavailable' }, { status: 500 })
+      customerId = (created as { id: string }).id
+    }
   }
 
   const orderNotes = [
@@ -123,6 +151,7 @@ export async function POST(req: Request) {
     `Deliver to: ${address}`,
     `Delivery region: ${region.label} — fee $${fee}`,
     giftCert ? `Gift certificate applied: -$${giftCertAmountApplied.toFixed(2)}` : null,
+    redeemPoints > 0 ? `Points redeemed: ${redeemPoints} (-$${pointsAmountApplied.toFixed(2)})` : null,
     note ? `Customer note: ${note}` : null,
   ].filter(Boolean).join('\n')
 
@@ -145,6 +174,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'unavailable' }, { status: 500 })
   }
 
+  let finalTotal = total
+  let giftCertificateFailed = false
+  let pointsFailed = false
+
   if (giftCert && giftCertAmountApplied > 0) {
     const newBalance = Math.round((giftCert.remaining_balance - giftCertAmountApplied) * 100) / 100
     // Only spend the balance if it's still what we read (defends against a
@@ -162,10 +195,40 @@ export async function POST(req: Request) {
     } else {
       // Lost the race — someone else spent it first. Don't fail the order
       // (it's already placed); just don't apply a discount that isn't real.
-      await supabase.from('sales_orders').update({ gift_certificate_amount_applied: 0, total: preDiscountTotal }).eq('id', soId)
-      return NextResponse.json({ ok: true, reference, total: preDiscountTotal, giftCertificateFailed: true })
+      giftCertificateFailed = true
+      finalTotal = Math.round((finalTotal + giftCertAmountApplied) * 100) / 100
+      await supabase.from('sales_orders').update({ gift_certificate_amount_applied: 0, total: finalTotal }).eq('id', soId)
     }
   }
 
-  return NextResponse.json({ ok: true, reference, total })
+  if (redeemPoints > 0 && linkedCustomer) {
+    const newBalance = linkedCustomer.points_balance - redeemPoints
+    // Same optimistic-concurrency guard as the gift certificate above.
+    const { data: updated } = await supabase
+      .from('customers')
+      .update({ points_balance: newBalance })
+      .eq('id', linkedCustomer.id)
+      .eq('points_balance', linkedCustomer.points_balance)
+      .select('id')
+    if (updated && updated.length > 0) {
+      await supabase.from('points_ledger').insert({ customer_id: linkedCustomer.id, delta: -redeemPoints, reason: 'redemption', sales_order_id: soId })
+    } else {
+      pointsFailed = true
+      finalTotal = Math.round((finalTotal + pointsAmountApplied) * 100) / 100
+      await supabase.from('sales_orders').update({ total: finalTotal }).eq('id', soId)
+    }
+  }
+
+  // Earn points on the order's own customer, regardless of login — best
+  // effort (no concurrency guard: worst case under a race is a few points
+  // lost to a lost update, not a balance a customer could ever overspend).
+  const earned = pointsEarned(subtotal)
+  if (earned > 0) {
+    const { data: custRow } = await supabase.from('customers').select('points_balance').eq('id', customerId).maybeSingle()
+    const currentBalance = Number((custRow as { points_balance?: number } | null)?.points_balance ?? 0)
+    await supabase.from('customers').update({ points_balance: currentBalance + earned }).eq('id', customerId)
+    await supabase.from('points_ledger').insert({ customer_id: customerId, delta: earned, reason: 'purchase', sales_order_id: soId })
+  }
+
+  return NextResponse.json({ ok: true, reference, total: finalTotal, giftCertificateFailed, pointsFailed, pointsEarned: earned })
 }

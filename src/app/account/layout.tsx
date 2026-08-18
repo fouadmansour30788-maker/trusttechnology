@@ -1,11 +1,12 @@
 import Link from 'next/link'
-import { LayoutDashboard, Package, Heart, Gift, LogOut } from 'lucide-react'
+import { LayoutDashboard, Package, Heart, Gift, LogOut, Sparkles } from 'lucide-react'
 import { signOutCustomer } from './actions'
 
 const TABS = [
   { label: 'Overview', href: '/account', icon: LayoutDashboard },
   { label: 'Orders', href: '/account/orders', icon: Package },
   { label: 'Wishlist', href: '/account/wishlist', icon: Heart },
+  { label: 'Points', href: '/account/points', icon: Sparkles },
   { label: 'Gift Certificates', href: '/account/gift-certificates', icon: Gift },
 ]
 

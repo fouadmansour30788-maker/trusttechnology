@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Package, Heart, Gift, ArrowRight } from 'lucide-react'
+import { Package, Heart, Gift, ArrowRight, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 
 export const dynamic = 'force-dynamic'
@@ -8,7 +8,7 @@ export default async function AccountOverviewPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const { data: customer } = await supabase.from('customers').select('id, name, email, phone').eq('auth_user_id', user!.id).maybeSingle()
+  const { data: customer } = await supabase.from('customers').select('id, name, email, phone, points_balance').eq('auth_user_id', user!.id).maybeSingle()
   const custId = (customer as { id?: string } | null)?.id
 
   const [{ count: orderCount }, { count: wishlistCount }, { count: giftCertCount }] = await Promise.all([
@@ -20,10 +20,12 @@ export default async function AccountOverviewPage() {
   ])
 
   const name = (customer as { name?: string } | null)?.name ?? user?.email ?? 'there'
+  const pointsBalance = (customer as { points_balance?: number } | null)?.points_balance ?? 0
 
   const tiles = [
     { label: 'Orders', value: orderCount ?? 0, href: '/account/orders', icon: Package },
     { label: 'Wishlist items', value: wishlistCount ?? 0, href: '/account/wishlist', icon: Heart },
+    { label: 'Points', value: pointsBalance, href: '/account/points', icon: Sparkles },
     { label: 'Gift certificates', value: giftCertCount ?? 0, href: '/account/gift-certificates', icon: Gift },
   ]
 
@@ -32,7 +34,7 @@ export default async function AccountOverviewPage() {
       <h1 className="text-2xl font-bold text-slate-900 mb-1">Hi, {name}</h1>
       <p className="text-slate-500 text-sm mb-8">{(customer as { email?: string } | null)?.email ?? user?.email}</p>
 
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {tiles.map(({ label, value, href, icon: Icon }) => (
           <Link
             key={href}

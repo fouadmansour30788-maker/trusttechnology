@@ -1,11 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck, Gift, CheckCircle2 } from 'lucide-react'
+import { Banknote, Loader2, MessageCircle, ShoppingCart, Truck, Gift, CheckCircle2, Sparkles } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 import { DELIVERY_REGIONS, deliveryFee } from '@/lib/delivery'
+import { maxRedeemable, pointsValue, POINTS_MIN_REDEEM } from '@/lib/loyalty'
 
 const WHATSAPP = '9613393002'
 
@@ -20,6 +21,12 @@ export default function CheckoutPage() {
   const [giftCheck, setGiftCheck] = useState<{ checking: boolean; valid: boolean | null; balance: number | null; error: string | null }>(
     { checking: false, valid: null, balance: null, error: null }
   )
+  const [pointsBalance, setPointsBalance] = useState<{ loggedIn: boolean; balance: number } | null>(null)
+  const [usePoints, setUsePoints] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/loyalty/balance').then((r) => r.json()).then(setPointsBalance).catch(() => {})
+  }, [])
 
   const priced = items.filter((i) => !i.product.priceOnRequest && i.product.price > 0)
   const callItems = items.filter((i) => i.product.priceOnRequest || i.product.price === 0)
@@ -27,7 +34,10 @@ export default function CheckoutPage() {
   const { fee } = deliveryFee(region, subtotal)
   const preDiscountTotal = subtotal + fee
   const giftDiscount = giftCheck.valid && giftCheck.balance !== null ? Math.min(giftCheck.balance, preDiscountTotal) : 0
-  const total = preDiscountTotal - giftDiscount
+  const afterGiftDiscount = preDiscountTotal - giftDiscount
+  const redeemablePoints = pointsBalance?.loggedIn ? maxRedeemable(pointsBalance.balance, afterGiftDiscount) : 0
+  const pointsDiscount = usePoints ? pointsValue(redeemablePoints) : 0
+  const total = afterGiftDiscount - pointsDiscount
 
   async function checkGiftCode() {
     const code = giftCode.trim().toUpperCase()
@@ -56,6 +66,7 @@ export default function CheckoutPage() {
           region,
           items: priced.map((i) => ({ slug: i.product.slug, quantity: i.quantity })),
           giftCertificateCode: giftCheck.valid ? giftCode.trim().toUpperCase() : undefined,
+          redeemPoints: usePoints ? redeemablePoints : undefined,
         }),
       })
       const data = await res.json()
@@ -149,6 +160,18 @@ export default function CheckoutPage() {
             )}
             {giftCheck.valid === false && <p className="text-xs text-red-600 mt-1.5">{giftCheck.error}</p>}
           </div>
+
+          {pointsBalance?.loggedIn && pointsBalance.balance >= POINTS_MIN_REDEEM && (
+            <label className="flex items-center justify-between gap-3 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 cursor-pointer">
+              <span className="flex items-center gap-2 text-sm text-amber-900">
+                <Sparkles size={15} className="text-amber-500 shrink-0" />
+                Use {redeemablePoints} points for ${pointsValue(redeemablePoints).toFixed(2)} off
+                <span className="text-amber-600/70">({pointsBalance.balance} available)</span>
+              </span>
+              <input type="checkbox" checked={usePoints} onChange={(e) => setUsePoints(e.target.checked)} className="shrink-0 w-4 h-4 accent-amber-600" />
+            </label>
+          )}
+
           {/* Honeypot */}
           <input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
@@ -160,6 +183,11 @@ export default function CheckoutPage() {
             {submitting ? 'Placing order…' : `Place order — $${total.toLocaleString(undefined, { maximumFractionDigits: 2 })} on delivery`}
           </button>
           <p className="text-xs text-slate-400 text-center">We’ll call you to confirm availability and delivery time before anything ships.</p>
+          {subtotal >= 1 && (
+            <p className="text-xs text-amber-600 text-center flex items-center justify-center gap-1">
+              <Sparkles size={11} /> You’ll earn {Math.floor(subtotal)} points on this order.
+            </p>
+          )}
         </form>
 
         {/* Summary */}
@@ -189,6 +217,12 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-sm">
                 <span className="text-emerald-600 flex items-center gap-1"><Gift size={12} /> Gift certificate</span>
                 <span className="text-emerald-600 tabular-nums">−${giftDiscount.toFixed(2)}</span>
+              </div>
+            )}
+            {pointsDiscount > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-amber-600 flex items-center gap-1"><Sparkles size={12} /> Points redeemed</span>
+                <span className="text-amber-600 tabular-nums">−${pointsDiscount.toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between pt-2">
