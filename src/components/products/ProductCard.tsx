@@ -33,11 +33,12 @@ export function ProductCard({ product }: Props) {
     ? Math.round(((product.compare_at_price - product.price) / product.compare_at_price) * 100)
     : null
 
-  // Mouse-driven 3D tilt + light sheen
+  // Mouse-driven 3D tilt (image only — scoped here rather than the whole
+  // card so price/specs text stays flat and readable) + light sheen.
   const mx = useMotionValue(0.5)
   const my = useMotionValue(0.5)
-  const rotateX = useSpring(useTransform(my, [0, 1], [6, -6]), { stiffness: 200, damping: 20 })
-  const rotateY = useSpring(useTransform(mx, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 })
+  const rotateX = useSpring(useTransform(my, [0, 1], [14, -14]), { stiffness: 200, damping: 20 })
+  const rotateY = useSpring(useTransform(mx, [0, 1], [-14, 14]), { stiffness: 200, damping: 20 })
   const sheen = useMotionTemplate`radial-gradient(380px circle at ${useTransform(mx, (v) => v * 100)}% ${useTransform(my, (v) => v * 100)}%, rgba(37,99,235,0.10), transparent 60%)`
 
   // Cache the rect on enter instead of calling getBoundingClientRect() on
@@ -46,10 +47,10 @@ export function ProductCard({ product }: Props) {
   // up as a bad INP score (measured this on the live site: an 845ms block
   // traced to this exact pattern in the hero's tilt handler).
   const rectRef = useRef<DOMRect | null>(null)
-  function onEnter(e: React.MouseEvent<HTMLDivElement>) {
+  function onEnter(e: React.MouseEvent<HTMLAnchorElement>) {
     rectRef.current = e.currentTarget.getBoundingClientRect()
   }
-  function onMove(e: React.MouseEvent<HTMLDivElement>) {
+  function onMove(e: React.MouseEvent<HTMLAnchorElement>) {
     const r = rectRef.current
     if (!r) return
     mx.set((e.clientX - r.left) / r.width)
@@ -63,28 +64,33 @@ export function ProductCard({ product }: Props) {
 
   return (
     <motion.div
-      onMouseEnter={onEnter}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
       whileHover={{ y: -4 }}
-      className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 transition-colors duration-300 hover:shadow-xl hover:shadow-blue-900/10 flex flex-col [transform-style:preserve-3d]"
+      className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 transition-colors duration-300 hover:shadow-xl hover:shadow-blue-900/10 flex flex-col"
     >
-      <motion.div style={{ background: sheen }} className="pointer-events-none absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-      {/* Image */}
-      <Link href={`/products/${product.slug}`} className="block aspect-square bg-slate-100 overflow-hidden relative">
-        {product.images[0] ? (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-300">
-            <span className="text-4xl">📦</span>
-          </div>
-        )}
+      {/* Image — mouse-tilted in 3D, independent of the card around it */}
+      <Link
+        href={`/products/${product.slug}`}
+        onMouseEnter={onEnter}
+        onMouseMove={onMove}
+        onMouseLeave={onLeave}
+        className="block aspect-square bg-slate-100 overflow-hidden relative [perspective:1200px]"
+      >
+        <motion.div style={{ background: sheen }} className="pointer-events-none absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <motion.div style={{ rotateX, rotateY }} className="absolute inset-0 [transform-style:preserve-3d]">
+          {product.images[0] ? (
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              style={{ transform: 'translateZ(20px)' }}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-slate-300">
+              <span className="text-4xl">📦</span>
+            </div>
+          )}
+        </motion.div>
         <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
           {discount && <Badge variant="red">-{discount}%</Badge>}
           {product.bestPrice && (
