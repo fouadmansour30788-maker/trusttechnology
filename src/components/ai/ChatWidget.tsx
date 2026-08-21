@@ -8,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useCartStore } from '@/store/cart'
 import { useChatStore } from '@/store/chat'
 import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
-import { TrustoVoiceToggle } from '@/components/trusto/TrustoVoiceToggle'
 import type { Product } from '@/lib/types'
 import type { ChatStatusResult } from '@/lib/status-lookup'
 
@@ -82,11 +81,10 @@ export function ChatWidget() {
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-800 text-white">
               <div className="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center"><TrustoAvatar mood="idle" size={28} animated={false} /></div>
-              <div className="flex-1 min-w-0">
+              <div>
                 <p className="font-semibold text-sm leading-none">Trusto</p>
                 <p className="text-[11px] text-blue-100 mt-1">Trust Technology's assistant</p>
               </div>
-              <TrustoVoiceToggle className="p-1.5 text-blue-100 hover:text-white transition-colors shrink-0" />
             </div>
 
             {/* Messages */}

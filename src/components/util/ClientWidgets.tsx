@@ -24,10 +24,6 @@ const TrustoNudges = dynamic(
   () => import('@/components/trusto/TrustoNudges').then((m) => m.TrustoNudges),
   { ssr: false }
 )
-const TrustoWalker = dynamic(
-  () => import('@/components/trusto/TrustoWalker').then((m) => m.TrustoWalker),
-  { ssr: false }
-)
 
 export function ClientWidgets() {
   return (
@@ -37,7 +33,6 @@ export function ClientWidgets() {
       <CompareBar />
       <SocialProofToasts />
       <TrustoNudges />
-      <TrustoWalker />
     </>
   )
 }
