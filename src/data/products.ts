@@ -1773,7 +1773,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     id: "lenovo-510-wireless-combo-keyboard-and-mouse", name: "Lenovo 510 WIRELESS COMBO KEYBOARD AND MOUSE", slug: "lenovo-510-wireless-combo-keyboard-and-mouse",
     description: "",
     price: 58.0, compare_at_price: null, priceOnRequest: false,
-    primary_category_id: "peripherals", images: ["/products/lenovo-510-wireless-combo-keyboard-and-mouse.jpg"], stock: 5,
+    primary_category_id: "peripherals", images: ["/products/lenovo-510-wireless-combo-clean.webp"], stock: 5,
     sku: "GX30N81779", is_active: true, is_featured: false,
     specs: {  }, created_at: '', updated_at: '',
     tags: [{ id: "lenovo-510-wireless-combo-keyboard-and-mouse-t0", name: "Lenovo", slug: "lenovo", type: 'brand' }, { id: "lenovo-510-wireless-combo-keyboard-and-mouse-t1", name: "Accessory", slug: "accessory", type: 'type' }],
