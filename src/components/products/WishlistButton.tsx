@@ -41,11 +41,11 @@ export function WishlistButton({ productId, variant = 'icon' }: { productId: str
     <button
       onClick={onClick}
       title={active ? 'Remove from wishlist' : 'Add to wishlist'}
-      className={`absolute top-11 right-2 z-10 w-7 h-7 rounded-full flex items-center justify-center shadow-sm transition-colors ${
+      className={`absolute top-12 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center shadow-sm transition-colors ${
         active ? 'bg-red-50 text-red-500' : 'bg-white/95 text-slate-400 hover:text-red-500 border border-slate-200'
       }`}
     >
-      <Heart size={14} className={active ? 'fill-red-500' : ''} />
+      <Heart size={16} className={active ? 'fill-red-500' : ''} />
     </button>
   )
 }

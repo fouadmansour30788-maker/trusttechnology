@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { ChevronDown } from 'lucide-react'
-import { useState } from 'react'
+import { ChevronDown, SlidersHorizontal, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import type { Tag } from '@/lib/types'
 import { SPEC_FACETS, parseSpecParam, specParamToString, type SpecFacetKey } from '@/lib/spec-facets'
 
@@ -31,9 +31,19 @@ export function FilterSidebar({ tags, specFacetOptions = {} }: Props) {
     storage: true,
   })
 
+  const [mobileOpen, setMobileOpen] = useState(false)
+
   const selectedTags = searchParams.get('tags')?.split(',').filter(Boolean) ?? []
   const selectedSpecs = parseSpecParam(searchParams.get('specs') ?? undefined)
   const hasAnyFilter = selectedTags.length > 0 || Object.values(selectedSpecs).some((v) => v && v.length > 0)
+  const activeCount = selectedTags.length + Object.values(selectedSpecs).reduce((n, v) => n + (v?.length ?? 0), 0)
+
+  // Lock background scroll while the mobile drawer is open.
+  useEffect(() => {
+    if (!mobileOpen) return
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
 
   function toggleTag(slug: string) {
     const next = selectedTags.includes(slug)
@@ -67,18 +77,8 @@ export function FilterSidebar({ tags, specFacetOptions = {} }: Props) {
     SECTIONS.map(({ type }) => [type, tags.filter((t) => t.type === type)])
   )
 
-  return (
-    <aside className="w-56 shrink-0">
-      <div className="sticky top-20 space-y-1">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold text-slate-900">Filters</span>
-          {hasAnyFilter && (
-            <button onClick={clearAll} className="text-xs text-blue-600 hover:text-blue-700">
-              Clear all
-            </button>
-          )}
-        </div>
-
+  const filterBody = (
+    <>
         {SECTIONS.map(({ label, type }) => (
           <div key={type} className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
             <button
@@ -171,7 +171,73 @@ export function FilterSidebar({ tags, specFacetOptions = {} }: Props) {
             </select>
           </div>
         </div>
-      </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile trigger — replaces the sidebar below md, opens a slide-in drawer */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="md:hidden w-full flex items-center justify-between gap-2 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm mb-4"
+      >
+        <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+          <SlidersHorizontal size={16} className="text-slate-500" />
+          Filters &amp; Sort
+          {activeCount > 0 && (
+            <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1 rounded-full bg-blue-600 text-white text-xs font-bold">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <ChevronDown size={16} className="text-slate-400 -rotate-90" />
+      </button>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden md:block w-56 shrink-0">
+        <div className="sticky top-20 space-y-1">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-semibold text-slate-900">Filters</span>
+            {hasAnyFilter && (
+              <button onClick={clearAll} className="text-xs text-blue-600 hover:text-blue-700">
+                Clear all
+              </button>
+            )}
+          </div>
+          {filterBody}
+        </div>
+      </aside>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-50">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-slate-200 shrink-0">
+              <span className="text-sm font-semibold text-slate-900">Filters &amp; Sort</span>
+              <div className="flex items-center gap-3">
+                {hasAnyFilter && (
+                  <button onClick={clearAll} className="text-xs text-blue-600 hover:text-blue-700">
+                    Clear all
+                  </button>
+                )}
+                <button onClick={() => setMobileOpen(false)} className="p-1.5 -mr-1.5 text-slate-500 hover:text-slate-900" aria-label="Close filters">
+                  <X size={20} />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">{filterBody}</div>
+            <div className="p-4 border-t border-slate-200 shrink-0">
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors"
+              >
+                Show results
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

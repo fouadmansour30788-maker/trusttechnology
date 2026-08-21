@@ -94,7 +94,7 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         <p className="text-slate-500 mt-1">{products.length} products</p>
       </div>
 
-      <div className="flex gap-8">
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
         <FilterSidebar tags={categoryTags} specFacetOptions={specFacetOptions} />
 
         <div className="flex-1 min-w-0">

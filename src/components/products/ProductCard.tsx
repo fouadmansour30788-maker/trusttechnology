@@ -105,7 +105,7 @@ export function ProductCard({ product }: Props) {
         <button
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
           title={comparing ? 'Remove from compare' : 'Add to compare'}
-          className={`absolute top-2 right-2 z-10 inline-flex items-center gap-1 h-7 pl-1.5 pr-2 rounded-full text-[11px] font-semibold shadow-sm transition-colors ${
+          className={`absolute top-2 right-2 z-10 inline-flex items-center gap-1 h-8 pl-2 pr-2.5 rounded-full text-xs font-semibold shadow-sm transition-colors ${
             comparing
               ? 'bg-blue-600 text-white'
               : 'bg-white/95 text-slate-500 hover:text-blue-600 border border-slate-200'
@@ -143,8 +143,8 @@ export function ProductCard({ product }: Props) {
           <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1.5 border-t border-slate-100 pt-2">
             {keySpecs.map(([k, v]) => (
               <div key={k} className="min-w-0">
-                <p className="text-[9px] uppercase tracking-wide text-slate-400 truncate">{k}</p>
-                <p className="text-[11px] font-medium text-slate-700 truncate" title={v}>{v}</p>
+                <p className="text-[10px] uppercase tracking-wide text-slate-400 truncate">{k}</p>
+                <p className="text-xs font-medium text-slate-700 truncate" title={v}>{v}</p>
               </div>
             ))}
           </div>
@@ -186,18 +186,18 @@ export function ProductCard({ product }: Props) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="w-8 h-8 rounded-lg bg-emerald-500 hover:bg-emerald-600 flex items-center justify-center text-white transition-colors"
+              className="w-10 h-10 rounded-lg bg-emerald-500 hover:bg-emerald-600 flex items-center justify-center text-white transition-colors"
               title="Ask for price on WhatsApp"
             >
-              <MessageCircle size={14} />
+              <MessageCircle size={16} />
             </a>
           ) : (
             <button
               onClick={() => addItem(product)}
               disabled={product.stock === 0}
-              className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
+              className="w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
             >
-              <ShoppingCart size={14} />
+              <ShoppingCart size={16} />
             </button>
           )}
         </div>

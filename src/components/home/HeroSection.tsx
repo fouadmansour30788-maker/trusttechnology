@@ -149,12 +149,16 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* ── Right: 3D tilt video, spotlight-lit like a product reveal ── */}
+          {/* ── Right: 3D tilt video, spotlight-lit like a product reveal ──
+              Visible at every width — autoPlay+muted+playsInline already
+              satisfy mobile autoplay requirements, so there's no reason to
+              hide it below lg. The grid collapses to one column there, so
+              it just stacks under the copy instead of sitting beside it. */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative [perspective:1600px] hidden lg:block"
+            className="relative [perspective:1600px]"
             onMouseEnter={handleEnter}
             onMouseMove={handleMove}
             onMouseLeave={handleLeave}
