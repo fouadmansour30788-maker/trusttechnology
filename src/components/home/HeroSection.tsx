@@ -127,7 +127,7 @@ export function HeroSection() {
               </Link>
               <Link href="/recommend">
                 <Button size="lg" variant="outline">
-                  <Sparkles size={18} /> Find My Setup
+                  <Sparkles size={18} /> Meet Our Tech Advisor
                 </Button>
               </Link>
             </motion.div>
