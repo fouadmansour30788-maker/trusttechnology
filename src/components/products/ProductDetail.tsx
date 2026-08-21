@@ -12,6 +12,7 @@ import { TrueSize } from './TrueSize'
 import { NotifyMeForm } from './NotifyMeForm'
 import { WishlistButton } from './WishlistButton'
 import { RecentlyViewedCarousel } from './RecentlyViewedCarousel'
+import { SPEC_HIDDEN } from '@/lib/specs'
 import type { Product } from '@/lib/types'
 
 const WHATSAPP = '9613393002'
@@ -30,6 +31,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
   const discount = p.compare_at_price
     ? Math.round(((p.compare_at_price - p.price) / p.compare_at_price) * 100)
     : null
+  const visibleSpecs = Object.entries(p.specs).filter(([key, value]) => value && !SPEC_HIDDEN.has(key))
 
   useEffect(() => {
     addViewed({ id: p.id, slug: p.slug, name: p.name, price: p.price, priceOnRequest: p.priceOnRequest, image: p.images[0] ?? null })
@@ -212,11 +214,11 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
       </div>
 
       {/* Specs */}
-      {Object.keys(p.specs).length > 0 && (
+      {visibleSpecs.length > 0 && (
         <div className="mt-12 max-w-3xl">
           <h2 className="text-xl font-bold text-slate-900 mb-4">Specifications</h2>
           <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-            {Object.entries(p.specs).map(([key, value], i) => (
+            {visibleSpecs.map(([key, value], i) => (
               <div key={key} className={`flex items-start gap-4 px-6 py-3.5 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}`}>
                 <span className="text-slate-400 text-sm w-40 shrink-0">{key}</span>
                 <span className="text-slate-700 text-sm">{value}</span>

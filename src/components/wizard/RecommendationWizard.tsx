@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence, type Variants } from 'framer-motion'
 import { ShoppingCart, Sparkles, ArrowRight, RotateCcw, Check } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
+import { SPEC_HIDDEN } from '@/lib/specs'
 import {
   filterAndRankProducts,
   buildWhyExplanation,
@@ -233,7 +234,7 @@ export function RecommendationWizard() {
                 {/* Specs preview */}
                 {Object.keys(product.specs).length > 0 && (
                   <div className="grid grid-cols-2 gap-1.5">
-                    {Object.entries(product.specs).slice(0, 4).map(([k, v]) => (
+                    {Object.entries(product.specs).filter(([k, v]) => v && !SPEC_HIDDEN.has(k)).slice(0, 4).map(([k, v]) => (
                       <div key={k} className="bg-zinc-800 rounded-lg px-2.5 py-1.5">
                         <p className="text-zinc-500 text-xs">{k}</p>
                         <p className="text-white text-xs font-medium truncate">{v}</p>

@@ -8,6 +8,7 @@ import type { Product } from '@/lib/types'
 import { useCartStore } from '@/store/cart'
 import { useCompareStore } from '@/store/compare'
 import { Badge } from '@/components/ui/badge'
+import { SPEC_HIDDEN } from '@/lib/specs'
 import { WishlistButton } from './WishlistButton'
 
 type Props = { product: Product }
@@ -21,9 +22,11 @@ export function ProductCard({ product }: Props) {
   const onRequest = product.priceOnRequest || product.price === 0
   // Full spec sheet, shown right on the card (not just on the detail page) —
   // ordered by shopper relevance: performance specs first, housekeeping last.
-  const SPEC_PRIORITY = ['CPU', 'RAM', 'Storage', 'Hard Disk', 'VGA', 'Graphics', 'Screen', 'Resolution', 'Connectivity', 'LAN', 'OS', 'Capacity', 'Keyboard', 'Warranty']
+  // Warranty/OS/Color/Language are dropped here — same on every listing, so
+  // they crowded out the specs that actually differ between products.
+  const SPEC_PRIORITY = ['CPU', 'RAM', 'Storage', 'Hard Disk', 'VGA', 'Graphics', 'Screen', 'Resolution', 'Connectivity', 'LAN', 'Capacity', 'Keyboard']
   const keySpecs = Object.entries(product.specs ?? {})
-    .filter(([, v]) => v)
+    .filter(([k, v]) => v && !SPEC_HIDDEN.has(k))
     .sort((a, b) => {
       const ia = SPEC_PRIORITY.indexOf(a[0])
       const ib = SPEC_PRIORITY.indexOf(b[0])
