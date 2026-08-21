@@ -12,24 +12,39 @@ import { getProducts } from '@/lib/db'
 import { getStoreTrending } from '@/lib/trending'
 import type { Product } from '@/lib/types'
 
-// Preferred showcase (all carry photos); falls back to is_featured / first with images.
+// Preferred showcase (all carry photos, verified real/clean, one per category);
+// falls back to is_featured / first with images if these ever go stale.
 const FEATURED_SLUGS = [
-  'dell-optiplex-aio-7420-24-non-touch',
-  'philips-evnia-34m2c5500-crystalclear-images-with-ultrawide-q',
-  'lenovo-legion-5-83nx0000us-storm-grey',
-  'hp-victus-15-fa2082wm-mica-silver',
-  'philips-346b1c',
-  'apple-mhff4hn-a',
-  'hp-hp-290-g9-ct6y4at',
-  'philips-24m2n3200fq',
+  'asus-rog-strix-scar-edition-18-g835lx-s9113',
+  'lenovo-thinkpad-t14-g6',
+  'apple-macbook-pro-16-m5-max-48gb-2tb-ssd-space-black',
+  'seagate-24000-mah',
+  'lg-32-lg-ultragear-2k-qhd-curved-gaming-180hz',
+  'canon-clj-mf657cdw-toner-canon-067-bk-c-m-y',
+  'lenovo-tiny-thinkcenter-neo-50q-13b9004uex',
+  'appostars-ap-3069-g8-new-metal-stand-l10-plastic-case-21-5-capacitive-true-flat-',
 ]
+
+// Never show two products that share the same photo — a stale/short
+// FEATURED_SLUGS list previously fell through to "first N with images" and
+// surfaced near-duplicate catalog entries (e.g. the same printer listed
+// under two SKUs) side by side.
+function dedupeByImage(products: Product[]): Product[] {
+  const seen = new Set<string>()
+  return products.filter((p) => {
+    const key = p.images[0] ?? p.id
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
 
 function pickFeatured(all: Product[]): Product[] {
   const bySlug = FEATURED_SLUGS.map((s) => all.find((p) => p.slug === s)).filter(Boolean) as Product[]
-  if (bySlug.length >= 4) return bySlug.slice(0, 8)
+  if (bySlug.length >= 4) return dedupeByImage(bySlug).slice(0, 8)
   const flagged = all.filter((p) => p.is_featured && p.images.length)
   const withImg = all.filter((p) => p.images.length)
-  return [...new Set([...bySlug, ...flagged, ...withImg])].slice(0, 8)
+  return dedupeByImage([...new Set([...bySlug, ...flagged, ...withImg])]).slice(0, 8)
 }
 
 export const dynamic = 'force-dynamic'

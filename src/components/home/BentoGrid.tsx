@@ -87,10 +87,10 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
           <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb35,transparent_70%)] blur-2xl" />
         </div>
 
-        {/* Dark stage — the photo floats on it like a rendered object, not a full-bleed cover shot */}
+        {/* Stage — the photo floats on it like a rendered object, not a full-bleed cover shot */}
         <motion.div
           style={{ rotateX, rotateY }}
-          className="relative rounded-3xl overflow-hidden border border-white/70 bg-gradient-to-br from-slate-900 to-slate-950 shadow-soft group-hover:shadow-[0_25px_60px_-15px_#1e3a8a55] transition-shadow duration-300 [transform-style:preserve-3d]"
+          className="relative rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-soft group-hover:shadow-[0_25px_60px_-15px_#1e3a8a30] transition-shadow duration-300 [transform-style:preserve-3d]"
         >
           <div className="aspect-[4/3] relative flex items-center justify-center" style={{ transform: 'translateZ(30px)' }}>
             <Image
@@ -98,12 +98,11 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
               alt={c.label}
               fill
               sizes="(max-width:768px) 50vw, 33vw"
-              className="object-contain p-2 drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+              className="object-contain p-2 drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000050)]" />
-          <div className="absolute top-3 left-3 w-9 h-9 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/25">
-            <Icon size={16} className="text-white" />
+          <div className="absolute top-3 left-3 w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center ring-1 ring-slate-200">
+            <Icon size={16} className="text-blue-600" />
           </div>
         </motion.div>
 

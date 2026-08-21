@@ -57,7 +57,7 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
 
         <motion.div
           style={{ rotateX, rotateY }}
-          className="group relative rounded-3xl overflow-hidden border border-white/70 bg-gradient-to-br from-slate-900 to-slate-950 shadow-[0_30px_70px_-20px_#1e3a8a70] [transform-style:preserve-3d]"
+          className="group relative rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-[0_30px_70px_-20px_#1e3a8a30] [transform-style:preserve-3d]"
         >
           <div className="aspect-[4/3] relative flex items-center justify-center p-8" style={{ transform: 'translateZ(30px)' }}>
             {product.images[0] ? (
@@ -65,15 +65,13 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
                 src={product.images[0]}
                 alt={product.name}
                 fill
-                className="object-contain p-6 drop-shadow-2xl transition-transform duration-300 group-hover:scale-105"
+                className="object-contain p-6 drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 90vw, 380px"
               />
             ) : (
               <span className="text-5xl">📦</span>
             )}
           </div>
-          {/* Vignette for product-shot contrast */}
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000055)]" />
         </motion.div>
 
         {/* Floating price/name plate */}
