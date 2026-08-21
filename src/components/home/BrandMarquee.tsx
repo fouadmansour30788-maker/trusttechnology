@@ -17,7 +17,6 @@ const BRANDS: { name: string; logo?: string }[] = [
   { name: 'Kyocera', logo: '/brands/kyocera.svg' },
   { name: 'Gigabyte' },
   { name: 'Philips' },
-  { name: 'Cedar' },
   { name: 'Brother' },
 ]
 
