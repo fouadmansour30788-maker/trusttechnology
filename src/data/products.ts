@@ -2628,7 +2628,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     id: "canon-mfp-mf3010-toner-canon-725-or-hp-ce285a", name: "CANON MFP MF3010 ; (Toner Canon 725 or HP CE285A)", slug: "canon-mfp-mf3010-toner-canon-725-or-hp-ce285a",
     description: "i-SENSYS 3in1 print, scan, copy, Mono Laserjet A4, Speed 18ppm, Res. 600dpi ; Flatbed, Duty Cycle 8,000 pages/month",
     price: 260.0, compare_at_price: null, priceOnRequest: false,
-    primary_category_id: "printing", images: ["/products/canon-mfp-mf3010-toner-canon-725-or-hp-ce285a.webp"], stock: 5,
+    primary_category_id: "printing", images: ["/products/canon-mfp-mf3010-toner-canon-725-or-hp-ce285a.jpg"], stock: 5,
     sku: "", is_active: true, is_featured: false,
     specs: {  }, created_at: '', updated_at: '',
     tags: [{ id: "canon-mfp-mf3010-toner-canon-725-or-hp-ce285a-t0", name: "Canon", slug: "canon", type: 'brand' }, { id: "canon-mfp-mf3010-toner-canon-725-or-hp-ce285a-t1", name: "Printer", slug: "printer", type: 'type' }],
