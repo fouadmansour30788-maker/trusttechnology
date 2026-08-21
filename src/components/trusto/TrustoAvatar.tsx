@@ -72,7 +72,7 @@ function Face({ mood }: { mood: TrustoMood }) {
  * walking across the page — no separate "head-only" variant to maintain.
  */
 export function TrustoAvatar({
-  mood = 'idle', size = 56, animated = true, walking = false, speed = 'walk', className = '',
+  mood = 'idle', size = 56, animated = true, walking = false, speed = 'walk', holdingLaptop = false, className = '',
 }: {
   mood?: TrustoMood
   size?: number
@@ -81,6 +81,8 @@ export function TrustoAvatar({
   walking?: boolean
   /** Governs how fast the walk cycle plays — 'run' is snappier and bouncier. */
   speed?: 'walk' | 'run'
+  /** Tucks a little laptop under the front arm — that arm holds its pose instead of swinging. */
+  holdingLaptop?: boolean
   className?: string
 }) {
   const accent = ACCENT[mood]
@@ -140,14 +142,29 @@ export function TrustoAvatar({
       <rect x="20" y="29" width="24" height="19" rx="9" fill={`url(#${gradientId})`} />
       <rect x="20" y="29" width="24" height="19" rx="9" fill="url(#trusto-highlight)" />
 
-      {/* front arm */}
+      {/* front arm — held steady out front when carrying the laptop, otherwise swings */}
       <motion.g
         style={{ transformOrigin: '14px 33px' }}
-        animate={walking ? { rotate: speed === 'run' ? [-24, 24, -24] : [-16, 16, -16] } : undefined}
-        transition={walking ? { duration: cycle, repeat: Infinity, ease: 'easeInOut' } : undefined}
+        animate={
+          holdingLaptop
+            ? { rotate: -50 }
+            : walking
+            ? { rotate: speed === 'run' ? [-24, 24, -24] : [-16, 16, -16] }
+            : undefined
+        }
+        transition={walking && !holdingLaptop ? { duration: cycle, repeat: Infinity, ease: 'easeInOut' } : undefined}
       >
         <rect x="10.5" y="32" width="6.5" height="15" rx="3.25" fill={`url(#${gradientId})`} />
       </motion.g>
+
+      {/* laptop, tucked under the front arm */}
+      {holdingLaptop && (
+        <g transform="translate(2, 24) rotate(-8)">
+          <rect x="0" y="10" width="17" height="2.4" rx="1" fill="#94a3b8" />
+          <rect x="1" y="-4.5" width="15" height="14.5" rx="1.5" fill="#1e293b" />
+          <rect x="2.3" y="-3.2" width="12.4" height="12" rx="0.6" fill="#bfdbfe" />
+        </g>
+      )}
 
       {/* antenna */}
       <line x1="32" y1="2" x2="32" y2="7.5" stroke="#94a3b8" strokeWidth="2.2" strokeLinecap="round" />

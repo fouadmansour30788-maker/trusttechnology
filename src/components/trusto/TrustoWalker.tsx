@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useChatStore } from '@/store/chat'
 import { TrustoAvatar } from './TrustoAvatar'
+import { speakTrusto, randomGreeting } from '@/lib/trustoVoice'
 
 type Trip = { direction: 'ltr' | 'rtl'; speed: 'walk' | 'run' }
 
@@ -42,7 +43,11 @@ export function TrustoWalker() {
           scheduleNext()
           return
         }
-        setTrip(randomTrip())
+        const t = randomTrip()
+        setTrip(t)
+        // Roughly half his walk-bys get a little voice line — enough to feel
+        // alive without turning into a chirping toy.
+        if (Math.random() < 0.5) speakTrusto(randomGreeting())
       }, gap)
     }
     scheduleNext()
@@ -51,9 +56,9 @@ export function TrustoWalker() {
 
   if (isAdmin || chatOpen || !trip) return null
 
-  const travel = typeof window !== 'undefined' ? window.innerWidth + 140 : 1600
-  const fromX = trip.direction === 'ltr' ? -100 : travel - 100
-  const toX = trip.direction === 'ltr' ? travel - 100 : -100
+  const travel = typeof window !== 'undefined' ? window.innerWidth + 200 : 1600
+  const fromX = trip.direction === 'ltr' ? -170 : travel - 170
+  const toX = trip.direction === 'ltr' ? travel - 170 : -170
   const duration = trip.speed === 'run' ? travel / 340 : travel / 130
 
   return (
@@ -67,7 +72,7 @@ export function TrustoWalker() {
         onAnimationComplete={() => setTrip(null)}
         style={{ scaleX: trip.direction === 'ltr' ? 1 : -1 }}
       >
-        <TrustoAvatar mood="excited" size={44} walking speed={trip.speed} />
+        <TrustoAvatar mood="excited" size={84} walking speed={trip.speed} holdingLaptop />
       </motion.div>
     </AnimatePresence>
   )
