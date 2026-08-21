@@ -25,9 +25,6 @@ export function BrandMarquee() {
   const row = [...BRANDS, ...BRANDS]
   return (
     <section className="py-10 border-y border-slate-200/70 bg-white/50">
-      <p className="text-center text-xs uppercase tracking-widest text-slate-400 font-semibold mb-7">
-        Authorized dealer for the brands you trust
-      </p>
       <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
         <div className="flex w-max items-center animate-marquee gap-14 px-7">
           {row.map((b, i) => (
