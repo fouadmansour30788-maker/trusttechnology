@@ -23,7 +23,7 @@ const CATEGORIES: Category[] = [
   },
   {
     id: 3, label: 'Displays', sublabel: 'Monitors & POS Screens', href: '/categories/displays',
-    icon: Monitor, image: '/products/lg-32-lg-ultragear-2k-qhd-curved-gaming-180hz-3d.png',
+    icon: Monitor, image: '/products/lg-32-lg-ultragear-2k-qhd-curved-gaming-180hz-3d.jpg',
     blurb: 'From FHD office monitors to ultrawide and 4K creator displays.',
   },
   {

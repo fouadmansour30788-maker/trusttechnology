@@ -351,7 +351,7 @@ export const CATALOG_PRODUCTS: CatalogProduct[] = [
     id: "msi-gaming-laptop-core-ultra-7-155u", name: "MSI GAMING LAPTOP — Core ULTRA 7 155U", slug: "msi-gaming-laptop-core-ultra-7-155u",
     description: "CPU: Core ULTRA 7 155U, RAM: 16GB, Storage: 1TB SSD",
     price: 975.0, compare_at_price: null, priceOnRequest: false,
-    primary_category_id: "laptops", images: ["/products/msi-gaming-laptop-core-ultra-7-155u.webp"], stock: 5,
+    primary_category_id: "laptops", images: ["/products/msi-gaming-laptop-core-ultra-7-155u.jpg"], stock: 5,
     sku: "", is_active: true, is_featured: false,
     specs: { "CPU": "Core ULTRA 7 155U", "RAM": "16GB", "Storage": "1TB SSD", "Language": "EN", "Screen": "7\" FHD 120HZ TOUCHSCREEN", "Warranty": "1 YEAR", "OS": "WIN 11", "Color": "INTEL ARC / BLACK/FREE MSI CLAW TRAVEL CASE" }, created_at: '', updated_at: '',
     tags: [{ id: "msi-gaming-laptop-core-ultra-7-155u-t0", name: "MSI", slug: "msi", type: 'brand' }, { id: "msi-gaming-laptop-core-ultra-7-155u-t1", name: "Laptop", slug: "laptop", type: 'type' }],
