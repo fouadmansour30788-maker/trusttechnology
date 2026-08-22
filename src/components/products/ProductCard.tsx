@@ -85,7 +85,7 @@ export function ProductCard({ product }: Props) {
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
               style={{ transform: 'translateZ(20px)' }}
             />
           ) : (
