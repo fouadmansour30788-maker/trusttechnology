@@ -9,7 +9,7 @@ import {
   useSpring,
   type Variants,
 } from 'framer-motion'
-import { ArrowRight, Shield, Truck, Headphones, Sparkles, Radar } from 'lucide-react'
+import { ArrowRight, Shield, Truck, Headphones, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
@@ -184,22 +184,6 @@ export function HeroSection() {
               />
               {/* Vignette for product-shot contrast */}
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000055)]" />
-            </motion.div>
-
-            {/* Floating trust callout — real, verifiable claim */}
-            <motion.div
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="animate-float-y absolute -bottom-6 -left-8 flex items-center gap-3 bg-white rounded-2xl shadow-xl shadow-slate-900/15 border border-slate-100 px-4 py-3 z-10"
-            >
-              <span className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                <Radar size={18} className="text-emerald-600" />
-              </span>
-              <div>
-                <p className="text-sm font-bold text-slate-900 leading-tight">Price-checked daily</p>
-                <p className="text-xs text-slate-400 leading-tight">Across 5 stores in Lebanon</p>
-              </div>
             </motion.div>
           </motion.div>
         </div>
