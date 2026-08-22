@@ -4,8 +4,10 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Heart } from 'lucide-react'
 import { useWishlistStore } from '@/store/wishlist'
 
-/** Compact icon-only variant (product card overlay) or labeled variant (product detail page). */
-export function WishlistButton({ productId, variant = 'icon' }: { productId: string; variant?: 'icon' | 'labeled' }) {
+/** Compact icon-only variant (image overlay), an inline variant (sits in a
+ * normal flex row instead of floating over the photo), or labeled (product
+ * detail page). */
+export function WishlistButton({ productId, variant = 'icon' }: { productId: string; variant?: 'icon' | 'icon-inline' | 'labeled' }) {
   const router = useRouter()
   const pathname = usePathname()
   const hydrate = useWishlistStore((s) => s.hydrate)
@@ -41,11 +43,11 @@ export function WishlistButton({ productId, variant = 'icon' }: { productId: str
     <button
       onClick={onClick}
       title={active ? 'Remove from wishlist' : 'Add to wishlist'}
-      className={`absolute top-12 right-2 z-10 w-9 h-9 rounded-full flex items-center justify-center shadow-sm transition-colors ${
+      className={`${variant === 'icon' ? 'absolute top-12 right-2 z-10' : ''} w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors shrink-0 ${
         active ? 'bg-red-50 text-red-500' : 'bg-white/95 text-slate-400 hover:text-red-500 border border-slate-200'
       }`}
     >
-      <Heart size={16} className={active ? 'fill-red-500' : ''} />
+      <Heart size={15} className={active ? 'fill-red-500' : ''} />
     </button>
   )
 }

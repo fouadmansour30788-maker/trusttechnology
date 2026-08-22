@@ -70,6 +70,35 @@ export function ProductCard({ product }: Props) {
       whileHover={{ y: -4 }}
       className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 transition-colors duration-300 hover:shadow-xl hover:shadow-blue-900/10 flex flex-col"
     >
+      {/* Controls row — sits above the photo instead of floating over it, so
+          it never overlaps the product now that images render uncropped
+          (object-contain) at varying sizes within the frame. */}
+      <div className="flex items-center justify-between gap-1.5 px-2.5 pt-2.5">
+        <div className="flex flex-col items-start gap-1 min-w-0">
+          {discount && <Badge variant="red">-{discount}%</Badge>}
+          {product.bestPrice && (
+            <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold rounded-full px-2 py-0.5 shadow-sm">
+              🇱🇧 Best price
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
+            title={comparing ? 'Remove from compare' : 'Add to compare'}
+            className={`inline-flex items-center gap-1 h-8 pl-2 pr-2.5 rounded-full text-xs font-semibold shadow-sm transition-colors ${
+              comparing
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-slate-500 hover:text-blue-600 border border-slate-200'
+            }`}
+          >
+            {comparing ? <SquareCheck size={14} /> : <Square size={14} />}
+            Compare
+          </button>
+          <WishlistButton productId={product.id} variant="icon-inline" />
+        </div>
+      </div>
+
       {/* Image — mouse-tilted in 3D, independent of the card around it */}
       <Link
         href={`/products/${product.slug}`}
@@ -94,27 +123,6 @@ export function ProductCard({ product }: Props) {
             </div>
           )}
         </motion.div>
-        <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
-          {discount && <Badge variant="red">-{discount}%</Badge>}
-          {product.bestPrice && (
-            <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-[10px] font-semibold rounded-full px-2 py-0.5 shadow-sm">
-              🇱🇧 Best price in Lebanon
-            </span>
-          )}
-        </div>
-        <button
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
-          title={comparing ? 'Remove from compare' : 'Add to compare'}
-          className={`absolute top-2 right-2 z-10 inline-flex items-center gap-1 h-8 pl-2 pr-2.5 rounded-full text-xs font-semibold shadow-sm transition-colors ${
-            comparing
-              ? 'bg-blue-600 text-white'
-              : 'bg-white/95 text-slate-500 hover:text-blue-600 border border-slate-200'
-          }`}
-        >
-          {comparing ? <SquareCheck size={14} /> : <Square size={14} />}
-          Compare
-        </button>
-        <WishlistButton productId={product.id} />
         {product.stock === 0 && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
             <span className="text-white text-sm font-medium">Out of Stock</span>
