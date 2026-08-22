@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useCallback, useMemo, useState, useTransition, memo } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Loader2, Plus, Trash2, Upload, X, ArrowLeft } from 'lucide-react'
@@ -9,7 +9,106 @@ import { saveProduct, type ProductInput } from '@/app/admin/actions'
 
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
 
+const inputCls = 'w-full px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 outline-none focus:border-blue-400'
+const label = 'block text-xs font-medium text-slate-500 mb-1'
+
 type Props = { product: Product | null; categories: Category[]; tags: Tag[] }
+
+// Each of these three sections can hold a lot of DOM (image thumbnails, spec
+// rows, dozens of tag buttons). Isolated into memoized components so typing
+// in an unrelated field (name, description, price…) doesn't force React to
+// re-reconcile all of that on every keystroke — that reconciliation cost is
+// what showed up live as a 700ms+ blocked-paint INP report on a plain text
+// input, the same underlying "cheap change, expensive re-render" pattern
+// already fixed once in ChatWidget's Composer.
+
+const ImagesSection = memo(function ImagesSection({
+  images, uploading, onUpload, onRemove,
+}: {
+  images: string[]
+  uploading: boolean
+  onUpload: (files: FileList | null) => void
+  onRemove: (url: string) => void
+}) {
+  return (
+    <section className="bg-white border border-slate-200 rounded-2xl p-5">
+      <label className={label}>Images</label>
+      <div className="flex flex-wrap gap-3 mt-1">
+        {images.map((url) => (
+          <div key={url} className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200 group">
+            <Image src={url} alt="" fill className="object-cover" sizes="80px" />
+            <button type="button" onClick={() => onRemove(url)} className="absolute top-0.5 right-0.5 w-5 h-5 rounded bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <X size={12} />
+            </button>
+          </div>
+        ))}
+        <label className="w-20 h-20 rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-blue-300 hover:text-blue-500 cursor-pointer text-[10px]">
+          {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+          {uploading ? 'Uploading' : 'Upload'}
+          <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onUpload(e.target.files)} disabled={uploading} />
+        </label>
+      </div>
+    </section>
+  )
+})
+
+const SpecsSection = memo(function SpecsSection({
+  specs, setSpecs,
+}: {
+  specs: { k: string; v: string }[]
+  setSpecs: React.Dispatch<React.SetStateAction<{ k: string; v: string }[]>>
+}) {
+  return (
+    <section className="bg-white border border-slate-200 rounded-2xl p-5">
+      <label className={label}>Specifications</label>
+      <div className="space-y-2 mt-1">
+        {specs.map((s, i) => (
+          <div key={i} className="flex gap-2">
+            <input className={inputCls + ' max-w-[180px]'} placeholder="CPU" value={s.k} onChange={(e) => setSpecs((p) => p.map((x, j) => j === i ? { ...x, k: e.target.value } : x))} />
+            <input className={inputCls} placeholder="Intel i7-1355U" value={s.v} onChange={(e) => setSpecs((p) => p.map((x, j) => j === i ? { ...x, v: e.target.value } : x))} />
+            <button type="button" onClick={() => setSpecs((p) => p.filter((_, j) => j !== i))} className="p-2 text-slate-400 hover:text-red-600"><Trash2 size={15} /></button>
+          </div>
+        ))}
+        <button type="button" onClick={() => setSpecs((p) => [...p, { k: '', v: '' }])} className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700">
+          <Plus size={14} /> Add spec
+        </button>
+      </div>
+    </section>
+  )
+})
+
+const TagsSection = memo(function TagsSection({
+  tags, tagIds, setTagIds,
+}: {
+  tags: Tag[]
+  tagIds: string[]
+  setTagIds: React.Dispatch<React.SetStateAction<string[]>>
+}) {
+  const ordered = useMemo(() => {
+    const brand = tags.filter((t) => t.type === 'brand')
+    const other = tags.filter((t) => t.type !== 'brand')
+    return [...brand, ...other]
+  }, [tags])
+
+  if (tags.length === 0) return null
+  return (
+    <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+      <label className={label}>Brand &amp; tags</label>
+      <div className="flex flex-wrap gap-2">
+        {ordered.map((t) => {
+          const on = tagIds.includes(t.id)
+          return (
+            <button key={t.id} type="button"
+              onClick={() => setTagIds((p) => on ? p.filter((x) => x !== t.id) : [...p, t.id])}
+              className={`px-3 py-1 rounded-full text-sm border transition-colors ${on ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}>
+              {t.name}
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+})
 
 export function ProductForm({ product, categories, tags }: Props) {
   const router = useRouter()
@@ -50,7 +149,7 @@ export function ProductForm({ product, categories, tags }: Props) {
     if (!slugTouched) setSlug(slugify(v))
   }
 
-  async function onUpload(files: FileList | null) {
+  const onUpload = useCallback(async (files: FileList | null) => {
     if (!files?.length) return
     setUploading(true)
     setError(null)
@@ -70,7 +169,12 @@ export function ProductForm({ product, categories, tags }: Props) {
     } finally {
       setUploading(false)
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, name])
+
+  const onRemoveImage = useCallback((url: string) => {
+    setImages((p) => p.filter((u) => u !== url))
+  }, [])
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -101,11 +205,6 @@ export function ProductForm({ product, categories, tags }: Props) {
       else router.push('/admin/products')
     })
   }
-
-  const inputCls = 'w-full px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 outline-none focus:border-blue-400'
-  const label = 'block text-xs font-medium text-slate-500 mb-1'
-  const brandTags = tags.filter((t) => t.type === 'brand')
-  const otherTags = tags.filter((t) => t.type !== 'brand')
 
   return (
     <form onSubmit={submit} className="max-w-3xl">
@@ -204,61 +303,9 @@ export function ProductForm({ product, categories, tags }: Props) {
           </div>
         </section>
 
-        {/* Images */}
-        <section className="bg-white border border-slate-200 rounded-2xl p-5">
-          <label className={label}>Images</label>
-          <div className="flex flex-wrap gap-3 mt-1">
-            {images.map((url) => (
-              <div key={url} className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200 group">
-                <Image src={url} alt="" fill className="object-cover" sizes="80px" />
-                <button type="button" onClick={() => setImages((p) => p.filter((u) => u !== url))} className="absolute top-0.5 right-0.5 w-5 h-5 rounded bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <X size={12} />
-                </button>
-              </div>
-            ))}
-            <label className="w-20 h-20 rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-blue-300 hover:text-blue-500 cursor-pointer text-[10px]">
-              {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-              {uploading ? 'Uploading' : 'Upload'}
-              <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onUpload(e.target.files)} disabled={uploading} />
-            </label>
-          </div>
-        </section>
-
-        {/* Specs */}
-        <section className="bg-white border border-slate-200 rounded-2xl p-5">
-          <label className={label}>Specifications</label>
-          <div className="space-y-2 mt-1">
-            {specs.map((s, i) => (
-              <div key={i} className="flex gap-2">
-                <input className={inputCls + ' max-w-[180px]'} placeholder="CPU" value={s.k} onChange={(e) => setSpecs((p) => p.map((x, j) => j === i ? { ...x, k: e.target.value } : x))} />
-                <input className={inputCls} placeholder="Intel i7-1355U" value={s.v} onChange={(e) => setSpecs((p) => p.map((x, j) => j === i ? { ...x, v: e.target.value } : x))} />
-                <button type="button" onClick={() => setSpecs((p) => p.filter((_, j) => j !== i))} className="p-2 text-slate-400 hover:text-red-600"><Trash2 size={15} /></button>
-              </div>
-            ))}
-            <button type="button" onClick={() => setSpecs((p) => [...p, { k: '', v: '' }])} className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700">
-              <Plus size={14} /> Add spec
-            </button>
-          </div>
-        </section>
-
-        {/* Tags */}
-        {tags.length > 0 && (
-          <section className="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
-            <label className={label}>Brand &amp; tags</label>
-            <div className="flex flex-wrap gap-2">
-              {[...brandTags, ...otherTags].map((t) => {
-                const on = tagIds.includes(t.id)
-                return (
-                  <button key={t.id} type="button"
-                    onClick={() => setTagIds((p) => on ? p.filter((x) => x !== t.id) : [...p, t.id])}
-                    className={`px-3 py-1 rounded-full text-sm border transition-colors ${on ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'}`}>
-                    {t.name}
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-        )}
+        <ImagesSection images={images} uploading={uploading} onUpload={onUpload} onRemove={onRemoveImage} />
+        <SpecsSection specs={specs} setSpecs={setSpecs} />
+        <TagsSection tags={tags} tagIds={tagIds} setTagIds={setTagIds} />
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
