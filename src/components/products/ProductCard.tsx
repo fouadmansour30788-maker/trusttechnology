@@ -73,7 +73,7 @@ export function ProductCard({ product }: Props) {
       {/* Controls row — sits above the photo instead of floating over it, so
           it never overlaps the product now that images render uncropped
           (object-contain) at varying sizes within the frame. */}
-      <div className="flex items-center justify-between gap-1.5 px-2.5 pt-2.5">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-1.5 px-2.5 pt-2.5">
         <div className="flex flex-col items-start gap-1 min-w-0">
           {discount && <Badge variant="red">-{discount}%</Badge>}
           {product.bestPrice && (
@@ -82,7 +82,7 @@ export function ProductCard({ product }: Props) {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0 justify-self-center">
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCompare(product) }}
             title={comparing ? 'Remove from compare' : 'Add to compare'}
@@ -97,6 +97,7 @@ export function ProductCard({ product }: Props) {
           </button>
           <WishlistButton productId={product.id} variant="icon-inline" />
         </div>
+        <div />
       </div>
 
       {/* Image — mouse-tilted in 3D, independent of the card around it */}

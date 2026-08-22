@@ -1,17 +1,15 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck, Bell } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
-import { useRecentlyViewedStore } from '@/store/recentlyViewed'
 import { FitCheck } from './FitCheck'
 import { TrueSize } from './TrueSize'
 import { NotifyMeForm } from './NotifyMeForm'
 import { WishlistButton } from './WishlistButton'
-import { RecentlyViewedCarousel } from './RecentlyViewedCarousel'
 import { SPEC_HIDDEN } from '@/lib/specs'
 import type { Product } from '@/lib/types'
 
@@ -21,7 +19,6 @@ export type MarketRangeProp = { min: number; max: number; stores: number }
 
 export function ProductDetail({ product: p, marketRange }: { product: Product; marketRange?: MarketRangeProp | null }) {
   const addItem = useCartStore((s) => s.addItem)
-  const addViewed = useRecentlyViewedStore((s) => s.addViewed)
   const onRequest = p.priceOnRequest || p.price === 0
   const [qty, setQty] = useState(1)
   const [active, setActive] = useState(0)
@@ -33,13 +30,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
     : null
   const visibleSpecs = Object.entries(p.specs).filter(([key, value]) => value && !SPEC_HIDDEN.has(key))
 
-  useEffect(() => {
-    addViewed({ id: p.id, slug: p.slug, name: p.name, price: p.price, priceOnRequest: p.priceOnRequest, image: p.images[0] ?? null })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [p.id])
-
   return (
-    <>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-xs text-slate-400 mb-6">
@@ -228,7 +219,5 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
         </div>
       )}
     </div>
-    <RecentlyViewedCarousel excludeId={p.id} />
-    </>
   )
 }
