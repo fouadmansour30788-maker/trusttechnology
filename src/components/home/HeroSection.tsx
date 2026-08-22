@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   motion,
   useScroll,
@@ -9,7 +9,7 @@ import {
   useSpring,
   type Variants,
 } from 'framer-motion'
-import { ArrowRight, Shield, Truck, Headphones, Sparkles } from 'lucide-react'
+import { ArrowRight, Shield, Truck, Headphones, Sparkles, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
 
@@ -30,6 +30,33 @@ const fadeUp: Variants = {
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [muted, setMuted] = useState(true)
+
+  // Browsers block autoplay-with-sound outright, so the video always starts
+  // muted+autoPlay to guarantee it plays. Once mounted, try flipping it to
+  // sound-on automatically (some browsers allow this); if that gets
+  // rejected we just stay muted and let the button below unmute on a real
+  // click, which always satisfies the user-gesture requirement.
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.muted = false
+    v.play().then(() => setMuted(false)).catch(() => {
+      v.muted = true
+      setMuted(true)
+      v.play().catch(() => {})
+    })
+  }, [])
+
+  function toggleSound() {
+    const v = videoRef.current
+    if (!v) return
+    const nextMuted = !muted
+    v.muted = nextMuted
+    if (!nextMuted) v.play().catch(() => {})
+    setMuted(nextMuted)
+  }
 
   // Scroll-driven parallax for the background layers
   const { scrollYProgress } = useScroll({
@@ -173,6 +200,7 @@ export function HeroSection() {
               className="glow-ring preserve-3d relative rounded-3xl overflow-hidden border border-white/70 shadow-[0_30px_90px_-20px_#1e3a8a80] bg-slate-950"
             >
               <video
+                ref={videoRef}
                 src="/hero/hero.mp4"
                 autoPlay
                 muted
@@ -184,6 +212,14 @@ export function HeroSection() {
               />
               {/* Vignette for product-shot contrast */}
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,#00000055)]" />
+              <button
+                onClick={toggleSound}
+                title={muted ? 'Unmute' : 'Mute'}
+                className="absolute bottom-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 backdrop-blur hover:bg-black/65 flex items-center justify-center text-white transition-colors"
+                style={{ transform: 'translateZ(40px)' }}
+              >
+                {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+              </button>
             </motion.div>
           </motion.div>
         </div>
