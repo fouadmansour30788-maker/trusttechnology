@@ -80,7 +80,7 @@ export default function ComparePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Compare products</h1>
+          <h1 className="text-4xl font-bold text-slate-900 tracking-tight">Compare products</h1>
           <p className="text-slate-500 text-sm mt-0.5">{items.length} of 3 selected</p>
         </div>
         <button onClick={() => { clear(); setAnalysis(null) }} className="text-sm text-slate-400 hover:text-slate-700">Clear all</button>

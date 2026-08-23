@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Wrench, Loader2, CheckCircle2, PackageSearch, MessageCircle, XCircle } from 'lucide-react'
 import { RepairStatsBanner } from '@/components/products/RepairStatsBanner'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const WHATSAPP = '9613393002'
 const STEPS = ['Received', 'Diagnosing', 'Repairing', 'Ready']
@@ -63,13 +64,12 @@ export default function RepairsPage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-14">
-      <div className="text-center mb-8">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <Wrench size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Repairs & Service</h1>
-        <p className="text-slate-500 mt-1 text-sm">Free diagnosis — laptops, desktops, printers and POS hardware. Book below or track an existing repair.</p>
-      </div>
+      <PageHeader
+        center
+        icon={<Wrench size={22} />}
+        title="Repairs & Service"
+        subtitle="Free diagnosis — laptops, desktops, printers and POS hardware. Book below or track an existing repair."
+      />
 
       <RepairStatsBanner />
 

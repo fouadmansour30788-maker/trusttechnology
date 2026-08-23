@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { PackageSearch, Loader2, CheckCircle2, XCircle, MessageCircle } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 type TrackResult = {
   reference: string
@@ -44,13 +45,12 @@ export default function TrackPage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-14">
-      <div className="text-center mb-8">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <PackageSearch size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Track your order</h1>
-        <p className="text-slate-500 mt-1 text-sm">Enter your order number and the phone number you ordered with.</p>
-      </div>
+      <PageHeader
+        center
+        icon={<PackageSearch size={22} />}
+        title="Track your order"
+        subtitle="Enter your order number and the phone number you ordered with."
+      />
 
       <form onSubmit={submit} className="space-y-3 bg-white border border-slate-200 rounded-2xl p-6">
         <div>

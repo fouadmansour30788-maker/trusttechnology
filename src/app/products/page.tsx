@@ -1,5 +1,6 @@
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
+import { PageHeader } from '@/components/ui/PageHeader'
 import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
@@ -67,14 +68,11 @@ export default async function ProductsPage({ searchParams }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <p className="text-xs uppercase tracking-widest text-blue-600 font-semibold mb-1">Browse</p>
-        <h1 className="text-3xl font-bold text-slate-900">
-          {query ? `Search: “${q}”` : 'All Products'}
-        </h1>
-        <p className="text-slate-500 mt-1">{products.length} products</p>
-      </div>
+      <PageHeader
+        eyebrow="Browse"
+        title={query ? `Search: “${q}”` : 'All Products'}
+        subtitle={`${products.length} products`}
+      />
 
       <div className="flex flex-col md:flex-row gap-6 md:gap-8">
         <FilterSidebar tags={ALL_TAGS} specFacetOptions={specFacetOptions} />

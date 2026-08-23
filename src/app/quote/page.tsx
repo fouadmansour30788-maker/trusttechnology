@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Building2, Loader2, CheckCircle2, MessageCircle } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const WHATSAPP = '9613393002'
 
@@ -34,15 +35,12 @@ export default function QuotePage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 sm:px-6 py-14">
-      <div className="text-center mb-8">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <Building2 size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Business & Bulk Orders</h1>
-        <p className="text-slate-500 mt-1 text-sm">
-          Outfitting an office, restaurant, school or retail chain? Tell us what you need and we&apos;ll come back with a tailored quote — bulk pricing, financing terms and delivery scheduled around you.
-        </p>
-      </div>
+      <PageHeader
+        center
+        icon={<Building2 size={22} />}
+        title="Business & Bulk Orders"
+        subtitle="Outfitting an office, restaurant, school or retail chain? Tell us what you need and we'll come back with a tailored quote — bulk pricing, financing terms and delivery scheduled around you."
+      />
 
       {reference ? (
         <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center">

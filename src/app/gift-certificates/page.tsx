@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Gift, Loader2, CheckCircle2 } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const PRESETS = [25, 50, 100, 200]
 
@@ -59,11 +60,12 @@ export default function GiftCertificatesPage() {
 
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-12">
-      <div className="text-center mb-8">
-        <Gift size={36} className="text-blue-600 mx-auto mb-3" />
-        <h1 className="text-3xl font-bold text-slate-900">Gift Certificates</h1>
-        <p className="text-slate-500 mt-2">Give the gift of tech — redeemable on anything in the store.</p>
-      </div>
+      <PageHeader
+        center
+        icon={<Gift size={22} />}
+        title="Gift Certificates"
+        subtitle="Give the gift of tech — redeemable on anything in the store."
+      />
 
       <form onSubmit={onSubmit} className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
         <div>

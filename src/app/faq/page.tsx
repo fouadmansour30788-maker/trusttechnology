@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { HelpCircle, MessageCircle } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const metadata = {
   title: 'FAQ – Trust Technology',
@@ -59,12 +60,7 @@ export default function FaqPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
-      <div className="mb-10">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <HelpCircle size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Frequently asked questions</h1>
-      </div>
+      <PageHeader icon={<HelpCircle size={22} />} title="Frequently asked questions" />
 
       <div className="space-y-4">
         {FAQS.map((f) => (

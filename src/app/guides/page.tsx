@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { BookOpen, ArrowRight } from 'lucide-react'
 import { GUIDES } from '@/lib/guides'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const metadata = {
   title: 'Buying Guides – Trust Technology',
@@ -10,13 +11,11 @@ export const metadata = {
 export default function GuidesPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-14">
-      <div className="mb-10">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <BookOpen size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Buying guides</h1>
-        <p className="text-slate-500 mt-2">Honest advice written for buyers in Lebanon — no jargon, real budgets in USD.</p>
-      </div>
+      <PageHeader
+        icon={<BookOpen size={22} />}
+        title="Buying guides"
+        subtitle="Honest advice written for buyers in Lebanon — no jargon, real budgets in USD."
+      />
 
       <div className="grid sm:grid-cols-2 gap-4">
         {GUIDES.map((g) => (

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ShieldCheck, MessageCircle } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const metadata = {
   title: 'Warranty Policy – Trust Technology',
@@ -34,15 +35,11 @@ const SECTIONS = [
 export default function WarrantyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14">
-      <div className="mb-10">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <ShieldCheck size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Warranty Policy</h1>
-        <p className="text-slate-500 mt-2">
-          Genuine products, real coverage — here’s exactly what your warranty includes.
-        </p>
-      </div>
+      <PageHeader
+        icon={<ShieldCheck size={22} />}
+        title="Warranty Policy"
+        subtitle="Genuine products, real coverage — here’s exactly what your warranty includes."
+      />
 
       <div className="space-y-8">
         {SECTIONS.map((s) => (

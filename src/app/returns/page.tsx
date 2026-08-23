@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { RotateCcw, MessageCircle } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const metadata = {
   title: 'Returns & Exchange – Trust Technology',
@@ -38,13 +39,11 @@ const SECTIONS = [
 export default function ReturnsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-14">
-      <div className="mb-10">
-        <span className="inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3">
-          <RotateCcw size={22} className="text-blue-600" />
-        </span>
-        <h1 className="text-3xl font-bold text-slate-900">Returns & Exchange</h1>
-        <p className="text-slate-500 mt-2">Simple and fair — inspect before you pay, exchange within 3 days.</p>
-      </div>
+      <PageHeader
+        icon={<RotateCcw size={22} />}
+        title="Returns & Exchange"
+        subtitle="Simple and fair — inspect before you pay, exchange within 3 days."
+      />
 
       <div className="space-y-8">
         {SECTIONS.map((s) => (

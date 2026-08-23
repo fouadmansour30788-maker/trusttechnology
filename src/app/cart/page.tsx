@@ -3,6 +3,7 @@ import { useCartStore } from '@/store/cart'
 import { Trash2, Plus, Minus, ShoppingCart, ArrowRight, MessageCircle, Truck } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 
 const WHATSAPP = '9613393002'
@@ -23,20 +24,26 @@ export default function CartPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-3xl font-bold text-slate-900 mb-8">
+      <h1 className="text-4xl font-bold text-slate-900 tracking-tight mb-8">
         Your Cart ({totalItems()} {totalItems() === 1 ? 'item' : 'items'})
       </h1>
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Items */}
         <div className="lg:col-span-2 space-y-4">
-          {items.map(({ product, quantity }) => {
+          {items.map(({ product, quantity }, i) => {
             const onRequest = product.priceOnRequest || product.price === 0
             return (
-              <div key={product.id} className="flex gap-4 bg-white border border-slate-200 rounded-2xl p-4 shadow-soft">
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                className="flex gap-4 bg-white border border-slate-200 rounded-3xl p-4 shadow-soft"
+              >
                 <div className="w-20 h-20 rounded-xl bg-slate-100 shrink-0 flex items-center justify-center overflow-hidden relative">
                   {product.images[0] ? (
-                    <Image src={product.images[0]} alt={product.name} fill className="object-cover" sizes="80px" />
+                    <Image src={product.images[0]} alt={product.name} fill className="object-contain p-1.5" sizes="80px" />
                   ) : (
                     <span className="text-2xl">📦</span>
                   )}
@@ -62,7 +69,7 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )
           })}
 
@@ -70,7 +77,7 @@ export default function CartPage() {
         </div>
 
         {/* Order Summary */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 h-fit space-y-4 shadow-soft">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 h-fit space-y-4 shadow-soft">
           <h2 className="text-lg font-bold text-slate-900">Order Summary</h2>
 
           <div className="space-y-2 text-sm">

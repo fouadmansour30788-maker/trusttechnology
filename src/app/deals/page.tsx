@@ -4,6 +4,7 @@ import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { ProductCard } from '@/components/products/ProductCard'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,15 +30,11 @@ export default async function DealsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-      <div className="mb-8">
-        <p className="text-xs uppercase tracking-widest text-red-600 font-semibold mb-1 flex items-center gap-1">
-          <Flame size={13} /> Save now
-        </p>
-        <h1 className="text-3xl font-bold text-slate-900">Deals & Clearance</h1>
-        <p className="text-slate-500 mt-1">
-          {deals.length > 0 ? `${deals.length} discounted product${deals.length === 1 ? '' : 's'}` : 'Marked-down and best-priced products'}
-        </p>
-      </div>
+      <PageHeader
+        eyebrow={<span className="flex items-center gap-1 text-red-600"><Flame size={13} /> Save now</span>}
+        title="Deals & Clearance"
+        subtitle={deals.length > 0 ? `${deals.length} discounted product${deals.length === 1 ? '' : 's'}` : 'Marked-down and best-priced products'}
+      />
 
       {deals.length === 0 && bestPriced.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
