@@ -85,6 +85,12 @@ h1, h2, h3, h4 {
   background-image: radial-gradient(#2563eb24 1px, transparent 1px);
   background-size: 22px 22px;
 }
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, #ffffff12 1px, transparent 1px),
+    linear-gradient(to bottom, #ffffff12 1px, transparent 1px);
+  background-size: 3rem 3rem;
+}
 
 /* Premium soft shadow + ring */
 .shadow-soft { box-shadow: 0 1px 2px #0b112008, 0 12px 30px -12px #4f46e524; }

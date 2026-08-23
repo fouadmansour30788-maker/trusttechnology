@@ -4,6 +4,7 @@ import { HeroSection } from '@/components/home/HeroSection'
 import { ProductShowcase3D } from '@/components/home/ProductShowcase3D'
 import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
+import { ScrollShowcase } from '@/components/home/ScrollShowcase'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
 import { ProductCard } from '@/components/products/ProductCard'
@@ -58,6 +59,7 @@ export default async function HomePage() {
       <ProductShowcase3D products={FEATURED_PRODUCTS.slice(0, 3)} />
       <BrandMarquee />
       <BentoGrid />
+      <ScrollShowcase />
       <WhyChooseUs />
 
       {/* Trending Now — most-viewed products, last 7 days */}

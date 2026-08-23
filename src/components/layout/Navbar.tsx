@@ -1,6 +1,7 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ShoppingCart, Search, Menu, X, ChevronDown, User } from 'lucide-react'
 import { MegaMenu } from './MegaMenu'
 import { NAV_CATEGORIES } from '@/lib/nav-data'
@@ -13,6 +14,20 @@ export function Navbar() {
   const totalItems = useCartStore((s) => s.totalItems())
   const openCart = useCartStore((s) => s.openCart)
   const [session, setSession] = useState<{ loggedIn: boolean; name: string | null } | null>(null)
+
+  // On the homepage the nav floats transparent over the hero, like Apple's
+  // product pages, then solidifies into a frosted bar once you scroll past
+  // it. Every other page has no hero to float over, so it stays solid.
+  const pathname = usePathname()
+  const isHome = pathname === '/'
+  const [scrolled, setScrolled] = useState(!isHome)
+  useEffect(() => {
+    if (!isHome) { setScrolled(true); return }
+    function onScroll() { setScrolled(window.scrollY > 40) }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isHome])
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -29,7 +44,14 @@ export function Navbar() {
   }, [])
 
   return (
-    <header ref={navRef} className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm shadow-slate-900/5">
+    <header
+      ref={navRef}
+      className={`sticky top-0 z-50 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ${
+        scrolled
+          ? 'bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm shadow-slate-900/5'
+          : 'bg-transparent border-b border-transparent shadow-none'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center h-16 gap-6">
 
