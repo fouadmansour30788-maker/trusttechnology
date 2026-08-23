@@ -31,7 +31,7 @@ export default async function AccountOverviewPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900 mb-1">Hi, {name}</h1>
+      <h1 className="text-3xl font-bold text-slate-900 tracking-tight mb-1">Hi, {name}</h1>
       <p className="text-slate-500 text-sm mb-8">{(customer as { email?: string } | null)?.email ?? user?.email}</p>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -39,7 +39,7 @@ export default async function AccountOverviewPage() {
           <Link
             key={href}
             href={href}
-            className="group bg-white border border-slate-200 rounded-2xl p-5 hover:border-blue-200 hover:shadow-lg hover:shadow-blue-900/5 transition-all"
+            className="group bg-white border border-slate-200 rounded-3xl p-5 hover:border-blue-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-900/5 transition-all duration-300"
           >
             <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-3 text-blue-600">
               <Icon size={18} />

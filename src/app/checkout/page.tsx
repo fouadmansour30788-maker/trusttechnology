@@ -104,7 +104,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-      <h1 className="text-3xl font-bold text-slate-900 mb-1">Checkout</h1>
+      <h1 className="text-4xl font-bold text-slate-900 tracking-tight mb-1">Checkout</h1>
       <p className="text-slate-500 mb-8 flex items-center gap-2"><Banknote size={16} className="text-blue-600" /> Cash on delivery — pay when your order arrives.</p>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -191,7 +191,7 @@ export default function CheckoutPage() {
         </form>
 
         {/* Summary */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 h-fit space-y-4">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 h-fit space-y-4">
           <h2 className="text-lg font-bold text-slate-900">Your order</h2>
           <div className="space-y-3">
             {priced.map(({ product, quantity }) => (

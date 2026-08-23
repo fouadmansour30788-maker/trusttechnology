@@ -123,7 +123,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 leading-tight">{p.name}</h1>
+            <h1 className="text-4xl font-bold text-slate-900 tracking-tight leading-tight">{p.name}</h1>
             {(p.reviewCount ?? 0) > 0 && (
               <a href="#reviews" className="flex items-center gap-2 mt-2 w-fit">
                 {[...Array(5)].map((_, i) => <Star key={i} size={14} className={i < Math.round(p.rating!) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'} />)}
@@ -255,7 +255,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
       {visibleSpecs.length > 0 && (
         <div className="mt-12 max-w-3xl">
           <h2 className="text-xl font-bold text-slate-900 mb-4">Specifications</h2>
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden">
             {visibleSpecs.map(([key, value], i) => (
               <div key={key} className={`flex items-start gap-4 px-6 py-3.5 ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}`}>
                 <span className="text-slate-400 text-sm w-40 shrink-0">{key}</span>
