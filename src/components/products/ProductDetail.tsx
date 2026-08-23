@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck, Bell } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,27 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
     : null
   const visibleSpecs = Object.entries(p.specs).filter(([key, value]) => value && !SPEC_HIDDEN.has(key))
 
+  // Same mouse-tilt technique as ProductCard/BentoGrid — rect cached on
+  // enter rather than re-measured every mousemove (INP-safe).
+  const rectRef = useRef<DOMRect | null>(null)
+  const mx = useMotionValue(0.5)
+  const my = useMotionValue(0.5)
+  const rotateX = useSpring(useTransform(my, [0, 1], [10, -10]), { stiffness: 200, damping: 22 })
+  const rotateY = useSpring(useTransform(mx, [0, 1], [-10, 10]), { stiffness: 200, damping: 22 })
+  function onGalleryEnter(e: React.MouseEvent<HTMLDivElement>) {
+    rectRef.current = e.currentTarget.getBoundingClientRect()
+  }
+  function onGalleryMove(e: React.MouseEvent<HTMLDivElement>) {
+    const r = rectRef.current
+    if (!r) return
+    mx.set((e.clientX - r.left) / r.width)
+    my.set((e.clientY - r.top) / r.height)
+  }
+  function onGalleryLeave() {
+    mx.set(0.5)
+    my.set(0.5)
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {/* Breadcrumb */}
@@ -42,17 +64,42 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
       </nav>
 
       <div className="grid md:grid-cols-2 gap-10 lg:gap-16">
-        {/* Gallery */}
+        {/* Gallery — mouse-tilted stage, spotlight-lit like a product reveal */}
         <div className="space-y-3">
-          <div className="aspect-square bg-white border border-slate-200 rounded-2xl flex items-center justify-center relative overflow-hidden">
-            {discount && (
-              <Badge variant="red" className="absolute top-4 left-4 text-sm px-3 py-1 z-10">-{discount}% OFF</Badge>
-            )}
-            {p.images[active] ? (
-              <Image src={p.images[active]} alt={p.name} fill className="object-contain p-6" sizes="(max-width:768px) 100vw, 50vw" priority />
-            ) : (
-              <Package size={72} className="text-slate-200" />
-            )}
+          <div
+            className="relative [perspective:1600px]"
+            onMouseEnter={onGalleryEnter}
+            onMouseMove={onGalleryMove}
+            onMouseLeave={onGalleryLeave}
+          >
+            <div className="pointer-events-none absolute -inset-10 -z-10">
+              <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb30,transparent_70%)] blur-2xl" />
+            </div>
+            <motion.div
+              style={{ rotateX, rotateY }}
+              className="aspect-square bg-white border border-slate-200 rounded-3xl flex items-center justify-center relative overflow-hidden shadow-[0_30px_70px_-25px_#1e3a8a35] [transform-style:preserve-3d]"
+            >
+              {discount && (
+                <Badge variant="red" className="absolute top-4 left-4 text-sm px-3 py-1 z-10">-{discount}% OFF</Badge>
+              )}
+              <AnimatePresence mode="wait">
+                {p.images[active] ? (
+                  <motion.div
+                    key={p.images[active]}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.96 }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    className="absolute inset-6"
+                    style={{ transform: 'translateZ(30px)' }}
+                  >
+                    <Image src={p.images[active]} alt={p.name} fill className="object-contain drop-shadow-xl" sizes="(max-width:768px) 100vw, 50vw" priority />
+                  </motion.div>
+                ) : (
+                  <Package size={72} className="text-slate-200" />
+                )}
+              </AnimatePresence>
+            </motion.div>
           </div>
           {p.images.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
@@ -60,7 +107,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
                 <button
                   key={img}
                   onClick={() => setActive(i)}
-                  className={`aspect-square bg-white border rounded-xl overflow-hidden relative transition-colors ${i === active ? 'border-blue-400' : 'border-slate-200 hover:border-slate-300'}`}
+                  className={`aspect-square bg-white border rounded-xl overflow-hidden relative transition-colors ${i === active ? 'border-blue-400 ring-2 ring-blue-100' : 'border-slate-200 hover:border-slate-300'}`}
                 >
                   <Image src={img} alt="" fill className="object-contain p-2" sizes="120px" />
                 </button>

@@ -68,7 +68,7 @@ export function ProductCard({ product }: Props) {
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="group relative bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-blue-200 transition-colors duration-300 hover:shadow-xl hover:shadow-blue-900/10 flex flex-col h-full"
+      className="group relative bg-white border border-slate-200 rounded-3xl overflow-hidden hover:border-blue-200 transition-colors duration-300 hover:shadow-xl hover:shadow-blue-900/10 flex flex-col h-full"
     >
       {/* Controls row — sits above the photo instead of floating over it, so
           it never overlaps the product now that images render uncropped
@@ -115,7 +115,7 @@ export function ProductCard({ product }: Props) {
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
+              className="object-contain p-3 drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
               style={{ transform: 'translateZ(20px)' }}
             />
           ) : (
