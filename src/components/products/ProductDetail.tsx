@@ -72,12 +72,9 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
             onMouseMove={onGalleryMove}
             onMouseLeave={onGalleryLeave}
           >
-            <div className="pointer-events-none absolute -inset-10 -z-10">
-              <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb30,transparent_70%)] blur-2xl" />
-            </div>
             <motion.div
               style={{ rotateX, rotateY }}
-              className="aspect-square bg-white border border-slate-200 rounded-3xl flex items-center justify-center relative overflow-hidden shadow-[0_30px_70px_-25px_#1e3a8a35] [transform-style:preserve-3d]"
+              className="aspect-square bg-white border border-slate-200 rounded-3xl flex items-center justify-center relative overflow-hidden [transform-style:preserve-3d]"
             >
               {discount && (
                 <Badge variant="red" className="absolute top-4 left-4 text-sm px-3 py-1 z-10">-{discount}% OFF</Badge>
@@ -93,7 +90,7 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
                     className="absolute inset-6"
                     style={{ transform: 'translateZ(30px)' }}
                   >
-                    <Image src={p.images[active]} alt={p.name} fill className="object-contain drop-shadow-xl" sizes="(max-width:768px) 100vw, 50vw" priority />
+                    <Image src={p.images[active]} alt={p.name} fill className="object-contain" sizes="(max-width:768px) 100vw, 50vw" priority />
                   </motion.div>
                 ) : (
                   <Package size={72} className="text-slate-200" />

@@ -106,7 +106,7 @@ export function ProductCard({ product }: Props) {
         onMouseEnter={onEnter}
         onMouseMove={onMove}
         onMouseLeave={onLeave}
-        className="block aspect-square bg-slate-100 overflow-hidden relative [perspective:1200px]"
+        className="block aspect-square bg-white overflow-hidden relative [perspective:1200px]"
       >
         <motion.div style={{ background: sheen }} className="pointer-events-none absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
         <motion.div style={{ rotateX, rotateY }} className="absolute inset-0 [transform-style:preserve-3d]">
@@ -115,7 +115,7 @@ export function ProductCard({ product }: Props) {
               src={product.images[0]}
               alt={product.name}
               fill
-              className="object-contain p-3 drop-shadow-lg group-hover:scale-105 transition-transform duration-300"
+              className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
               style={{ transform: 'translateZ(20px)' }}
             />
           ) : (

@@ -50,14 +50,9 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
         onMouseLeave={onLeave}
         className="block"
       >
-        {/* Spotlight glow */}
-        <div className="pointer-events-none absolute -inset-10 -z-10">
-          <div className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,#2563eb35,transparent_72%)] blur-2xl" />
-        </div>
-
         <motion.div
           style={{ rotateX, rotateY }}
-          className="group relative rounded-3xl overflow-hidden border border-slate-200 bg-white shadow-[0_30px_70px_-20px_#1e3a8a30] [transform-style:preserve-3d]"
+          className="group relative rounded-3xl overflow-hidden border border-slate-200 bg-white [transform-style:preserve-3d]"
         >
           <div className="aspect-[4/3] relative flex items-center justify-center p-8" style={{ transform: 'translateZ(30px)' }}>
             {product.images[0] ? (
@@ -65,7 +60,7 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
                 src={product.images[0]}
                 alt={product.name}
                 fill
-                className="object-contain p-6 drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
+                className="object-contain p-6 transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 90vw, 380px"
               />
             ) : (
