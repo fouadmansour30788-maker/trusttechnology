@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar, Wrench, MessageSquare, Gift, Star, Building2 } from 'lucide-react'
+import { Package, LayoutDashboard, Database, LogOut, Boxes, ClipboardList, Truck, ShoppingBag, Users, BarChart3, Radar, Wrench, MessageSquare, Gift, Star, Building2, Share2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { isSupabaseConfigured } from '@/lib/db'
 import { signOut } from './actions'
@@ -19,6 +19,7 @@ const NAV = [
   { label: 'Reviews', href: '/admin/reviews', icon: Star },
   { label: 'Reports', href: '/admin/reports', icon: BarChart3 },
   { label: 'Competitors', href: '/admin/competitors', icon: Radar },
+  { label: 'Facebook', href: '/admin/facebook', icon: Share2 },
 ]
 
 function NotConfigured() {
