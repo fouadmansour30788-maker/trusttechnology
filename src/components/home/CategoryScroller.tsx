@@ -54,7 +54,7 @@ export function CategoryScroller() {
 
         <div
           ref={scrollerRef}
-          className="flex gap-6 overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden px-1 py-1"
+          className="flex justify-center sm:justify-between gap-6 sm:gap-4 overflow-x-auto scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden px-1 py-1"
         >
           {CATEGORIES.map((c) => (
             <Link
