@@ -5,6 +5,7 @@ import { CategoryScroller } from '@/components/home/CategoryScroller'
 import { ProductShowcase3D } from '@/components/home/ProductShowcase3D'
 import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
+import { BrandSpotlight } from '@/components/home/BrandSpotlight'
 import { ScrollShowcase } from '@/components/home/ScrollShowcase'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
@@ -48,11 +49,22 @@ function pickFeatured(all: Product[]): Product[] {
   return dedupeByImage([...new Set([...bySlug, ...flagged, ...withImg])]).slice(0, 8)
 }
 
+// Brand promo row — same "colored banner + scrollable product cards" pattern
+// as a supplier storefront's vendor spotlights. Highest-price-first so the
+// flagship/most eye-catching units (RTX 5090 rigs, etc.) lead the row.
+function pickBrandSpotlight(all: Product[], brandSlug: string, count: number): Product[] {
+  const matches = all
+    .filter((p) => p.images.length && p.tags?.some((t) => t.type === 'brand' && t.slug === brandSlug))
+    .sort((a, b) => b.price - a.price)
+  return dedupeByImage(matches).slice(0, count)
+}
+
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const allProducts = await getProducts()
   const FEATURED_PRODUCTS = pickFeatured(allProducts)
+  const ASUS_SPOTLIGHT = pickBrandSpotlight(allProducts, 'asus', 10)
   const trending = await getStoreTrending(allProducts)
   return (
     <>
@@ -60,6 +72,13 @@ export default async function HomePage() {
       <CategoryScroller />
       <ProductShowcase3D products={FEATURED_PRODUCTS.slice(0, 3)} />
       <BrandMarquee />
+      <BrandSpotlight
+        eyebrow="Brand Spotlight"
+        title="ASUS Gaming"
+        blurb="ROG and TUF laptops built for serious performance — from portable esports rigs to full RTX 5090 desktop replacements."
+        viewAllHref="/products?tags=asus"
+        products={ASUS_SPOTLIGHT}
+      />
       <BentoGrid />
       <ScrollShowcase />
       <WhyChooseUs />
