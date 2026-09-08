@@ -6,6 +6,7 @@ import { ProductShowcase3D } from '@/components/home/ProductShowcase3D'
 import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
 import { BrandSpotlight } from '@/components/home/BrandSpotlight'
+import { HeroLineup, type LineupTile } from '@/components/home/HeroLineup'
 import { ScrollShowcase } from '@/components/home/ScrollShowcase'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
@@ -59,12 +60,51 @@ function pickBrandSpotlight(all: Product[], brandSlug: string, count: number): P
   return dedupeByImage(matches).slice(0, count)
 }
 
+// Four flagship products, one per major category, styled like apple.com's
+// hero tiles. Real specs only in the subhead — no invented marketing lines.
+function pickHeroLineup(all: Product[]): LineupTile[] {
+  const bySlug = (slug: string) => all.find((p) => p.slug === slug)
+  const defs: { slug: string; headline: string; subhead: string; bg: string }[] = [
+    {
+      slug: 'apple-macbook-pro-16-m5-max-48gb-2tb-ssd-space-black',
+      headline: 'MacBook Pro',
+      subhead: 'M5 Max chip. Built for the heaviest workloads.',
+      bg: 'bg-slate-100 text-slate-900',
+    },
+    {
+      slug: 'asus-rog-strix-scar-edition-18-g835lx-s9113',
+      headline: 'ROG Strix Scar 18',
+      subhead: 'RTX 5090. Nothing else in the lineup outruns it.',
+      bg: 'bg-slate-900 text-white',
+    },
+    {
+      slug: 'lg-32-lg-ultragear-2k-qhd-curved-gaming-180hz',
+      headline: 'LG UltraGear 32"',
+      subhead: '180Hz curved QHD, built to win.',
+      bg: 'bg-indigo-50 text-slate-900',
+    },
+    {
+      slug: 'appostars-ap-a6-g8-256-new-metal-stand-l4-metal-case-18-5-capacitive-true-flat-t',
+      headline: 'AppoStars POS',
+      subhead: 'A true-flat touch terminal for a serious counter.',
+      bg: 'bg-emerald-50 text-slate-900',
+    },
+  ]
+  return defs
+    .map((d) => {
+      const product = bySlug(d.slug)
+      return product ? { product, headline: d.headline, subhead: d.subhead, bg: d.bg } : null
+    })
+    .filter((t): t is LineupTile => t !== null)
+}
+
 export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
   const allProducts = await getProducts()
   const FEATURED_PRODUCTS = pickFeatured(allProducts)
   const ASUS_SPOTLIGHT = pickBrandSpotlight(allProducts, 'asus', 10)
+  const HERO_LINEUP = pickHeroLineup(allProducts)
   const trending = await getStoreTrending(allProducts)
   return (
     <>
@@ -79,6 +119,7 @@ export default async function HomePage() {
         viewAllHref="/products?tags=asus"
         products={ASUS_SPOTLIGHT}
       />
+      <HeroLineup tiles={HERO_LINEUP} />
       <BentoGrid />
       <ScrollShowcase />
       <WhyChooseUs />
