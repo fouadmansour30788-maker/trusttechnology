@@ -7,6 +7,7 @@ import { BentoGrid } from '@/components/home/BentoGrid'
 import { BrandMarquee } from '@/components/home/BrandMarquee'
 import { BrandSpotlight } from '@/components/home/BrandSpotlight'
 import { HeroLineup, type LineupTile } from '@/components/home/HeroLineup'
+import { TrustoBanner } from '@/components/home/TrustoBanner'
 import { ScrollShowcase } from '@/components/home/ScrollShowcase'
 import { WhyChooseUs } from '@/components/home/WhyChooseUs'
 import { Testimonials } from '@/components/home/Testimonials'
@@ -120,6 +121,7 @@ export default async function HomePage() {
         products={ASUS_SPOTLIGHT}
       />
       <HeroLineup tiles={HERO_LINEUP} />
+      <TrustoBanner />
       <BentoGrid />
       <ScrollShowcase />
       <WhyChooseUs />
