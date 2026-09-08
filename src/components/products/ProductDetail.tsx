@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck, Bell } from 'lucide-react'
+import { ShoppingCart, ChevronRight, Star, Shield, Truck, MessageCircle, Package, BadgeCheck, Bell, CheckCircle2, ShieldCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useCartStore } from '@/store/cart'
@@ -162,6 +162,18 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
 
           {p.description && <p className="text-slate-500 leading-relaxed whitespace-pre-line">{p.description}</p>}
 
+          {/* Key Features */}
+          {p.key_features && p.key_features.length > 0 && (
+            <ul className="space-y-2">
+              {p.key_features.map((f, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-600 leading-relaxed">
+                  <CheckCircle2 size={16} className="text-blue-600 mt-0.5 shrink-0" />
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
           {/* Colour options */}
           {p.colors && p.colors.length > 0 && (
             <div>
@@ -247,6 +259,17 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
           </div>
         </div>
       </div>
+
+      {/* Warranty Information */}
+      {p.warranty_info && (
+        <div className="mt-12 max-w-3xl">
+          <h2 className="text-xl font-bold text-slate-900 mb-4">Warranty Information</h2>
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-3xl px-6 py-5">
+            <ShieldCheck size={22} className="text-blue-600 mt-0.5 shrink-0" />
+            <p className="text-sm text-slate-700 leading-relaxed">{p.warranty_info}</p>
+          </div>
+        </div>
+      )}
 
       {/* Specs */}
       {visibleSpecs.length > 0 && (

@@ -32,6 +32,10 @@ export type Product = {
   is_active: boolean
   is_featured: boolean
   specs: Record<string, string>
+  /** Scannable bullet points for the product page (ayoubcomputers.com-style "Key Features"). */
+  key_features?: string[] | null
+  /** Warranty paragraph shown in its own product-page section. */
+  warranty_info?: string | null
   created_at: string
   updated_at: string
   primary_category?: Category
