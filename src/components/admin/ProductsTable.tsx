@@ -4,28 +4,34 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Search, Edit, Trash2, ToggleLeft, ToggleRight, Package } from 'lucide-react'
 import type { Product, Category } from '@/lib/types'
+import type { Supplier } from '@/lib/erp'
 import { Badge } from '@/components/ui/badge'
 import { setProductActive, deleteProduct } from '@/app/admin/actions'
 
 export type MarketPrice = { price: number; competitor: string }
 
-export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
+export function ProductsTable({ initial, categories = [], suppliers = [], marketPrices = {} }: {
   initial: Product[]
   categories?: Category[]
+  suppliers?: Supplier[]
   marketPrices?: Record<string, MarketPrice>
 }) {
   const [products, setProducts] = useState(initial)
   const [search, setSearch] = useState('')
   const [cat, setCat] = useState('')
+  const [supplierFilter, setSupplierFilter] = useState('')
   const [, startTransition] = useTransition()
 
   const catName = (id: string | null) => categories.find((c) => c.id === id)?.name ?? '—'
+  const supplierDisplay = (p: Product) =>
+    (p.supplier_id && suppliers.find((s) => s.id === p.supplier_id)?.name) || p.supplier_name || '—'
 
   const filtered = products.filter((p) => {
     const matchesSearch =
       p.name.toLowerCase().includes(search.toLowerCase()) || p.sku?.toLowerCase().includes(search.toLowerCase())
     const matchesCat = !cat || p.primary_category_id === cat
-    return matchesSearch && matchesCat
+    const matchesSupplier = !supplierFilter || p.supplier_id === supplierFilter
+    return matchesSearch && matchesCat && matchesSupplier
   })
 
   function toggle(p: Product) {
@@ -56,6 +62,12 @@ export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
             {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         )}
+        {suppliers.length > 0 && (
+          <select value={supplierFilter} onChange={(e) => setSupplierFilter(e.target.value)} className="bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400">
+            <option value="">All suppliers</option>
+            {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+          </select>
+        )}
         <span className="text-xs text-slate-400 ml-auto">{filtered.length} shown</span>
       </div>
 
@@ -65,6 +77,7 @@ export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
             <tr className="border-b border-slate-200 bg-slate-50/60">
               <th className="text-left px-5 py-3 text-slate-500 font-medium">Product</th>
               <th className="text-left px-5 py-3 text-slate-500 font-medium hidden md:table-cell">Category</th>
+              <th className="text-left px-5 py-3 text-slate-500 font-medium hidden md:table-cell">Supplier</th>
               <th className="text-right px-5 py-3 text-slate-500 font-medium hidden lg:table-cell">Cost</th>
               <th className="text-right px-5 py-3 text-slate-500 font-medium">Price</th>
               <th className="text-right px-5 py-3 text-slate-500 font-medium hidden lg:table-cell">VAT</th>
@@ -93,6 +106,7 @@ export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
                     </div>
                   </td>
                   <td className="px-5 py-3 text-slate-500 hidden md:table-cell">{catName(p.primary_category_id)}</td>
+                  <td className="px-5 py-3 text-slate-500 hidden md:table-cell">{supplierDisplay(p)}</td>
                   <td className="px-5 py-3 text-right text-slate-500 hidden lg:table-cell">{p.cost ? `$${Number(p.cost).toFixed(2)}` : '—'}</td>
                   <td className="px-5 py-3 text-right">
                     {onRequest ? <span className="text-blue-600 font-medium">Call</span> : <span className="text-slate-900 font-semibold">${p.price}</span>}
@@ -128,7 +142,7 @@ export function ProductsTable({ initial, categories = [], marketPrices = {} }: {
               )
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={8} className="px-5 py-12 text-center text-slate-400">No products found</td></tr>
+              <tr><td colSpan={9} className="px-5 py-12 text-center text-slate-400">No products found</td></tr>
             )}
           </tbody>
         </table>

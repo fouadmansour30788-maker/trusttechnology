@@ -22,6 +22,8 @@ export type ProductInput = {
   vat_rate: number
   colors: string[]
   tagIds: string[]
+  supplier_id: string | null
+  supplier_name: string | null
 }
 
 async function authed() {

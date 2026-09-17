@@ -53,6 +53,10 @@ export type Product = {
   /** Average of published reviews (1–5), stamped on read — omitted if none yet. */
   rating?: number
   reviewCount?: number
+  /** Linked to a formal record in the suppliers table (used for purchase orders), if any. */
+  supplier_id?: string | null
+  /** Free-text supplier name/note — used when there's no formal supplier record. */
+  supplier_name?: string | null
 }
 
 export type Bundle = {

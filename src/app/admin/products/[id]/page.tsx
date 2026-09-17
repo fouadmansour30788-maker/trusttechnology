@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import { getProductById, getCategories, getTags, isSupabaseConfigured } from '@/lib/db'
+import { getSuppliers } from '@/lib/erp'
 import { createClient } from '@/lib/supabase/server'
 import { getCompetitorPricesForProduct, getHistoryForProduct, type CompetitorListing, type HistoryPoint } from '@/lib/competitors'
 import { ProductForm } from '@/components/admin/ProductForm'
@@ -9,7 +10,7 @@ export const dynamic = 'force-dynamic'
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [product, categories, tags] = await Promise.all([getProductById(id), getCategories(), getTags()])
+  const [product, categories, tags, suppliers] = await Promise.all([getProductById(id), getCategories(), getTags(), getSuppliers()])
   if (!product) notFound()
 
   let listings: CompetitorListing[] = []
@@ -29,7 +30,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <CompetitorPanel listings={listings} ourPrice={Number(product.price)} history={history} />
         </div>
       )}
-      <ProductForm product={product} categories={categories} tags={tags} />
+      <ProductForm product={product} categories={categories} tags={tags} suppliers={suppliers} />
     </div>
   )
 }

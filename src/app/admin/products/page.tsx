@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { getProducts, getCategories, isSupabaseConfigured } from '@/lib/db'
+import { getSuppliers } from '@/lib/erp'
 import { createClient } from '@/lib/supabase/server'
 import { getCompetitorPriceMap } from '@/lib/competitors'
 import { ProductsTable, type MarketPrice } from '@/components/admin/ProductsTable'
@@ -9,7 +10,7 @@ import { SheetSyncButton } from '@/components/admin/SheetSyncButton'
 export const dynamic = 'force-dynamic'
 
 export default async function AdminProductsPage() {
-  const [products, categories] = await Promise.all([getProducts({ adminView: true }), getCategories()])
+  const [products, categories, suppliers] = await Promise.all([getProducts({ adminView: true }), getCategories(), getSuppliers()])
   let marketPrices: Record<string, MarketPrice> = {}
   if (isSupabaseConfigured()) {
     const supabase = await createClient()
@@ -29,7 +30,7 @@ export default async function AdminProductsPage() {
           </Link>
         </div>
       </div>
-      <ProductsTable initial={products} categories={categories} marketPrices={marketPrices} />
+      <ProductsTable initial={products} categories={categories} suppliers={suppliers} marketPrices={marketPrices} />
     </div>
   )
 }

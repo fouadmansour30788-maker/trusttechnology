@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Loader2, Plus, Trash2, Upload, X, ArrowLeft } from 'lucide-react'
 import type { Product, Category, Tag } from '@/lib/types'
+import type { Supplier } from '@/lib/erp'
 import { createClient } from '@/lib/supabase/client'
 import { saveProduct, type ProductInput } from '@/app/admin/actions'
 
@@ -12,7 +13,7 @@ const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').repla
 const inputCls = 'w-full px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-900 outline-none focus:border-blue-400'
 const label = 'block text-xs font-medium text-slate-500 mb-1'
 
-type Props = { product: Product | null; categories: Category[]; tags: Tag[] }
+type Props = { product: Product | null; categories: Category[]; tags: Tag[]; suppliers: Supplier[] }
 
 // Each of these three sections can hold a lot of DOM (image thumbnails, spec
 // rows, dozens of tag buttons). Isolated into memoized components so typing
@@ -110,7 +111,7 @@ const TagsSection = memo(function TagsSection({
   )
 })
 
-export function ProductForm({ product, categories, tags }: Props) {
+export function ProductForm({ product, categories, tags, suppliers }: Props) {
   const router = useRouter()
   const [saving, startSave] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -137,6 +138,8 @@ export function ProductForm({ product, categories, tags }: Props) {
   const [vat, setVat] = useState(product?.vat_rate != null ? String(product.vat_rate) : '11')
   const [colorInput, setColorInput] = useState('')
   const [colors, setColors] = useState<string[]>(product?.colors ?? [])
+  const [supplierId, setSupplierId] = useState(product?.supplier_id ?? '')
+  const [supplierName, setSupplierName] = useState(product?.supplier_name ?? '')
 
   function addColor() {
     const c = colorInput.trim()
@@ -197,6 +200,8 @@ export function ProductForm({ product, categories, tags }: Props) {
       vat_rate: vat === '' ? 11 : Number(vat),
       colors,
       tagIds,
+      supplier_id: supplierId || null,
+      supplier_name: supplierName.trim() || null,
     }
     if (!input.name) { setError('Name is required.'); return }
     startSave(async () => {
@@ -296,6 +301,19 @@ export function ProductForm({ product, categories, tags }: Props) {
               <option value="">— none —</option>
               {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label className={label}>Supplier</label>
+              <select className={inputCls} value={supplierId} onChange={(e) => setSupplierId(e.target.value)}>
+                <option value="">— none —</option>
+                {suppliers.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className={label}>Supplier name <span className="text-slate-300">· free text, e.g. one-off or not yet in Suppliers</span></label>
+              <input className={inputCls} value={supplierName} onChange={(e) => setSupplierName(e.target.value)} placeholder="Type a name…" />
+            </div>
           </div>
           <div className="flex gap-6">
             <label className="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" checked={isActive} onChange={(e) => setIsActive(e.target.checked)} /> Active (visible)</label>
