@@ -43,6 +43,7 @@ export function WishlistButton({ productId, variant = 'icon' }: { productId: str
     <button
       onClick={onClick}
       title={active ? 'Remove from wishlist' : 'Add to wishlist'}
+      aria-label={active ? 'Remove from wishlist' : 'Add to wishlist'}
       className={`${variant === 'icon' ? 'absolute top-12 right-2 z-10' : ''} w-8 h-8 rounded-full flex items-center justify-center shadow-sm transition-colors shrink-0 ${
         active ? 'bg-red-50 text-red-500' : 'bg-white/95 text-slate-400 hover:text-red-500 border border-slate-200'
       }`}

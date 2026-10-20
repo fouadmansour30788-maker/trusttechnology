@@ -218,6 +218,7 @@ export function HeroSection() {
               <button
                 onClick={toggleSound}
                 title={muted ? 'Unmute' : 'Mute'}
+                aria-label={muted ? 'Unmute video' : 'Mute video'}
                 className="absolute bottom-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 backdrop-blur hover:bg-black/65 flex items-center justify-center text-white transition-colors"
                 style={{ transform: 'translateZ(40px)' }}
               >

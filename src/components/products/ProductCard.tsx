@@ -204,6 +204,7 @@ export function ProductCard({ product }: Props) {
             <button
               onClick={() => addItem(product)}
               disabled={product.stock === 0}
+              aria-label="Add to cart"
               className="w-10 h-10 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center text-white transition-colors"
             >
               <ShoppingCart size={16} />

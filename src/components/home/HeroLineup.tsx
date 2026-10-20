@@ -35,10 +35,18 @@ function Tile({ tile: t }: { tile: LineupTile }) {
         <h3 className="text-2xl sm:text-[2rem] font-bold tracking-tight leading-tight">{t.headline}</h3>
         <p className="mt-1.5 text-sm sm:text-base opacity-80">{t.subhead}</p>
         <div className="mt-4 flex items-center justify-center gap-5 text-sm font-medium">
-          <Link href={`/products/${t.product.slug}`} className="underline underline-offset-4 hover:opacity-70 transition-opacity">
+          <Link
+            href={`/products/${t.product.slug}`}
+            aria-label={`Learn more about ${t.product.name}`}
+            className="underline underline-offset-4 hover:opacity-70 transition-opacity"
+          >
             Learn more
           </Link>
-          <Link href={`/products/${t.product.slug}`} className="underline underline-offset-4 hover:opacity-70 transition-opacity">
+          <Link
+            href={`/products/${t.product.slug}`}
+            aria-label={onRequest ? `Ask price for ${t.product.name}` : `Buy ${t.product.name} — $${t.product.price.toFixed(0)}`}
+            className="underline underline-offset-4 hover:opacity-70 transition-opacity"
+          >
             {onRequest ? 'Ask price' : `Buy — $${t.product.price.toFixed(0)}`}
           </Link>
         </div>

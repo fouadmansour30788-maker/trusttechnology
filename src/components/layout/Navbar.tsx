@@ -121,6 +121,7 @@ export function Navbar() {
               onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
               className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               title="Search (⌘K)"
+              aria-label="Search"
             >
               <Search size={20} />
             </button>
@@ -128,6 +129,7 @@ export function Navbar() {
             <button
               onClick={openCart}
               className="relative p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              aria-label={totalItems > 0 ? `Cart, ${totalItems} item${totalItems === 1 ? '' : 's'}` : 'Cart'}
             >
               <ShoppingCart size={20} />
               {totalItems > 0 && (
@@ -182,6 +184,8 @@ export function Navbar() {
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="lg:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
             >
               {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
