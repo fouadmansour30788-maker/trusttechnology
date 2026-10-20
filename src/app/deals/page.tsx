@@ -5,12 +5,14 @@ import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { ProductCard } from '@/components/products/ProductCard'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { canonicalFor } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Deals & Clearance – Trust Technology',
   description: 'Discounted laptops, desktops, monitors and accessories at Trust Technology, Tripoli — limited-time deals and clearance prices.',
+  alternates: { canonical: canonicalFor('/deals') },
 }
 
 export default async function DealsPage() {

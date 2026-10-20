@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { HelpCircle, MessageCircle } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'FAQ – Trust Technology',
   description: 'Ordering, delivery, cash on delivery, warranty and pricing questions — answered by Trust Technology, Tripoli.',
+  alternates: { canonical: canonicalFor('/faq') },
 }
 
 const FAQS: { q: string; a: string }[] = [

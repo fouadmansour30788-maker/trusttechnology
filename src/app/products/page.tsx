@@ -5,6 +5,7 @@ import { getProducts } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
+import { canonicalFor } from '@/lib/site'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
@@ -13,9 +14,14 @@ type Props = {
 
 export const dynamic = 'force-dynamic'
 
+// Static (not generateMetadata) so every filter/sort/search query-param
+// combination canonicalizes back to the clean /products URL, rather than
+// each becoming its own indexable "page" — see the printing-category
+// over-indexing concern in the Oct 2026 technical audit.
 export const metadata = {
   title: 'All Products – Trust Technology',
   description: 'Browse the full Trust Technology catalog — laptops, desktops, peripherals and more.',
+  alternates: { canonical: canonicalFor('/products') },
 }
 
 export default async function ProductsPage({ searchParams }: Props) {

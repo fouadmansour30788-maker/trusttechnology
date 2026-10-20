@@ -1,9 +1,11 @@
 import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 import { AiAdvisor } from '@/components/wizard/AiAdvisor'
+import { canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'Ask Trusto – Trust Technology',
   description: 'Describe what you need and Trusto, our AI advisor, recommends the perfect products from our catalog.',
+  alternates: { canonical: canonicalFor('/recommend') },
 }
 
 export default function RecommendPage() {

@@ -2,10 +2,12 @@ import Link from 'next/link'
 import { BookOpen, ArrowRight } from 'lucide-react'
 import { GUIDES } from '@/lib/guides'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'Buying Guides – Trust Technology',
   description: 'Honest, Lebanon-specific tech buying guides — laptops for university, gaming machines, POS systems and more.',
+  alternates: { canonical: canonicalFor('/guides') },
 }
 
 export default function GuidesPage() {

@@ -5,12 +5,13 @@ import {
   Laptop, Monitor, Printer, CreditCard,
 } from 'lucide-react'
 import { CATALOG_PRODUCTS } from '@/data/products'
-import { FOUNDED_YEAR, YEARS_IN_BUSINESS } from '@/lib/site'
+import { FOUNDED_YEAR, YEARS_IN_BUSINESS, canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'About Us',
   description:
     `Trust Technology is Tripoli’s premier tech store, serving Lebanon since ${FOUNDED_YEAR} — ${YEARS_IN_BUSINESS} years of premium laptops, desktops, POS systems, printers, monitors and accessories, with honest pricing and genuine warranty.`,
+  alternates: { canonical: canonicalFor('/about') },
 }
 
 const WHATSAPP = '9613393002'

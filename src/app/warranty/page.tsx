@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { ShieldCheck, MessageCircle } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'Warranty Policy – Trust Technology',
   description: 'Warranty coverage for laptops, desktops, monitors, printers and accessories bought from Trust Technology, Tripoli.',
+  alternates: { canonical: canonicalFor('/warranty') },
 }
 
 const SECTIONS = [

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -5,6 +6,7 @@ import { getProducts, getCategories } from '@/lib/db'
 import { getBestPriceIds, withBestPrice } from '@/lib/best-price'
 import { getReviewStatsMap, withReviewStats } from '@/lib/reviews'
 import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@/lib/spec-facets'
+import { canonicalFor } from '@/lib/site'
 import type { Product, Tag } from '@/lib/types'
 
 type Props = {
@@ -29,6 +31,19 @@ const PARENT_TO_CHILDREN: Record<string, string[]> = {
   displays: ['monitors'],
   printing: ['ink-toner'],
   professional: ['pos-systems'],
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const label = CATEGORY_LABELS[slug] ?? slug.replace(/-/g, ' ')
+  const description = `Shop ${label} at Trust Technology — genuine products, honest pricing and expert support in Tripoli, Lebanon.`
+  const url = canonicalFor(`/categories/${slug}`)
+  return {
+    title: label,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title: label, description, url },
+  }
 }
 
 export default async function CategoryPage({ params, searchParams }: Props) {

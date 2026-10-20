@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { RotateCcw, MessageCircle } from 'lucide-react'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { canonicalFor } from '@/lib/site'
 
 export const metadata = {
   title: 'Returns & Exchange – Trust Technology',
   description: 'Return and exchange policy for products bought from Trust Technology, Tripoli — online or in-store.',
+  alternates: { canonical: canonicalFor('/returns') },
 }
 
 const SECTIONS = [

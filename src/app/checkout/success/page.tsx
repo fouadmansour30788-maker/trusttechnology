@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { MessageCircle, ArrowRight } from 'lucide-react'
 import { TrustoAvatar } from '@/components/trusto/TrustoAvatar'
 
-export const metadata = { title: 'Order placed' }
+// Transactional, per-order page (?ref= varies every visit) — never meant to
+// be indexed, so this gets noindex rather than a self-canonical.
+export const metadata = { title: 'Order placed', robots: { index: false, follow: false } }
 
 export default async function CheckoutSuccessPage({ searchParams }: { searchParams: Promise<{ ref?: string }> }) {
   const { ref } = await searchParams

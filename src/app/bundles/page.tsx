@@ -1,4 +1,5 @@
 import { Zap, ShoppingCart, Check, Gamepad2, Briefcase, Store, Sparkles } from 'lucide-react'
+import { canonicalFor } from '@/lib/site'
 
 type Bundle = {
   id: string
@@ -58,7 +59,11 @@ const TYPE = {
   pos: { icon: Store, accent: 'text-blue-600 bg-blue-50', bar: 'from-blue-500 to-blue-500' },
 } as const
 
-export const metadata = { title: 'Bundle & Save' }
+export const metadata = {
+  title: 'Bundle & Save',
+  description: 'Pre-matched gaming, business and POS setups at Trust Technology — curated bundles at a discount off buying each item separately.',
+  alternates: { canonical: canonicalFor('/bundles') },
+}
 
 export default function BundlesPage() {
   return (
