@@ -27,11 +27,31 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const path = request.nextUrl.pathname
 
-  if (path.startsWith('/admin') && !path.startsWith('/admin/login') && !user) {
-    const redirect = request.nextUrl.clone()
-    redirect.pathname = '/admin/login'
-    redirect.searchParams.set('next', path)
-    return NextResponse.redirect(redirect)
+  if (path.startsWith('/admin') && !path.startsWith('/admin/login')) {
+    if (!user) {
+      const redirect = request.nextUrl.clone()
+      redirect.pathname = '/admin/login'
+      redirect.searchParams.set('next', path)
+      return NextResponse.redirect(redirect)
+    }
+    // Being logged in isn't enough -- /register is a public, self-service
+    // signup using the same Supabase Auth pool as /admin/login, so an
+    // ordinary customer account must not pass here. Only a profiles row
+    // with role 'admin'/'staff' (granted deliberately, never automatically
+    // — see handle_new_user() in 003/070) counts as back-office access.
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle()
+    const isStaff = profile?.role === 'admin' || profile?.role === 'staff'
+    if (!isStaff) {
+      const redirect = request.nextUrl.clone()
+      redirect.pathname = '/admin/login'
+      redirect.searchParams.set('next', path)
+      redirect.searchParams.set('error', 'not_staff')
+      return NextResponse.redirect(redirect)
+    }
   }
 
   if (path.startsWith('/account') && !user) {

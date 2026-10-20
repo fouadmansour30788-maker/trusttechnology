@@ -11,7 +11,9 @@ export default function AdminLoginPage() {
   const next = params.get('next') || '/admin'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(
+    params.get('error') === 'not_staff' ? "That account doesn't have back-office access." : null
+  )
   const [loading, setLoading] = useState(false)
 
   async function onSubmit(e: React.FormEvent) {
