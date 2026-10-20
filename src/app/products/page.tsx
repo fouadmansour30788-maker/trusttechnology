@@ -128,7 +128,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     href={pageHref(page - 1, params)}
                     aria-disabled={page <= 1}
                     tabIndex={page <= 1 ? -1 : undefined}
-                    className={`inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page <= 1 ? 'pointer-events-none opacity-40' : ''}`}
+                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page <= 1 ? 'pointer-events-none opacity-40' : ''}`}
                   >
                     <ChevronLeft size={18} />
                     <span className="sr-only">Previous page</span>
@@ -142,7 +142,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                         <Link
                           href={pageHref(p, params)}
                           aria-current={p === page ? 'page' : undefined}
-                          className={`inline-flex items-center justify-center w-10 h-10 rounded-xl text-sm font-medium transition-colors ${
+                          className={`inline-flex items-center justify-center w-11 h-11 rounded-xl text-sm font-medium transition-colors ${
                             p === page
                               ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
                               : 'border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
@@ -157,7 +157,7 @@ export default async function ProductsPage({ searchParams }: Props) {
                     href={pageHref(page + 1, params)}
                     aria-disabled={page >= totalPages}
                     tabIndex={page >= totalPages ? -1 : undefined}
-                    className={`inline-flex items-center justify-center w-10 h-10 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page >= totalPages ? 'pointer-events-none opacity-40' : ''}`}
+                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page >= totalPages ? 'pointer-events-none opacity-40' : ''}`}
                   >
                     <ChevronRight size={18} />
                     <span className="sr-only">Next page</span>

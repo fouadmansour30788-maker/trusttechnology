@@ -119,7 +119,7 @@ export function Navbar() {
             </button>
             <button
               onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
-              className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              className="md:hidden w-11 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               title="Search (⌘K)"
               aria-label="Search"
             >
@@ -128,7 +128,7 @@ export function Navbar() {
 
             <button
               onClick={openCart}
-              className="relative p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              className="relative w-11 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               aria-label={totalItems > 0 ? `Cart, ${totalItems} item${totalItems === 1 ? '' : 's'}` : 'Cart'}
             >
               <ShoppingCart size={20} />
@@ -183,7 +183,7 @@ export function Navbar() {
             {/* Mobile menu toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              className="lg:hidden w-11 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
             >
