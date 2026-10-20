@@ -1,5 +1,3 @@
-'use client'
-import { motion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
 type Props = {
@@ -16,15 +14,16 @@ type Props = {
 
 /** Shared listing/content-page header — bold title on a faint spotlight
  * glow, replacing the plain "eyebrow + text-3xl h1" pattern that was
- * repeated (with small variations) across a dozen pages. */
+ * repeated (with small variations) across a dozen pages.
+ *
+ * Plain element, no motion wrapper: this renders the page's H1, used on
+ * every category/listing/content page in the site, so it must never sit
+ * at opacity:0 in the server-rendered HTML waiting on JS hydration (see
+ * the Oct 2026 audit's T05 finding — this was the single highest-impact
+ * instance of that issue since it affects the H1 on dozens of pages). */
 export function PageHeader({ eyebrow, icon, title, subtitle, center = false, className = '' }: Props) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative mb-8 ${center ? 'text-center' : ''} ${className}`}
-    >
+    <div className={`relative mb-8 ${center ? 'text-center' : ''} ${className}`}>
       <div className={`pointer-events-none absolute -top-10 w-64 h-64 rounded-full bg-[radial-gradient(closest-side,#2563eb18,transparent_70%)] blur-2xl -z-10 ${center ? 'left-1/2 -translate-x-1/2' : '-left-8'}`} />
       {icon && (
         <span className={`inline-flex w-12 h-12 rounded-2xl bg-blue-50 items-center justify-center mb-3 text-blue-600 ${center ? 'mx-auto' : ''}`}>
@@ -36,6 +35,6 @@ export function PageHeader({ eyebrow, icon, title, subtitle, center = false, cla
       )}
       <h1 className="text-4xl font-bold text-slate-900 tracking-tight">{title}</h1>
       {subtitle && <p className="text-slate-500 mt-2">{subtitle}</p>}
-    </motion.div>
+    </div>
   )
 }

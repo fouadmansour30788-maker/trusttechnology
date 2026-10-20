@@ -2,7 +2,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
 import type { Product } from '@/lib/types'
 
 /**
@@ -18,6 +18,7 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
   const my = useMotionValue(0.5)
   const rotateX = useSpring(useTransform(my, [0, 1], [12, -12]), { stiffness: 180, damping: 20 })
   const rotateY = useSpring(useTransform(mx, [0, 1], [-16, 16]), { stiffness: 180, damping: 20 })
+  const reduceMotion = useReducedMotion()
 
   function onEnter(e: React.MouseEvent<HTMLAnchorElement>) {
     rectRef.current = e.currentTarget.getBoundingClientRect()
@@ -37,7 +38,7 @@ function ShowcaseCard({ product, index }: { product: Product; index: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}

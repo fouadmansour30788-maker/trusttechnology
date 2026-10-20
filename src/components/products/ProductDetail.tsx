@@ -79,7 +79,11 @@ export function ProductDetail({ product: p, marketRange }: { product: Product; m
               {discount && (
                 <Badge variant="red" className="absolute top-4 left-4 text-sm px-3 py-1 z-10">-{discount}% OFF</Badge>
               )}
-              <AnimatePresence mode="wait">
+              {/* initial={false}: the first image (p.images[active] on mount) renders
+                  visible immediately in the SSR HTML -- this is the product's LCP
+                  image (marked priority above). Only later active-index changes
+                  (thumbnail clicks) still get the crossfade. */}
+              <AnimatePresence mode="wait" initial={false}>
                 {p.images[active] ? (
                   <motion.div
                     key={p.images[active]}

@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Quote } from 'lucide-react'
 
 type Review = { title: string; body: string; name: string; role: string; gradient: string }
@@ -38,10 +38,11 @@ const REVIEWS: Review[] = [
 ]
 
 export function Testimonials() {
+  const reduceMotion = useReducedMotion()
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.5 }}
@@ -56,7 +57,7 @@ export function Testimonials() {
         {REVIEWS.map((r, i) => (
           <motion.div
             key={r.name}
-            initial={{ opacity: 0, y: 24 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}

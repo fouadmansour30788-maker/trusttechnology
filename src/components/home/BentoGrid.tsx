@@ -2,7 +2,7 @@
 import { useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
 import { CATEGORIES, type Category } from '@/lib/categories-data'
 
@@ -15,6 +15,7 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
   const my = useMotionValue(0.5)
   const rotateX = useSpring(useTransform(my, [0, 1], [8, -8]), { stiffness: 200, damping: 20 })
   const rotateY = useSpring(useTransform(mx, [0, 1], [-8, 8]), { stiffness: 200, damping: 20 })
+  const reduceMotion = useReducedMotion()
 
   function onEnter(e: React.MouseEvent<HTMLAnchorElement>) {
     rectRef.current = e.currentTarget.getBoundingClientRect()
@@ -32,7 +33,7 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.5, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
@@ -84,10 +85,11 @@ function CategoryTile({ c, index }: { c: Category; index: number }) {
 }
 
 export function BentoGrid() {
+  const reduceMotion = useReducedMotion()
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-80px' }}
         transition={{ duration: 0.5 }}

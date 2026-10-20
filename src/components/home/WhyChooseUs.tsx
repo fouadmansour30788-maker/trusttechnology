@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { ShieldCheck, Wallet, Activity, Check, ArrowRight, Cpu } from 'lucide-react'
 
 const PILLS = [
@@ -17,12 +17,13 @@ const POINTS = [
 ]
 
 export function WhyChooseUs() {
+  const reduceMotion = useReducedMotion()
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20">
       <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         {/* ── Left: floating pills over gradient orb ─────────────── */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.92 }}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -39,7 +40,7 @@ export function WhyChooseUs() {
           {PILLS.map(({ icon: Icon, label, pos }, i) => (
             <motion.div
               key={label}
-              initial={{ opacity: 0, y: 16 }}
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 + i * 0.15 }}
@@ -56,7 +57,7 @@ export function WhyChooseUs() {
 
         {/* ── Right: copy ────────────────────────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6 }}
@@ -73,7 +74,7 @@ export function WhyChooseUs() {
             {POINTS.map((point, i) => (
               <motion.li
                 key={point}
-                initial={{ opacity: 0, x: -16 }}
+                initial={reduceMotion ? false : { opacity: 0, x: -16 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
