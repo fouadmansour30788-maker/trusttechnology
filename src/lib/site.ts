@@ -1,13 +1,18 @@
 // The real production domain, used as a safety net below — NOT as the
-// primary source of truth. Set NEXT_PUBLIC_SITE_URL in Vercel (Production
-// environment) as the actual source of truth; this constant only prevents
-// a missing env var from silently leaking the *.vercel.app deployment URL
-// into canonical/OG/sitemap/robots output again, as it did previously.
+// primary source of truth. Set SITE_URL in Vercel (Production environment)
+// as the actual source of truth; this constant only prevents a missing env
+// var from silently leaking the *.vercel.app deployment URL into
+// canonical/OG/sitemap/robots output again, as it did previously.
+//
+// This is deliberately a plain (non-NEXT_PUBLIC_) variable: it's only ever
+// read in server components, route handlers, sitemap.ts and robots.ts —
+// never in client-side code — so there's no reason to expose it to the
+// browser bundle.
 const PRODUCTION_URL = 'https://www.trusttechnologylb.com'
 
 /** Canonical site URL for metadata, canonical tags, sitemap and robots.txt. */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
   (process.env.VERCEL_ENV === 'production' ? PRODUCTION_URL : null) ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
   'http://localhost:3000'
