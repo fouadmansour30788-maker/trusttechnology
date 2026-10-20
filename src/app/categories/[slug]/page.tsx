@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
@@ -54,6 +55,15 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const [fetched, categories, bestIds, reviewStats] = await Promise.all([getProducts(), getCategories(), getBestPriceIds(), getReviewStatsMap()])
   const all = withReviewStats(withBestPrice(fetched, bestIds), reviewStats)
+
+  // A bogus/unknown slug should 404, not render an empty "0 products" page
+  // at 200 — that's distinct from a *real* category that simply has no
+  // products matching the current filters, which stays 200 (correct,
+  // expected e-commerce behavior).
+  const isKnownCategory = slug === 'apple' || (
+    categories.length ? categories.some((c) => c.slug === slug) : (slug in CATEGORY_LABELS || slug in PARENT_TO_CHILDREN)
+  )
+  if (!isKnownCategory) notFound()
 
   // Resolve which category identifiers count as "in this category".
   let matchIds: Set<string>
