@@ -7,6 +7,7 @@ import {
   useTransform,
   useMotionValue,
   useSpring,
+  useReducedMotion,
   type Variants,
 } from 'framer-motion'
 import { ArrowRight, Shield, Truck, Headphones, Sparkles, Volume2, VolumeX } from 'lucide-react'
@@ -32,6 +33,11 @@ export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const [muted, setMuted] = useState(true)
+  // When the OS/browser asks for reduced motion, skip straight to the
+  // resting state instead of animating into it — covers the remaining
+  // decorative motion in this section (the H1/paragraph/CTAs above are
+  // plain elements now, not motion-driven, so they're unaffected either way).
+  const reduceMotion = useReducedMotion()
 
   // Browsers block autoplay-with-sound outright, so the video always starts
   // muted+autoPlay to guarantee it plays. Once mounted, try flipping it to
@@ -112,17 +118,20 @@ export function HeroSection() {
           {/* ── Left: copy ─────────────────────────────────────────── */}
           <div>
             <motion.div
-              variants={fadeUp} initial="hidden" animate="show" custom={0}
+              variants={fadeUp} initial={reduceMotion ? false : 'hidden'} animate="show" custom={0}
               className="inline-flex items-center gap-2 bg-white/70 backdrop-blur border border-blue-100 rounded-full px-4 py-1.5 text-sm text-blue-700 mb-6 shadow-sm"
             >
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               Tripoli&apos;s Premier Tech Store · {YEARS_IN_BUSINESS} Years Strong
             </motion.div>
 
-            <motion.h1
-              variants={fadeUp} initial="hidden" animate="show" custom={1}
-              className="text-6xl md:text-7xl font-extrabold text-slate-900 leading-[0.98] tracking-tighter"
-            >
+            {/* H1, lead paragraph and primary CTAs render visible immediately —
+                no motion wrapper, no SSR opacity:0. This is the LCP candidate
+                and the content a user on a slow connection, with JS blocked,
+                or with reduced-motion set needs to see without waiting on
+                hydration. The decorative elements below still get the
+                fade-up treatment; losing that costs nothing essential. */}
+            <h1 className="text-6xl md:text-7xl font-extrabold text-slate-900 leading-[0.98] tracking-tighter">
               Technology
               <span className="flex items-center gap-3 md:gap-4 text-gradient">
                 You Can
@@ -132,21 +141,15 @@ export function HeroSection() {
                 </span>
               </span>
               Trust.
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              variants={fadeUp} initial="hidden" animate="show" custom={2}
-              className="text-slate-500 text-lg mt-6 leading-relaxed max-w-xl"
-            >
+            <p className="text-slate-500 text-lg mt-6 leading-relaxed max-w-xl">
               {YEARS_IN_BUSINESS} years in business, since {FOUNDED_YEAR} — from professional POS
               systems to premium laptops, curated tech solutions for businesses and
               individuals across Lebanon.
-            </motion.p>
+            </p>
 
-            <motion.div
-              variants={fadeUp} initial="hidden" animate="show" custom={3}
-              className="flex flex-wrap gap-3 mt-8"
-            >
+            <div className="flex flex-wrap gap-3 mt-8">
               <Link href="/products">
                 <Button size="lg">
                   Shop Now <ArrowRight size={18} />
@@ -157,11 +160,11 @@ export function HeroSection() {
                   <Sparkles size={18} /> Meet Our Tech Advisor
                 </Button>
               </Link>
-            </motion.div>
+            </div>
 
             {/* Trust badges */}
             <motion.div
-              variants={fadeUp} initial="hidden" animate="show" custom={4}
+              variants={fadeUp} initial={reduceMotion ? false : 'hidden'} animate="show" custom={4}
               className="grid grid-cols-3 gap-4 mt-14 max-w-lg"
             >
               {TRUST_ITEMS.map(({ icon: Icon, label, sub }) => (
@@ -182,7 +185,7 @@ export function HeroSection() {
               hide it below lg. The grid collapses to one column there, so
               it just stacks under the copy instead of sitting beside it. */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.92 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="relative [perspective:1600px]"
