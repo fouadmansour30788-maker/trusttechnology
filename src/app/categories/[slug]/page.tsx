@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import type { Metadata } from 'next'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { FilterSidebar } from '@/components/products/FilterSidebar'
 import { ProductCard } from '@/components/products/ProductCard'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -10,12 +12,28 @@ import { SPEC_FACETS, facetOptions, parseSpecParam, matchesSpecFilters } from '@
 import { canonicalFor } from '@/lib/site'
 import type { Product, Tag } from '@/lib/types'
 
+type SearchParams = { tags?: string; specs?: string; sort?: string; page?: string }
 type Props = {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ tags?: string; specs?: string; sort?: string }>
+  searchParams: Promise<SearchParams>
 }
 
 export const dynamic = 'force-dynamic'
+
+// Same fix as /products: a category could match most of the catalog (e.g.
+// "laptops" matched ~320 products, 1.5MB in one response) with no
+// pagination at all. 48 divides evenly into the 2/3/4-column grid.
+const PAGE_SIZE = 48
+
+function pageHref(slug: string, page: number, params: SearchParams): string {
+  const sp = new URLSearchParams()
+  if (params.tags) sp.set('tags', params.tags)
+  if (params.specs) sp.set('specs', params.specs)
+  if (params.sort) sp.set('sort', params.sort)
+  if (page > 1) sp.set('page', String(page))
+  const qs = sp.toString()
+  return `/categories/${slug}${qs ? `?${qs}` : ''}`
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   computing: 'Computing', laptops: 'Laptops', desktops: 'Desktops', imacs: 'iMacs',
@@ -49,7 +67,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params
-  const { tags: tagFilter, specs: specFilter, sort } = await searchParams
+  const sp = await searchParams
+  const { tags: tagFilter, specs: specFilter, sort } = sp
   const selectedTags = tagFilter?.split(',').filter(Boolean) ?? []
   const selectedSpecs = parseSpecParam(specFilter)
 
@@ -112,6 +131,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
 
   const label = CATEGORY_LABELS[slug] ?? slug
 
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE))
+  const page = Math.min(Math.max(1, Number(sp.page) || 1), totalPages)
+  const pageProducts = products.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       <PageHeader eyebrow="Browse" title={label} subtitle={`${products.length} products`} />
@@ -126,11 +149,56 @@ export default async function CategoryPage({ params, searchParams }: Props) {
               <p className="text-slate-500 text-sm">Try adjusting your filters or browse all products.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {products.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                {pageProducts.map((p) => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <nav aria-label="Pagination" className="flex items-center justify-center gap-2 mt-10">
+                  <Link
+                    href={pageHref(slug, page - 1, sp)}
+                    aria-disabled={page <= 1}
+                    tabIndex={page <= 1 ? -1 : undefined}
+                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page <= 1 ? 'pointer-events-none opacity-40' : ''}`}
+                  >
+                    <ChevronLeft size={18} />
+                    <span className="sr-only">Previous page</span>
+                  </Link>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
+                    .map((p, i, arr) => (
+                      <span key={p} className="flex items-center gap-2">
+                        {i > 0 && arr[i - 1] !== p - 1 && <span className="text-slate-400 px-1">…</span>}
+                        <Link
+                          href={pageHref(slug, p, sp)}
+                          aria-current={p === page ? 'page' : undefined}
+                          className={`inline-flex items-center justify-center w-11 h-11 rounded-xl text-sm font-medium transition-colors ${
+                            p === page
+                              ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
+                              : 'border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600'
+                          }`}
+                        >
+                          {p}
+                        </Link>
+                      </span>
+                    ))}
+
+                  <Link
+                    href={pageHref(slug, page + 1, sp)}
+                    aria-disabled={page >= totalPages}
+                    tabIndex={page >= totalPages ? -1 : undefined}
+                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl border border-slate-200 text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors ${page >= totalPages ? 'pointer-events-none opacity-40' : ''}`}
+                  >
+                    <ChevronRight size={18} />
+                    <span className="sr-only">Next page</span>
+                  </Link>
+                </nav>
+              )}
+            </>
           )}
         </div>
       </div>
