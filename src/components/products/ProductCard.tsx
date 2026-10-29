@@ -152,7 +152,7 @@ export function ProductCard({ product }: Props) {
           <div className="mt-2 grid grid-cols-2 gap-x-2 gap-y-1.5 border-t border-slate-100 pt-2">
             {keySpecs.map(([k, v]) => (
               <div key={k} className="min-w-0">
-                <p className="text-[10px] uppercase tracking-wide text-slate-400 truncate">{k}</p>
+                <p className="text-[10px] uppercase tracking-wide text-slate-600 truncate">{k}</p>
                 <p className="text-xs font-medium text-slate-700 truncate" title={v}>{v}</p>
               </div>
             ))}
